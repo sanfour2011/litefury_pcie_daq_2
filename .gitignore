@@ -1,0 +1,29 @@
+# Vivado generated/temporary files
+*.jou
+*.log
+*.str
+.Xil/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.gen/
+*.xpr.lock
+*.dcp
+
+# Block Design: nur die .bd-Quelldatei behalten, Rest ist generiert
+*.srcs/sources_1/bd/**
+!*.srcs/sources_1/bd/**/
+!*.srcs/sources_1/bd/**/*.bd
+
+# Behalte Projektdatei, Constraints, Sources, Testbenches
+!*.xpr
+!*.srcs/constrs_1/**
+!*.srcs/sources_1/new/**
+!*.srcs/sim_1/**
+
+# Ignoriere vscode spezifische Dateien
+vhdl-linter.yml
+vhdl_ls.toml
+new.code-workspace
