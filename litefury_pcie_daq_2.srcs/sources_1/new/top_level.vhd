@@ -30,81 +30,15 @@ architecture Behavioral of top_level is
 	constant SAMPLE_RATE_Hz : integer := 30;           -- at 30 samples/s, filling 2048 samples takes ~1 min , convenient for manual hardware tests via RWEverything.
 	constant CLK_FREQ_Hz    : integer := 200_000_000;
 
-	-- JETZT EXAKT: Die Komponente angepasst an deine design_1_wrapper.vhd
-	component design_1_wrapper is
+	component IBUFDS is
 	port (
-		pcie_7x_mgt_rtl_0_rxn : in  std_logic_vector (3 downto 0);
-		pcie_7x_mgt_rtl_0_rxp : in  std_logic_vector (3 downto 0);
-		pcie_7x_mgt_rtl_0_txn : out std_logic_vector (3 downto 0);
-		pcie_7x_mgt_rtl_0_txp : out std_logic_vector (3 downto 0);
-		pcie_clkin_clk_clk_n  : in  std_logic_vector (0 to 0);
-		pcie_clkin_clk_clk_p  : in  std_logic_vector (0 to 0);
-		pcie_reset            : in  std_logic;
-
-		--Added by me:
-		ledn               : out std_logic_vector (3 downto 0);
-		enable_acquisition : out std_logic;
-		is_running         : in  std_logic;
-		buffer_full        : in  std_logic;
-		irq_pending        : out std_logic;
-
-		rsta_busy_0       : out std_logic;
-		rstb_busy_0       : out std_logic;
-		BRAM_PORTB_0_addr : in  std_logic_vector (31 downto 0);
-		BRAM_PORTB_0_clk  : in  std_logic;
-		BRAM_PORTB_0_din  : in  std_logic_vector (31 downto 0);
-		BRAM_PORTB_0_dout : out std_logic_vector (31 downto 0);
-		BRAM_PORTB_0_en   : in  std_logic;
-		BRAM_PORTB_0_rst  : in  std_logic;
-		BRAM_PORTB_0_we   : in  std_logic_vector (3 downto 0);
-
-		usr_irq_req      : in  std_logic_vector (0 downto 0);
-		usr_irq_ack      : out std_logic_vector (0 downto 0);
-		msi_enable       : out std_logic;
-		msi_vector_width : out std_logic_vector (2 downto 0)
-
-	);
-end component design_1_wrapper;
-
-component IBUFDS is
-port (
-	O  : out std_logic;  -- 1-bit output: Buffer output
-	I  : in  std_logic;  -- 1-bit input: Diff_p buffer input (connect directly to top-level port)
-	IB : in  std_logic
-); -- 1-bit input: Diff_n buffer input (connect directly to top-level port)
+		O  : out std_logic;  -- 1-bit output: Buffer output
+		I  : in  std_logic;  -- 1-bit input: Diff_p buffer input (connect directly to top-level port)
+		IB : in  std_logic
+	); -- 1-bit input: Diff_n buffer input (connect directly to top-level port)
 end component IBUFDS;
 
-component tick_gen is
-generic (
-	TICK_RATE_HZ : integer := SAMPLE_RATE_Hz;  -- Tick rate in Hz
-	CLK_FREQ_HZ  : integer := CLK_FREQ_Hz
-);
-port (
-	rst_n  : in  std_logic;
-	tick   : out std_logic;
-	sysclk : in  std_logic
-);
-end component tick_gen;
-
-component acquisition_ctrl is
-generic (
-	buffer_size    : integer := BRAM_SIZE;       -- Size of the buffer in samples
-	sample_rate_hz : integer := SAMPLE_RATE_Hz;  -- Rate at which new sawtooth samples are generated
-	clk_freq_hz    : integer := CLK_FREQ_Hz      -- Input CLK_FREQ_HZ
-);
-port (
-	clk          : in  std_logic;
-	rst_n        : in  std_logic;
-	acq_en       : in  std_logic;
-	is_running   : out std_logic;
-	buffer_full  : out std_logic;
-	sample_ready : out std_logic;
-	sample_out   : out std_logic_vector(31 downto 0);
-	sample_idx   : out std_logic_vector(31 downto 0)
-);
-end component acquisition_ctrl;
-
-attribute ASYNC_REG : string;             --kÃ¶nnte man auch im xdc setzen, aber hier ist es einfacher: set_property ASYNC_REG TRUE [get_cells {FF1_reg FF2_reg}]
+attribute ASYNC_REG : string;             --Kï¿½nnte man auch im xdc setzen, aber hier ist es einfacher: set_property ASYNC_REG TRUE [get_cells {FF1_reg FF2_reg}]
 
 signal sys_clk               : std_logic;
 signal soft_rst_acq_ctrl_sig : std_logic := '1';
@@ -158,6 +92,13 @@ constant WAIT_FOR_HOST_ACK            : std_logic_vector(2 downto 0) := "010";
 constant WAIT_FOR_IRQ_PENDING_CLEARED : std_logic_vector(2 downto 0) := "100";
 signal  next_state_sig                : std_logic_vector(2 downto 0) := IDLE;
 
+--ping_pong_ctrl
+signal write_enable_A_sig   : std_logic := '0';
+signal write_enable_B_sig   : std_logic := '0';
+signal ready_A_sig          : std_logic := '0';
+signal ready_B_sig          : std_logic := '0';
+signal BRAM_PORTB_0_din_sig : std_logic_vector (31 downto 0) := (others => '0');
+
 begin
 
 efury_sys_clk : IBUFDS
@@ -167,7 +108,7 @@ port map (
 	IB => sysclk_n   -- 1-bit input: Diff_n buffer input (connect directly to top-level port)
 );
 
-tick_gen_inst : tick_gen
+tick_gen_inst : entity work.tick_gen
 generic map (
 	TICK_RATE_HZ => 1,           -- 1 Hz
 	CLK_FREQ_HZ  => CLK_FREQ_Hz  -- 200 MHz
@@ -177,7 +118,7 @@ port map (
 	tick   => tick_1Hz,
 	sysclk => sys_clk
 );
-acquisition_ctrl_inst : acquisition_ctrl
+acquisition_ctrl_inst : entity work.acquisition_ctrl
 generic map (
 	buffer_size    => BRAM_SIZE,
 	sample_rate_hz => SAMPLE_RATE_Hz,
@@ -194,34 +135,32 @@ port map (
 	sample_idx   => sample_idx_sig
 );
 
-ping_pong_addr_inst : ping_pong_addr
+ping_pong_ctrl_inst : entity work.ping_pong_ctrl
 generic map (
 	mem_size   => BRAM_SIZE,
 	data_width => 32,
 	addr_width => 13
-	)	
-	port map (
-		clk            => sys_clk,
-		rst_n          => pcie_reset,
-		data_in        => sawtooth_out_sig,
-		data_valid     => sample_valid_sig,
-		write_enable_A => BRAM_PORTB_0_we_sig(0),
-		write_enable_B => BRAM_PORTB_0_we_sig(1),
-		ready_A        => open,
-		ready_B        => open,
-		mem_addr       => BRAM_PORTB_0_addr_sig(12 downto 0),
-		mem_data_out   => open
-	);
-
-
+)	
+port map (
+	clk            => sys_clk,
+	rst_n          => soft_rst_acq_ctrl_sig,
+	data_in        => sawtooth_out_sig,
+	data_valid     => sample_valid_sig,
+	write_enable_A => write_enable_A_sig,
+	write_enable_B => write_enable_B_sig,
+	ready_A        => ready_A_sig,
+	ready_B        => ready_B_sig,
+	mem_addr       => BRAM_PORTB_0_addr_sig(12 downto 0),  -- 13-bit address bus for 8192 bytes (2048 words) of BRAM
+	mem_data_out   => BRAM_PORTB_0_din_sig
+);
 
 --ToDo: Siehe PCIe Takt-Anforderung auf Low setzen, sollte nicht immer aktiv sein,
--- nur bei bedarf, windows treiber können das auch steuern, 
---aber für die Demo ist es in Ordnung:
+-- nur bei bedarf, windows treiber kÃ¶nnen das auch steuern, 
+--aber fÃ¼r die Demo ist es in Ordnung:
 pcie_clkreq_l <= '0';-- PCIe Takt-Anforderung dauerhaft auf Aktiv (Low)
 
 -- Das Port-Mapping verbindet die Wrapper-Ports mit deinen Top-Level-Pins
-block_design_inst : design_1_wrapper
+block_design_inst : entity work.design_1_wrapper
 port map (
 	pcie_clkin_clk_clk_n  => pcie_clkin_clk_n,
 	pcie_clkin_clk_clk_p  => pcie_clkin_clk_p,
@@ -247,7 +186,7 @@ port map (
 	rstb_busy_0       => open,
 	BRAM_PORTB_0_addr => BRAM_PORTB_0_addr_sig,
 	BRAM_PORTB_0_clk  => sys_clk,
-	BRAM_PORTB_0_din  => sawtooth_out_sig,
+	BRAM_PORTB_0_din  => BRAM_PORTB_0_din_sig,
 	BRAM_PORTB_0_dout => open,
 	BRAM_PORTB_0_en   => '1',                    -- optional
 	BRAM_PORTB_0_rst  => BRAM_PORTB_0_rst_sig,

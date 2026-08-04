@@ -4,7 +4,7 @@
 --
 -- Create Date: 04.08.2026 17:15:15
 -- Design Name:
--- Module Name: ping_pong_addr_tb - Behavioral
+-- Module Name: ping_pong_ctrl_tb - Behavioral
 -- Project Name:
 -- Target Devices:
 -- Tool Versions:
@@ -30,11 +30,11 @@ use ieee.NUMERIC_STD.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity ping_pong_addr_tb is
+entity ping_pong_ctrl_tb is
 	--  Port ( );
-end entity ping_pong_addr_tb;
+end entity ping_pong_ctrl_tb;
 
-architecture Behavioral of ping_pong_addr_tb is
+architecture Behavioral of ping_pong_ctrl_tb is
 
 	-- Scaled generics for fast simulation (16 words total -> Buffer A: 0-7, Buffer B: 8-15)
 	constant C_MEM_SIZE   : integer := 16;
@@ -55,7 +55,7 @@ architecture Behavioral of ping_pong_addr_tb is
 
 begin
 
-	UUT : entity work.ping_pong_addr
+	UUT : entity work.ping_pong_ctrl
 	generic map (
 		mem_size   => C_MEM_SIZE,
 		data_width => C_DATA_WIDTH,
@@ -139,7 +139,7 @@ begin
 				--garbage data, should be discarded
 				data_in_sig <= std_logic_vector(to_unsigned(9999, C_DATA_WIDTH));
 				data_valid_sig <= '1';
-				wait for 10 ns; --wait for 2 clock cycles 
+				wait for 10 ns; --wait for 2 clock cycles
 
 				wait until rising_edge(clk_sig);
 				assert mem_we_sig = '0'	report "ERROR Buffer A: mem_we MUST remain '0' when no write_enable is active!" severity error;
@@ -147,7 +147,7 @@ begin
 
 				wait until rising_edge(clk_sig);
 				data_valid_sig <= '0';
-				wait for 10 ns; --wait for 2 clock cycles 
+				wait for 10 ns; --wait for 2 clock cycles
 
 				report "------------------------------------------------------------------";
 				report "2. Test Case: Write Buffer B (addresses 8 to 15)";
@@ -183,7 +183,7 @@ begin
 					wait until rising_edge(clk_sig);
 					assert ready_B_sig = '1' and ready_A_sig = '0' report "ERROR Wrap-Around: write_enable_A_sig from 0->1 must clear ready flags A only!" severity error;
 					-- Write first word of the new cycle, should write to address 0 on Buffer A
-					data_in_sig <= std_logic_vector(to_unsigned(16#DEADBEEF#, C_DATA_WIDTH));
+					data_in_sig <= x"DEADBEEF";
 					data_valid_sig <= '1';
 
 					wait until rising_edge(clk_sig);
@@ -193,7 +193,7 @@ begin
 					wait until rising_edge(clk_sig);
 					data_valid_sig <= '0';
 					write_enable_A_sig <= '0';
-					wait for 10 ns; --wait for 2 clock cycles 
+					wait for 10 ns; --wait for 2 clock cycles
 
 					write_enable_B_sig <= '1';
 					wait until rising_edge(clk_sig);

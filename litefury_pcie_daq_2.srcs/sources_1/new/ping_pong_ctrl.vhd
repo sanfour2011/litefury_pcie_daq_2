@@ -4,7 +4,7 @@
 --
 -- Create Date: 02.08.2026 14:20:45
 -- Design Name:
--- Module Name: ping_pong_addr - Behavioral
+-- Module Name: ping_pong_ctrl - Behavioral
 -- Project Name:
 -- Target Devices:
 -- Tool Versions:
@@ -30,7 +30,7 @@ use ieee.NUMERIC_STD.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity ping_pong_addr is
+entity ping_pong_ctrl is
 	generic (
 		mem_size   : integer := 2048*2;  -- Size of the buffer in samples
 		data_width : integer := 32 ;     -- Width of the data bus in bits
@@ -49,9 +49,9 @@ entity ping_pong_addr is
 		mem_data_out   : out std_logic_vector(data_width-1 downto 0);
 		mem_we         : out std_logic
 	);
-end ping_pong_addr;
+end ping_pong_ctrl;
 
-architecture Behavioral of ping_pong_addr is
+architecture Behavioral of ping_pong_ctrl is
 	signal current_addr_sig : std_logic_vector(addr_width-1 downto 0) := (others => '0');
 	constant max_addr       : integer := mem_size - 1;
 	constant half_mem_size  : integer := (mem_size / 2)-1;
