@@ -51,51 +51,57 @@ entity ping_pong_addr is
 end ping_pong_addr;
 
 architecture Behavioral of ping_pong_addr is
-	signal current_addr    : std_logic_vector(addr_width-1 downto 0) := (others => '0');
-	constant max_addr      : integer := mem_size - 1;
-	constant half_mem_size : integer := (mem_size / 2)-1;
+	signal current_addr_sig : std_logic_vector(addr_width-1 downto 0) := (others => '0');
+	constant max_addr       : integer := mem_size - 1;
+	constant half_mem_size  : integer := (mem_size / 2)-1;
 
 begin
-	u_process_1 : process (clk, rst_n)
-    variable write_enable_A_prev : std_logic := '0';
-    variable write_enable_B_prev : std_logic := '0';
+	u_process : process (clk, rst_n)
+	variable write_enable_A_prev : std_logic := '0';
+	variable write_enable_B_prev : std_logic := '0';
+
 	begin
 		if rst_n = '0' then
-			current_addr <= (others => '0');
-            mem_data_out <= (others => '0');
-            ready_A <= '0';
-            ready_B <= '0';
-            write_enable_A_prev := '0';
-            write_enable_B_prev := '0';
+			current_addr_sig <= (others => '0');
+			ready_A <= '0';
+			write_enable_A_prev := '0';
+			ready_B <= '0';
+			write_enable_B_prev := '0';
 
 		elsif rising_edge(clk) then
-            if write_enable_A_prev = '1' and write_enable_A = '0' then
-                ready_A <= '0';
-            end if;
-            if write_enable_B_prev = '1' and write_enable_B = '0' then
-                ready_B <= '0';
-            end if;
-            
-			if data_valid = '1' then
-				if  (write_enable_A = '1' and unsigned(current_addr) <= half_mem_size) then
-					current_addr <= std_logic_vector (unsigned(current_addr) +1);
-					mem_data_out <= data_in;
-					if unsigned(current_addr) = half_mem_size then
+
+			if write_enable_A = '1' and write_enable_A_prev = '0' then
+				ready_A <= '0';
+			end if;
+
+			if write_enable_B = '1' and write_enable_B_prev = '0' then
+				ready_B <= '0';
+			end if;
+
+			if  write_enable_A = '1' and data_valid = '1' then
+				if (unsigned(current_addr_sig) <= half_mem_size) then
+					current_addr_sig <= std_logic_vector (unsigned(current_addr_sig) +1);
+					if unsigned(current_addr_sig) = half_mem_size then
 						ready_A <= '1';
-                        write_enable_A_prev := '1';
-					end if;
-				end if;
-				if  (write_enable_B = '1' and unsigned(current_addr) <= max_addr and unsigned(current_addr) > half_mem_size) then
-					current_addr <= std_logic_vector (unsigned(current_addr) +1);
-					mem_data_out <= data_in;
-					if unsigned(current_addr) = max_addr then
-						ready_B <= '1';
-                        write_enable_B_prev := '1';
 					end if;
 				end if;
 			end if;
-		end if;
-	end process u_process_1;
 
-	mem_addr <= current_addr;
+			if  write_enable_B = '1' and data_valid = '1' then
+				if(unsigned(current_addr_sig) <= max_addr and unsigned(current_addr_sig) > half_mem_size) then
+					current_addr_sig <= std_logic_vector (unsigned(current_addr_sig) +1);
+					if unsigned(current_addr_sig) = max_addr then
+						ready_B <= '1';
+					end if;
+				end if;
+			end if;
+
+			write_enable_B_prev := write_enable_B;
+			write_enable_A_prev := write_enable_A;
+			mem_data_out <= data_in;
+			mem_addr <= current_addr_sig;
+
+		end if;
+	end process u_process;
+
 end Behavioral;
