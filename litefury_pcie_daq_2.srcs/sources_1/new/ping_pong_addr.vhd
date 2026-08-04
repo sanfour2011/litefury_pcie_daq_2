@@ -46,7 +46,8 @@ entity ping_pong_addr is
 		ready_A        : out std_logic;
 		ready_B        : out std_logic;
 		mem_addr       : out std_logic_vector (addr_width-1 downto 0);
-		mem_data_out   : out std_logic_vector(data_width-1 downto 0)
+		mem_data_out   : out std_logic_vector(data_width-1 downto 0);
+		mem_we         : out std_logic
 	);
 end ping_pong_addr;
 
@@ -69,6 +70,8 @@ begin
 			write_enable_B_prev := '0';
 
 		elsif rising_edge(clk) then
+			
+			mem_we <= '0';
 
 			if write_enable_A = '1' and write_enable_A_prev = '0' then
 				ready_A <= '0';
@@ -81,6 +84,7 @@ begin
 			if  write_enable_A = '1' and data_valid = '1' then
 				if (unsigned(current_addr_sig) <= half_mem_size) then
 					current_addr_sig <= std_logic_vector (unsigned(current_addr_sig) +1);
+					mem_we <= '1';
 					if unsigned(current_addr_sig) = half_mem_size then
 						ready_A <= '1';
 					end if;
@@ -90,6 +94,7 @@ begin
 			if  write_enable_B = '1' and data_valid = '1' then
 				if(unsigned(current_addr_sig) <= max_addr and unsigned(current_addr_sig) > half_mem_size) then
 					current_addr_sig <= std_logic_vector (unsigned(current_addr_sig) +1);
+					mem_we <= '1';
 					if unsigned(current_addr_sig) = max_addr then
 						ready_B <= '1';
 					end if;

@@ -141,7 +141,7 @@ signal sample_idx_sig        : std_logic_vector(31 downto 0) := (others => '0');
 -- ATTRIBUTE mark_debug OF BRAM_PORTB_0_addr_sig : SIGNAL IS "TRUE";
 -- ATTRIBUTE mark_debug OF sawtooth_out_sig : SIGNAL IS "TRUE";
 -- ATTRIBUTE mark_debug OF sample_valid_sig : SIGNAL IS "TRUE";
--- ATTRIBUTE mark_debug OF sample_idx_sig : SIGNAL IS "TRUE";
+-- ATTRIBUTE mark_debug OF sample_idx_sig : SIGNAL IS "TRUE"; 
 -- ATTRIBUTE mark_debug OF BRAM_PORTB_0_we_sig : SIGNAL IS "TRUE";
 
 signal usr_irq_req_sig                        : std_logic_vector (0 downto 0);
@@ -193,8 +193,30 @@ port map (
 	sample_out   => sawtooth_out_sig,
 	sample_idx   => sample_idx_sig
 );
+
+ping_pong_addr_inst : ping_pong_addr
+generic map (
+	mem_size   => BRAM_SIZE,
+	data_width => 32,
+	addr_width => 13
+	)	
+	port map (
+		clk            => sys_clk,
+		rst_n          => pcie_reset,
+		data_in        => sawtooth_out_sig,
+		data_valid     => sample_valid_sig,
+		write_enable_A => BRAM_PORTB_0_we_sig(0),
+		write_enable_B => BRAM_PORTB_0_we_sig(1),
+		ready_A        => open,
+		ready_B        => open,
+		mem_addr       => BRAM_PORTB_0_addr_sig(12 downto 0),
+		mem_data_out   => open
+	);
+
+
+
 --ToDo: Siehe PCIe Takt-Anforderung auf Low setzen, sollte nicht immer aktiv sein,
--- nur bei bedarf, windows treiber kÃ¶nnen das auch steuern, 
+-- nur bei bedarf, windows treiber können das auch steuern, 
 --aber für die Demo ist es in Ordnung:
 pcie_clkreq_l <= '0';-- PCIe Takt-Anforderung dauerhaft auf Aktiv (Low)
 
@@ -254,7 +276,7 @@ begin
 	end if;
 end process u_process_1;
 
-irq_handler : process (sys_clk, pcie_reset)
+irq_handler_A : process (sys_clk, pcie_reset)
 begin
 	if pcie_reset = '0' then
 		next_state_sig <= IDLE;
@@ -288,10 +310,10 @@ begin
 		end case;		
 	end if;
 	-- buffer = 1 -> usr_irq_req_sig <= '1' -> wait usr_irq_ack_sig = 1 -> wait irq_pending =1 -> irq_reg_sig = 0
-end process irq_handler;
+end process irq_handler_A;
 
 -- heart beat process for LEDs, shows that every thing is working
-u_process_3 : process (sys_clk, pcie_reset)
+Heart_beat : process (sys_clk, pcie_reset)
 begin
 	if pcie_reset = '0' then
 		count <= (others => '0'); -- Reset: Alle LEDs an
@@ -302,7 +324,7 @@ begin
 			count <= not count;
 		end if;
 	end if;
-end process u_process_3;
+end process Heart_beat;
 
 BRAM_PORTB_0_addr_sig <= (18 downto 0 => '0') & bram_addr_counter_sig;
 BRAM_PORTB_0_we_sig <= (3 downto 0 => sample_valid_sig);
