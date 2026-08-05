@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="ping_pong_ctrl_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="ping_pong_ctrl_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="157.701 ns"></ZoomEndTime>
+      <Cursor1Time time="35.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="226"></NameColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="11" />
+   <wvobject fp_name="/ping_pong_ctrl_tb/clk_sig" type="logic">
+      <obj_property name="ElementShortName">clk_sig</obj_property>
+      <obj_property name="ObjectShortName">clk_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/rst_n_sig" type="logic">
+      <obj_property name="ElementShortName">rst_n_sig</obj_property>
+      <obj_property name="ObjectShortName">rst_n_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/write_enable_A_sig" type="logic">
+      <obj_property name="ElementShortName">write_enable_A_sig</obj_property>
+      <obj_property name="ObjectShortName">write_enable_A_sig</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/write_enable_B_sig" type="logic">
+      <obj_property name="ElementShortName">write_enable_B_sig</obj_property>
+      <obj_property name="ObjectShortName">write_enable_B_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/ready_A_sig" type="logic">
+      <obj_property name="ElementShortName">ready_A_sig</obj_property>
+      <obj_property name="ObjectShortName">ready_A_sig</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/ready_B_sig" type="logic">
+      <obj_property name="ElementShortName">ready_B_sig</obj_property>
+      <obj_property name="ObjectShortName">ready_B_sig</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/mem_addr_sig" type="array">
+      <obj_property name="ElementShortName">mem_addr_sig[3:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_addr_sig[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/data_valid_sig" type="logic">
+      <obj_property name="ElementShortName">data_valid_sig</obj_property>
+      <obj_property name="ObjectShortName">data_valid_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/data_in_sig" type="array">
+      <obj_property name="ElementShortName">data_in_sig[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in_sig[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/mem_we_sig" type="logic">
+      <obj_property name="ElementShortName">mem_we_sig</obj_property>
+      <obj_property name="ObjectShortName">mem_we_sig</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ping_pong_ctrl_tb/mem_data_out_sig" type="array">
+      <obj_property name="ElementShortName">mem_data_out_sig[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_data_out_sig[31:0]</obj_property>
+   </wvobject>
+</wave_config>

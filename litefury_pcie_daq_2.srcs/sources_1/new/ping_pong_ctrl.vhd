@@ -64,10 +64,13 @@ begin
 	begin
 		if rst_n = '0' then
 			current_addr_sig <= (others => '0');
-			ready_A <= '0';
 			write_enable_A_prev := '0';
+			ready_A <= '0';
 			ready_B <= '0';
 			write_enable_B_prev := '0';
+			mem_addr <= (others => '0');
+			mem_we <= '0';
+			mem_data_out <= (others => '0');
 
 		elsif rising_edge(clk) then
 			

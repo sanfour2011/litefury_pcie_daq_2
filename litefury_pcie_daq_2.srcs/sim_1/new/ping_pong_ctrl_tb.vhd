@@ -52,6 +52,7 @@ architecture Behavioral of ping_pong_ctrl_tb is
 	signal mem_we_sig         : std_logic;
 	signal mem_addr_sig       : std_logic_vector(C_ADDR_WIDTH-1 downto 0);
 	signal mem_data_out_sig   : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+	signal reset_test_done    : boolean := false;
 
 begin
 
@@ -88,72 +89,72 @@ begin
 		reset_process : process
 		begin
 			rst_n_sig <= '0';
-			wait for 10 ns ;
-			assert ready_A_sig = '0'
-			report "ERROR [Reset]: ready_A must be '0' after reset!" severity error;
-			assert ready_B_sig = '0'
-			report "ERROR [Reset]: ready_B must be '0' after reset!" severity error;
-			assert mem_we_sig = '0'
-			report "ERROR [Reset]: mem_we must be '0' after reset!" severity error;
-			assert unsigned(mem_addr_sig) = 0
-			report "ERROR [Reset]: mem_addr must be 0 after reset!" severity error;
+			reset_test_done <= false;
+			wait for 5 ns ;
+			assert ready_A_sig = '0'report " Reset: ready_A must be '0' after reset!" severity error;
+			assert ready_B_sig = '0'report " Reset: ready_B must be '0' after reset!" severity error;
+			assert mem_we_sig = '0'	report " Reset: mem_we must be '0' after reset!" severity error	;
+			assert unsigned(mem_addr_sig) = 0 report " Reset: mem_addr must be 0 after reset!" severity error;
 			rst_n_sig <= '1';
+			reset_test_done <= true;
 			wait;
 		end process reset_process;
 
 		stim_proc : process
 		variable saved_addr : unsigned(C_ADDR_WIDTH-1 downto 0);
 		begin
-			report "------------------------------------------------------------------";
-			report "1. Test Case: Write Buffer A (addresses 0 to 7)";
-			report "------------------------------------------------------------------";
+
+			wait until reset_test_done = true;
+
+			report "----------------- 1. Test Case: Write Buffer A (addresses 0 to 7)"; -----------------";
 
 			wait until rising_edge(clk_sig);
 			write_enable_A_sig <= '1';
 
 			for i in 0 to (C_MEM_SIZE/2) - 1 loop
 				wait until rising_edge(clk_sig);
-				assert unsigned(mem_addr_sig) = i report "ERROR Buffer A: mem_addr mismatch!" severity error;
-				data_in_sig <= std_logic_vector(mem_addr_sig);
+				wait for 1 ns;
+				assert unsigned(mem_addr_sig) = i report " Buffer A: mem_addr mismatch!" severity error;
+				data_in_sig <= std_logic_vector(to_unsigned(i, C_DATA_WIDTH));
 				data_valid_sig <= '1';
 
 				wait until rising_edge(clk_sig);
-				assert mem_data_out_sig = std_logic_vector(to_unsigned(i, C_DATA_WIDTH)) report "ERROR Buffer A: mem_data_out mismatch!" severity error;
-				assert mem_we_sig = '1'
-				report "ERROR Buffer A: mem_we output must be '1' on valid write!" severity error;
+				wait for 1 ns;
+				assert mem_data_out_sig = std_logic_vector(to_unsigned(i, C_DATA_WIDTH)) report " Buffer A: mem_data_out mismatch!" severity error;
+				assert mem_we_sig = '1'	report " Buffer A: mem_we output must be '1' on valid write!" severity error;
+				data_valid_sig <= '0';
+
 			end loop;
 
 				--once full, ready_A should be set
 				wait until rising_edge(clk_sig);
-				assert ready_A_sig = '1' report "ERROR Buffer A: ready_A was not set after reaching half_mem_size!" severity error;
+				wait for 1 ns;
+				assert ready_A_sig = '1' report " Buffer A: ready_A was not set after reaching half_mem_size!" severity error;
 				data_valid_sig <= '0';
 				write_enable_A_sig <= '0';
 
-				report "------------------------------------------------------------------";
-				report "1. Test Case: Overrun / Discard (data_valid='1', but NO write_enable)";
-				report "------------------------------------------------------------------";
+				report "----------------- 2. Test Case: Overrun / Discard (data_valid='1', but NO write_enable) -----------------";
 
 				wait until rising_edge(clk_sig);
 				-- the address should remain the same during discard, so we save it for comparison
 				saved_addr := unsigned(mem_addr_sig);
 				--garbage data, should be discarded
-				data_in_sig <= std_logic_vector(to_unsigned(9999, C_DATA_WIDTH));
+				data_in_sig <= std_logic_vector(to_unsigned(16#1234#, C_DATA_WIDTH));
 				data_valid_sig <= '1';
 				wait for 10 ns; --wait for 2 clock cycles
 
 				wait until rising_edge(clk_sig);
-				assert mem_we_sig = '0'	report "ERROR Buffer A: mem_we MUST remain '0' when no write_enable is active!" severity error;
-				assert unsigned(mem_addr_sig) = saved_addr report "ERROR Buffer A: Address must not change during discard!" severity error;
+				wait for 1 ns;
+				assert mem_we_sig = '0'	report " Buffer A: mem_we MUST remain '0' when no write_enable is active!" severity error;
+				assert unsigned(mem_addr_sig) = saved_addr report " Buffer A: Address must not change during discard!" severity error;
 
 				wait until rising_edge(clk_sig);
 				data_valid_sig <= '0';
 				wait for 10 ns; --wait for 2 clock cycles
 
-				report "------------------------------------------------------------------";
-				report "2. Test Case: Write Buffer B (addresses 8 to 15)";
-				report "------------------------------------------------------------------";
+				report "----------------- 3. Test Case: Write Buffer B (addresses 8 to 15) -----------------";
 
-				assert mem_addr_sig = std_logic_vector(to_unsigned(C_MEM_SIZE/2, C_ADDR_WIDTH))	report "ERROR Buffer B: mem_addr should start at half_mem_size for Buffer B!" severity error;
+				assert mem_addr_sig = std_logic_vector(to_unsigned(C_MEM_SIZE/2, C_ADDR_WIDTH))	report " Buffer B: mem_addr should start at half_mem_size for Buffer B!" severity error;
 
 				wait until rising_edge(clk_sig);
 				write_enable_B_sig <= '1';
@@ -164,31 +165,36 @@ begin
 					data_valid_sig <= '1';
 
 					wait until rising_edge(clk_sig);
-					assert mem_data_out_sig = std_logic_vector(to_unsigned(i, C_DATA_WIDTH)) report "ERROR Buffer B: mem_data_out mismatch!" severity error;
-					assert unsigned(mem_addr_sig) = i report "ERROR Buffer B: mem_addr mismatch!" severity error;
-					assert mem_we_sig = '1'	report "ERROR Buffer B: mem_we must be '1' on valid write!" severity error;
+					wait for 1 ns;
+					assert mem_data_out_sig = std_logic_vector(to_unsigned(i, C_DATA_WIDTH)) report " Buffer B: mem_data_out mismatch!" severity error;
+					assert unsigned(mem_addr_sig) = i report " Buffer B: mem_addr mismatch!" severity error;
+					assert mem_we_sig = '1'	report " Buffer B: mem_we must be '1' on valid write!" severity error;
+					data_valid_sig <= '0';
+
 				end loop;
 
 					--once full, ready_B should be set
 					wait until rising_edge(clk_sig);
-					assert ready_B_sig = '1' report "ERROR Buffer B: ready_B was not set after reaching max_addr!" severity error;
+					wait for 1 ns;
+					assert ready_B_sig = '1' report " Buffer B: ready_B was not set after reaching max_addr!" severity error;
 					data_valid_sig <= '0';
 					write_enable_B_sig <= '0';
 
-					report "------------------------------------------------------------------";
-					report "3. Test Case: Wrap-Around / Ping-Pong Cycle (Buffer B -> Buffer A)";
-					report "------------------------------------------------------------------";
+					report "----------------- 4. Test Case: Wrap-Around / Ping-Pong Cycle (Buffer B -> Buffer A) -----------------";
+
 					-- Re-assert write_enable_A to clear ready_B and roll back to Buffer A
 					write_enable_A_sig <= '1';
 					wait until rising_edge(clk_sig);
-					assert ready_B_sig = '1' and ready_A_sig = '0' report "ERROR Wrap-Around: write_enable_A_sig from 0->1 must clear ready flags A only!" severity error;
+					wait for 1 ns;
+					assert ready_B_sig = '1' and ready_A_sig = '0' report " Wrap-Around: write_enable_A_sig from 0->1 must clear ready flags A only!" severity error;
 					-- Write first word of the new cycle, should write to address 0 on Buffer A
 					data_in_sig <= x"DEADBEEF";
 					data_valid_sig <= '1';
 
 					wait until rising_edge(clk_sig);
-					assert unsigned(mem_addr_sig) = 0 report "ERROR Buffer A: Address failed to wrap around to 0!" severity error;
-					assert mem_we_sig = '1' report "ERROR Buffer A: mem_we should be active for new write at address 0!" severity error;
+					wait for 1 ns;
+					assert unsigned(mem_addr_sig) = 0 report " Buffer A: Address failed to wrap around to 0!" severity error;
+					assert mem_we_sig = '1' report " Buffer A: mem_we should be active for new write at address 0!" severity error;
 
 					wait until rising_edge(clk_sig);
 					data_valid_sig <= '0';
@@ -197,7 +203,8 @@ begin
 
 					write_enable_B_sig <= '1';
 					wait until rising_edge(clk_sig);
-					assert ready_B_sig = '0' report "ERROR Buffer B: write_enable_B_sig from 0->1 must clear ready flags B only!" severity error;
+					wait for 1 ns;
+					assert ready_B_sig = '0' report " Buffer B: write_enable_B_sig from 0->1 must clear ready flags B only!" severity error;
 
 					-- End of Simulation
 					assert 1=1 report "Simulation COMPLETED SUCCESSFULLY - All assertions passed." severity note;
