@@ -17,7 +17,6 @@
       "axi_bram_ctrl_0": "",
       "blk_mem_gen_0": "",
       "axi_smc": "",
-      "axi_csr_0": "",
       "ila_0": ""
     },
     "interface_ports": {
@@ -626,14 +625,6 @@
           }
         }
       },
-      "axi_csr_0": {
-        "vlnv": "Nizar_Homebrew:user:axi_csr:2.0",
-        "ip_revision": "1",
-        "xci_name": "design_1_axi_csr_0_0",
-        "xci_path": "ip\\design_1_axi_csr_0_0\\design_1_axi_csr_0_0.xci",
-        "inst_hier_path": "axi_csr_0",
-        "has_run_ip_tcl": "true"
-      },
       "ila_0": {
         "vlnv": "xilinx.com:ip:ila:6.2",
         "ip_revision": "19",
@@ -670,12 +661,6 @@
           "axi_bram_ctrl_0/S_AXI"
         ]
       },
-      "axi_smc_M01_AXI": {
-        "interface_ports": [
-          "axi_smc/M01_AXI",
-          "axi_csr_0/CONTROL_STATUS_REG"
-        ]
-      },
       "diff_clock_rtl_0_1": {
         "interface_ports": [
           "pcie_clkin_clk",
@@ -710,14 +695,12 @@
     "nets": {
       "axi_csr_0_enable_acquisition": {
         "ports": [
-          "axi_csr_0/enable_acquisition",
           "enable_acquisition",
           "ila_0/probe7"
         ]
       },
       "axi_csr_0_irq_pending": {
         "ports": [
-          "axi_csr_0/irq_pending",
           "irq_pending",
           "ila_0/probe4"
         ]
@@ -743,14 +726,12 @@
       "buffer_full_0_1": {
         "ports": [
           "buffer_full",
-          "axi_csr_0/buffer_full",
           "ila_0/probe2"
         ]
       },
       "is_running_0_1": {
         "ports": [
           "is_running",
-          "axi_csr_0/is_running",
           "ila_0/probe1"
         ]
       },
@@ -780,7 +761,6 @@
           "axi_smc/aclk",
           "axi_bram_ctrl_0/s_axi_aclk",
           "axi_aclk",
-          "axi_csr_0/control_status_reg_aclk",
           "ila_0/clk"
         ]
       },
@@ -790,7 +770,6 @@
           "axi_gpio_0/s_axi_aresetn",
           "axi_bram_ctrl_0/s_axi_aresetn",
           "axi_smc/aresetn",
-          "axi_csr_0/control_status_reg_aresetn",
           "ila_0/probe0"
         ]
       },
@@ -824,13 +803,6 @@
                 "address_block": "/axi_bram_ctrl_0/S_AXI/Mem0",
                 "offset": "0x0000000044A02000",
                 "range": "8K"
-              },
-              "SEG_axi_csr_0_CONTROL_STATUS_REG_reg": {
-                "address_block": "/axi_csr_0/CONTROL_STATUS_REG/CONTROL_STATUS_REG_reg",
-                "offset": "0x0000000044A00000",
-                "range": "128",
-                "offset_base_param": "C_CONTROL_STATUS_REG_BASEADDR",
-                "offset_high_param": "C_CONTROL_STATUS_REG_HIGHADDR"
               }
             }
           },
@@ -840,13 +812,6 @@
                 "address_block": "/axi_bram_ctrl_0/S_AXI/Mem0",
                 "offset": "0x0000000044A02000",
                 "range": "8K"
-              },
-              "SEG_axi_csr_0_CONTROL_STATUS_REG_reg": {
-                "address_block": "/axi_csr_0/CONTROL_STATUS_REG/CONTROL_STATUS_REG_reg",
-                "offset": "0x0000000044A00000",
-                "range": "128",
-                "offset_base_param": "C_CONTROL_STATUS_REG_BASEADDR",
-                "offset_high_param": "C_CONTROL_STATUS_REG_HIGHADDR"
               }
             }
           },

@@ -1,0 +1,15 @@
+Time resolution is 1 ps
+Error: irq_pending_A_sig should be cleared!
+Time: 36 ns  Iteration: 0  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd
+Error: irq_pending_B_sig should be cleared!
+Time: 80 ns  Iteration: 0  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd
+Error: irq_pending_A_sig must be '0' after soft_reset
+Time: 102 ns  Iteration: 1  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd
+Error: irq_pending_B_sig must be '0' after soft_reset
+Time: 102 ns  Iteration: 1  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd
+Error: soft_reset_sig must be '0' after soft_reset
+Time: 110 ns  Iteration: 1  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd
+Error: irq_pending_A_sig must be '0' after soft_reset
+Time: 110 ns  Iteration: 1  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd
+Error: irq_pending_B_sig must be '0' after soft_reset
+Time: 110 ns  Iteration: 1  Process: /CSR_V3_0_tb/test_irq_pending_A_w1c  File: C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd

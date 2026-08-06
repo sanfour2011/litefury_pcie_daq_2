@@ -1,0 +1,8 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../axi_csr_3_0/hdl/axi_csr_slave_lite_v3_0_axi_csr.vhd" \
+"../../../../axi_csr_3_0/hdl/axi_csr_v3_0.vhd" \
+"../../../../axi_csr_3_0/src/CSR_V3_0_tb.vhd" \
+
+# Do not sort compile order
+nosort
