@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xD38282203160029C",
+      "boundary_crc": "0x509718DCA51DF9CD",
       "device": "xc7a100tfgg484-2",
       "gen_directory": "../../../../litefury_pcie_daq_2.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -17,7 +17,7 @@
       "axi_bram_ctrl_0": "",
       "blk_mem_gen_0": "",
       "axi_smc": "",
-      "ila_0": ""
+      "AXI_CSR_0": ""
     },
     "interface_ports": {
       "pcie_7x_mgt_rtl_0": {
@@ -267,8 +267,31 @@
           }
         }
       },
-      "irq_pending": {
+      "irq_pending_A": {
         "direction": "O"
+      },
+      "irq_pending_B": {
+        "direction": "O"
+      },
+      "ready_A_0": {
+        "direction": "I"
+      },
+      "ready_B_0": {
+        "direction": "I"
+      },
+      "soft_reset_0": {
+        "type": "rst",
+        "direction": "O",
+        "parameters": {
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default"
+          }
+        }
       }
     },
     "components": {
@@ -625,19 +648,18 @@
           }
         }
       },
-      "ila_0": {
-        "vlnv": "xilinx.com:ip:ila:6.2",
-        "ip_revision": "19",
-        "xci_name": "design_1_ila_0_0",
-        "xci_path": "ip\\design_1_ila_0_0\\design_1_ila_0_0.xci",
-        "inst_hier_path": "ila_0",
+      "AXI_CSR_0": {
+        "vlnv": "Nizar_Homebrew:user:AXI_CSR:3.0",
+        "ip_revision": "6",
+        "xci_name": "design_1_AXI_CSR_0_0",
+        "xci_path": "ip\\design_1_AXI_CSR_0_0\\design_1_AXI_CSR_0_0.xci",
+        "inst_hier_path": "AXI_CSR_0",
         "has_run_ip_tcl": "true",
-        "parameters": {
-          "C_MONITOR_TYPE": {
-            "value": "Native"
-          },
-          "C_NUM_OF_PROBES": {
-            "value": "8"
+        "interface_ports": {
+          "control_status_reg": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "memory_map_ref": "control_status_reg"
           }
         }
       }
@@ -659,6 +681,12 @@
         "interface_ports": [
           "axi_smc/M00_AXI",
           "axi_bram_ctrl_0/S_AXI"
+        ]
+      },
+      "axi_smc_M01_AXI": {
+        "interface_ports": [
+          "axi_smc/M01_AXI",
+          "AXI_CSR_0/control_status_reg"
         ]
       },
       "diff_clock_rtl_0_1": {
@@ -693,16 +721,28 @@
       }
     },
     "nets": {
-      "axi_csr_0_enable_acquisition": {
+      "AXI_CSR_0_irq_pending_A": {
         "ports": [
-          "enable_acquisition",
-          "ila_0/probe7"
+          "AXI_CSR_0/irq_pending_A",
+          "irq_pending_A"
         ]
       },
-      "axi_csr_0_irq_pending": {
+      "AXI_CSR_0_irq_pending_B": {
         "ports": [
-          "irq_pending",
-          "ila_0/probe4"
+          "AXI_CSR_0/irq_pending_B",
+          "irq_pending_B"
+        ]
+      },
+      "AXI_CSR_0_soft_reset": {
+        "ports": [
+          "AXI_CSR_0/soft_reset",
+          "soft_reset_0"
+        ]
+      },
+      "axi_csr_0_enable_acquisition": {
+        "ports": [
+          "AXI_CSR_0/enable_acquisition",
+          "enable_acquisition"
         ]
       },
       "axi_gpio_0_gpio_io_o": {
@@ -723,16 +763,28 @@
           "rstb_busy_0"
         ]
       },
-      "buffer_full_0_1": {
+      "buffer_full_1": {
         "ports": [
           "buffer_full",
-          "ila_0/probe2"
+          "AXI_CSR_0/buffer_full"
         ]
       },
-      "is_running_0_1": {
+      "is_running_1": {
         "ports": [
           "is_running",
-          "ila_0/probe1"
+          "AXI_CSR_0/is_running"
+        ]
+      },
+      "ready_A_0_1": {
+        "ports": [
+          "ready_A_0",
+          "AXI_CSR_0/ready_A"
+        ]
+      },
+      "ready_B_0_1": {
+        "ports": [
+          "ready_B_0",
+          "AXI_CSR_0/ready_B"
         ]
       },
       "reset_rtl_0_1": {
@@ -744,8 +796,7 @@
       "usr_irq_req_1": {
         "ports": [
           "usr_irq_req",
-          "xdma_0/usr_irq_req",
-          "ila_0/probe3"
+          "xdma_0/usr_irq_req"
         ]
       },
       "util_ds_buf_IBUF_OUT": {
@@ -761,7 +812,7 @@
           "axi_smc/aclk",
           "axi_bram_ctrl_0/s_axi_aclk",
           "axi_aclk",
-          "ila_0/clk"
+          "AXI_CSR_0/control_status_reg_aclk"
         ]
       },
       "xdma_0_axi_aresetn": {
@@ -770,14 +821,13 @@
           "axi_gpio_0/s_axi_aresetn",
           "axi_bram_ctrl_0/s_axi_aresetn",
           "axi_smc/aresetn",
-          "ila_0/probe0"
+          "AXI_CSR_0/control_status_reg_aresetn"
         ]
       },
       "xdma_0_msi_enable": {
         "ports": [
           "xdma_0/msi_enable",
-          "msi_enable",
-          "ila_0/probe5"
+          "msi_enable"
         ]
       },
       "xdma_0_msi_vector_width": {
@@ -789,8 +839,7 @@
       "xdma_0_usr_irq_ack": {
         "ports": [
           "xdma_0/usr_irq_ack",
-          "usr_irq_ack",
-          "ila_0/probe6"
+          "usr_irq_ack"
         ]
       }
     },
@@ -799,6 +848,11 @@
         "address_spaces": {
           "M_AXI": {
             "segments": {
+              "SEG_AXI_CSR_0_reg0": {
+                "address_block": "/AXI_CSR_0/control_status_reg/reg0",
+                "offset": "0x0000000000000000",
+                "range": "4K"
+              },
               "SEG_axi_bram_ctrl_0_Mem0": {
                 "address_block": "/axi_bram_ctrl_0/S_AXI/Mem0",
                 "offset": "0x0000000044A02000",
@@ -808,6 +862,11 @@
           },
           "M_AXI_BYPASS": {
             "segments": {
+              "SEG_AXI_CSR_0_reg0": {
+                "address_block": "/AXI_CSR_0/control_status_reg/reg0",
+                "offset": "0x0000000000000000",
+                "range": "4K"
+              },
               "SEG_axi_bram_ctrl_0_Mem0": {
                 "address_block": "/axi_bram_ctrl_0/S_AXI/Mem0",
                 "offset": "0x0000000044A02000",
