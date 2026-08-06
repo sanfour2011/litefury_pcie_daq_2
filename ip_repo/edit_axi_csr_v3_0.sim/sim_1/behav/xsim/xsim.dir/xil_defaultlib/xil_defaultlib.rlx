@@ -1,7 +1,0 @@
-0.7
-2020.2
-Nov 14 2025
-19:37:27
-C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/hdl/axi_csr_slave_lite_v3_0_axi_csr.vhd,1786023014,vhdl,,,,axi_csr_slave_lite_v3_0_control_status_reg,,,,,,,,
-C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/hdl/axi_csr_v3_0.vhd,1785957975,vhdl,,,,axi_csr_v3_0,,,,,,,,
-C:/Users/gattous/Vivado_Workspace/litefury_pcie_daq_2/ip_repo/axi_csr_3_0/src/CSR_V3_0_tb.vhd,1786023551,vhdl,,,,csr_v3_0_tb,,,,,,,,

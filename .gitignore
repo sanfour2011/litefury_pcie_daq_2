@@ -25,6 +25,7 @@
 
 # Packaged IP: keep the full source folder (do not include generated clutter)
 !ip_repo/**
+ip_repo/edit_*/
 
 # DFX bookkeeping file, currently not used
 dfx_runtime.txt

@@ -1,11 +1,11 @@
 
 `timescale 1ns / 1ps
-`include "axi_csr_tb_include.svh"
+`include "AXI_CSR_tb_include.svh"
 
 import axi_vip_pkg::*;
-import axi_csr_bfm_1_master_0_0_pkg::*;
+import AXI_CSR_bfm_1_master_0_0_pkg::*;
 
-module axi_csr_tb();
+module AXI_CSR_tb();
 
 
 xil_axi_uint                            error_cnt = 0;
@@ -104,7 +104,7 @@ axi_ready_gen                           awready_gen2;
 axi_ready_gen                           wready_gen2;  
 axi_ready_gen                           arready_gen2;  
 xil_axi_payload_byte                    data_mem[xil_axi_ulong];  
-axi_csr_bfm_1_master_0_0_mst_t          mst_agent_0;
+AXI_CSR_bfm_1_master_0_0_mst_t          mst_agent_0;
 
   `BD_WRAPPER DUT(
       .ARESETN(reset), 
@@ -184,7 +184,7 @@ begin
      $display("Sequential read transfers example similar to  AXI BFM READ_BURST method completes"); 
      $display("Sequential read transfers example similar to  AXI VIP READ_BURST method completes"); 
      $display("---------------------------------------------------------"); 
-     $display("EXAMPLE TEST axi_csr: PTGEN_TEST_FINISHED!"); 
+     $display("EXAMPLE TEST S00_AXI: PTGEN_TEST_FINISHED!"); 
      if ( result_slave ) begin                    
        $display("PTGEN_TEST: PASSED!");                  
      end    else begin                                       

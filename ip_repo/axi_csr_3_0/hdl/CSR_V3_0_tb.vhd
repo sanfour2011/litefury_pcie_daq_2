@@ -66,7 +66,8 @@ architecture Behavioral of CSR_V3_0_tb is
 	signal a_test_done                    : boolean := false;
 	signal b_test_done                    : boolean := false;
 	signal buffer_test_done               : boolean := false;
-	component axi_csr_V3_0 is
+	
+	component AXI_CSR is
 	generic (
 		-- Users to add parameters here
 
@@ -146,7 +147,7 @@ end procedure axi_write;
 
 begin
 
-UUT : axi_csr_V3_0
+UUT : AXI_CSR
 generic map (
 	C_CONTROL_STATUS_REG_DATA_WIDTH => C_CONTROL_STATUS_REG_DATA_WIDTH,
 	C_CONTROL_STATUS_REG_ADDR_WIDTH => C_CONTROL_STATUS_REG_ADDR_WIDTH

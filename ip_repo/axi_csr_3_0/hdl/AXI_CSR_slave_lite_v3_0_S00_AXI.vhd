@@ -2,7 +2,7 @@ library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
-entity axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG is
+entity AXI_CSR_slave_lite_v3_0_S00_AXI is
 	generic (
 		-- Users to add parameters here
 		-- Control Register Bits: 
@@ -99,9 +99,9 @@ entity axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG is
 		-- accept the read data and response information.
 		S_AXI_RREADY : in std_logic
 	);
-end axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG;
+end AXI_CSR_slave_lite_v3_0_S00_AXI;
 
-architecture arch_imp of axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG is
+architecture arch_imp of AXI_CSR_slave_lite_v3_0_S00_AXI is
 
 	-- AXI4LITE signals
 	signal axi_awaddr  : std_logic_vector(C_S_AXI_ADDR_WIDTH - 1 downto 0);

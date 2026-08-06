@@ -14,7 +14,7 @@ LIBSOURCES=$(wildcard *.c)
 OUTS = $(wildcard *.o)
 
 libs:
-	echo "Compiling axi_csr..."
+	echo "Compiling AXI_CSR..."
 	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(LIBSOURCES)
 	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OUTS}
 	make clean

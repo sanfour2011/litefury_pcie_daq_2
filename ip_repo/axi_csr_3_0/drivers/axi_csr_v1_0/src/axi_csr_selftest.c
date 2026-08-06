@@ -1,6 +1,6 @@
 
 /***************************** Include Files *******************************/
-#include "axi_csr.h"
+#include "AXI_CSR.h"
 #include "xparameters.h"
 #include "stdio.h"
 #include "xil_io.h"

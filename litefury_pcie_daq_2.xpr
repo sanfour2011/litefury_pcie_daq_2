@@ -49,6 +49,7 @@
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
+    <Option Name="IPRepoPath" Val="$PPRDIR/ip_repo/AXI_CSR_3_0"/>
     <Option Name="IPRepoPath" Val="$PPRDIR/ip_repo/axi_csr_3_0"/>
     <Option Name="IPRepoPath" Val="$PPRDIR/../ip_repo/axi_csr_3_0"/>
     <Option Name="IPRepoPath" Val="$PPRDIR/ip_repo"/>

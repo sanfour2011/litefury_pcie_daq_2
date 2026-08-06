@@ -2,13 +2,14 @@ library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
-entity axi_csr_V3_0 is
+entity AXI_CSR is
 	generic (
 		-- Users to add parameters here
 
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
-		-- Parameters of Axi Slave Bus Interface CONTROL_STATUS_REG
+		
+		-- Parameters of Axi Slave Bus Interface S00_AXI
 		C_CONTROL_STATUS_REG_DATA_WIDTH : integer := 32;
 		C_CONTROL_STATUS_REG_ADDR_WIDTH : integer := 4
 	);
@@ -49,12 +50,12 @@ entity axi_csr_V3_0 is
 		control_status_reg_rvalid  : out std_logic;
 		control_status_reg_rready  : in  std_logic
 	);
-end axi_csr_V3_0;
+end AXI_CSR;
 
-architecture arch_imp of axi_csr_V3_0 is
+architecture arch_imp of AXI_CSR is
 
 	-- component declaration
-	component axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG is
+	component AXI_CSR_slave_lite_v3_0_S00_AXI is
 	generic (
 		C_S_AXI_DATA_WIDTH : integer := 32;
 		C_S_AXI_ADDR_WIDTH : integer := 4
@@ -93,12 +94,13 @@ architecture arch_imp of axi_csr_V3_0 is
 		S_AXI_RVALID  : out std_logic;
 		S_AXI_RREADY  : in  std_logic
 	);
-end component axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG;
+end component AXI_CSR_slave_lite_v3_0_S00_AXI;
 
 begin
 
--- Instantiation of Axi Bus Interface CONTROL_STATUS_REG
-axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG_inst : axi_csr_slave_lite_v3_0_CONTROL_STATUS_REG
+-- Instantiation of Axi Bus Interface S00_AXI
+AXI_CSR_slave_lite_v3_0_S00_AXI_inst :  AXI_CSR_slave_lite_v3_0_S00_AXI
+
 generic map (
 	C_S_AXI_DATA_WIDTH => C_CONTROL_STATUS_REG_DATA_WIDTH,
 	C_S_AXI_ADDR_WIDTH => C_CONTROL_STATUS_REG_ADDR_WIDTH

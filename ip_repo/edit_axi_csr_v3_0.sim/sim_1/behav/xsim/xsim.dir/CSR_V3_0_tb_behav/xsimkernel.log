@@ -1,7 +1,0 @@
-Running: xsim.dir/CSR_V3_0_tb_behav/xsimk.exe -simmode gui -wdb CSR_V3_0_tb_behav.wdb -simrunnum 0 -socket 11777
-Design successfully loaded
-Design Loading Memory Usage: 11048 KB (Peak: 11048 KB)
-Design Loading CPU Usage: 15 ms
-Simulation completed
-Simulation Memory Usage: 11936 KB (Peak: 11936 KB)
-Simulation CPU Usage: 62 ms
