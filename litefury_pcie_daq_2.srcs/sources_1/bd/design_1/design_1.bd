@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x509718DCA51DF9CD",
+      "boundary_crc": "0xE2CF5700CBCD36C",
       "device": "xc7a100tfgg484-2",
       "gen_directory": "../../../../litefury_pcie_daq_2.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -17,7 +17,15 @@
       "axi_bram_ctrl_0": "",
       "blk_mem_gen_0": "",
       "axi_smc": "",
-      "AXI_CSR_0": ""
+      "AXI_CSR_0": "",
+      "xpm_cdc_gen_0": "",
+      "xpm_cdc_gen_1": "",
+      "xpm_cdc_gen_2": "",
+      "ilvector_logic_0": "",
+      "xpm_cdc_gen_3": "",
+      "xpm_cdc_gen_4": "",
+      "ilslice_0": "",
+      "ilslice_1": ""
     },
     "interface_ports": {
       "pcie_7x_mgt_rtl_0": {
@@ -223,9 +231,6 @@
       "is_running": {
         "direction": "I"
       },
-      "buffer_full": {
-        "direction": "I"
-      },
       "rsta_busy_0": {
         "direction": "O"
       },
@@ -235,11 +240,11 @@
       "usr_irq_req": {
         "type": "intr",
         "direction": "I",
-        "left": "0",
+        "left": "1",
         "right": "0",
         "parameters": {
           "PortWidth": {
-            "value": "1"
+            "value": "2"
           },
           "SENSITIVITY": {
             "value": "LEVEL_HIGH",
@@ -249,7 +254,7 @@
       },
       "usr_irq_ack": {
         "direction": "O",
-        "left": "0",
+        "left": "1",
         "right": "0"
       },
       "msi_enable": {
@@ -273,13 +278,13 @@
       "irq_pending_B": {
         "direction": "O"
       },
-      "ready_A_0": {
+      "ready_A": {
         "direction": "I"
       },
-      "ready_B_0": {
+      "ready_B": {
         "direction": "I"
       },
-      "soft_reset_0": {
+      "soft_reset": {
         "type": "rst",
         "direction": "O",
         "parameters": {
@@ -292,6 +297,36 @@
             "value_src": "default"
           }
         }
+      },
+      "sys_clk": {
+        "type": "clk",
+        "direction": "I",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "design_1_sys_clk"
+          },
+          "FREQ_HZ": {
+            "value": "200000000"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "usr_irq_ack_A": {
+        "direction": "O"
+      },
+      "usr_irq_ack_B": {
+        "direction": "O"
       }
     },
     "components": {
@@ -359,6 +394,9 @@
           },
           "xdma_axi_intf_mm": {
             "value": "AXI_Memory_Mapped"
+          },
+          "xdma_num_usr_irq": {
+            "value": "2"
           },
           "xdma_rnum_chnl": {
             "value": "1"
@@ -650,7 +688,7 @@
       },
       "AXI_CSR_0": {
         "vlnv": "Nizar_Homebrew:user:AXI_CSR:3.0",
-        "ip_revision": "6",
+        "ip_revision": "11",
         "xci_name": "design_1_AXI_CSR_0_0",
         "xci_path": "ip\\design_1_AXI_CSR_0_0\\design_1_AXI_CSR_0_0.xci",
         "inst_hier_path": "AXI_CSR_0",
@@ -660,6 +698,122 @@
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
             "mode": "Slave",
             "memory_map_ref": "control_status_reg"
+          }
+        }
+      },
+      "xpm_cdc_gen_0": {
+        "vlnv": "xilinx.com:ip:xpm_cdc_gen:1.0",
+        "ip_revision": "5",
+        "xci_name": "design_1_xpm_cdc_gen_0_1",
+        "xci_path": "ip\\design_1_xpm_cdc_gen_0_1\\design_1_xpm_cdc_gen_0_1.xci",
+        "inst_hier_path": "xpm_cdc_gen_0",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "CDC_TYPE": {
+            "value": "xpm_cdc_single"
+          },
+          "DEST_SYNC_FF": {
+            "value": "2"
+          }
+        }
+      },
+      "xpm_cdc_gen_1": {
+        "vlnv": "xilinx.com:ip:xpm_cdc_gen:1.0",
+        "ip_revision": "5",
+        "xci_name": "design_1_xpm_cdc_gen_0_2",
+        "xci_path": "ip\\design_1_xpm_cdc_gen_0_2\\design_1_xpm_cdc_gen_0_2.xci",
+        "inst_hier_path": "xpm_cdc_gen_1",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "CDC_TYPE": {
+            "value": "xpm_cdc_single"
+          },
+          "DEST_SYNC_FF": {
+            "value": "2"
+          }
+        }
+      },
+      "xpm_cdc_gen_2": {
+        "vlnv": "xilinx.com:ip:xpm_cdc_gen:1.0",
+        "ip_revision": "5",
+        "xci_name": "design_1_xpm_cdc_gen_1_0",
+        "xci_path": "ip\\design_1_xpm_cdc_gen_1_0\\design_1_xpm_cdc_gen_1_0.xci",
+        "inst_hier_path": "xpm_cdc_gen_2",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "CDC_TYPE": {
+            "value": "xpm_cdc_single"
+          },
+          "DEST_SYNC_FF": {
+            "value": "2"
+          }
+        }
+      },
+      "ilvector_logic_0": {
+        "vlnv": "xilinx.com:inline_hdl:ilvector_logic:1.0",
+        "parameters": {
+          "C_SIZE": {
+            "value": "1"
+          }
+        }
+      },
+      "xpm_cdc_gen_3": {
+        "vlnv": "xilinx.com:ip:xpm_cdc_gen:1.0",
+        "ip_revision": "5",
+        "xci_name": "design_1_xpm_cdc_gen_3_0",
+        "xci_path": "ip\\design_1_xpm_cdc_gen_3_0\\design_1_xpm_cdc_gen_3_0.xci",
+        "inst_hier_path": "xpm_cdc_gen_3",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "CDC_TYPE": {
+            "value": "xpm_cdc_pulse"
+          },
+          "DEST_SYNC_FF": {
+            "value": "2"
+          },
+          "RST_USED": {
+            "value": "false"
+          }
+        }
+      },
+      "xpm_cdc_gen_4": {
+        "vlnv": "xilinx.com:ip:xpm_cdc_gen:1.0",
+        "ip_revision": "5",
+        "xci_name": "design_1_xpm_cdc_gen_4_0",
+        "xci_path": "ip\\design_1_xpm_cdc_gen_4_0\\design_1_xpm_cdc_gen_4_0.xci",
+        "inst_hier_path": "xpm_cdc_gen_4",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "CDC_TYPE": {
+            "value": "xpm_cdc_pulse"
+          },
+          "DEST_SYNC_FF": {
+            "value": "2"
+          },
+          "RST_USED": {
+            "value": "false"
+          }
+        }
+      },
+      "ilslice_0": {
+        "vlnv": "xilinx.com:inline_hdl:ilslice:1.0",
+        "parameters": {
+          "DIN_WIDTH": {
+            "value": "2"
+          }
+        }
+      },
+      "ilslice_1": {
+        "vlnv": "xilinx.com:inline_hdl:ilslice:1.0",
+        "parameters": {
+          "DIN_FROM": {
+            "value": "1"
+          },
+          "DIN_TO": {
+            "value": "1"
+          },
+          "DIN_WIDTH": {
+            "value": "2"
           }
         }
       }
@@ -736,7 +890,7 @@
       "AXI_CSR_0_soft_reset": {
         "ports": [
           "AXI_CSR_0/soft_reset",
-          "soft_reset_0"
+          "soft_reset"
         ]
       },
       "axi_csr_0_enable_acquisition": {
@@ -763,28 +917,40 @@
           "rstb_busy_0"
         ]
       },
-      "buffer_full_1": {
+      "ilslice_0_Dout": {
         "ports": [
-          "buffer_full",
+          "ilslice_0/Dout",
+          "xpm_cdc_gen_4/src_pulse"
+        ]
+      },
+      "ilslice_1_Dout": {
+        "ports": [
+          "ilslice_1/Dout",
+          "xpm_cdc_gen_3/src_pulse"
+        ]
+      },
+      "ilvector_logic_0_Res": {
+        "ports": [
+          "ilvector_logic_0/Res",
           "AXI_CSR_0/buffer_full"
         ]
       },
       "is_running_1": {
         "ports": [
           "is_running",
-          "AXI_CSR_0/is_running"
+          "xpm_cdc_gen_2/src_in"
         ]
       },
-      "ready_A_0_1": {
+      "ready_A_1": {
         "ports": [
-          "ready_A_0",
-          "AXI_CSR_0/ready_A"
+          "ready_A",
+          "xpm_cdc_gen_0/src_in"
         ]
       },
-      "ready_B_0_1": {
+      "ready_B_1": {
         "ports": [
-          "ready_B_0",
-          "AXI_CSR_0/ready_B"
+          "ready_B",
+          "xpm_cdc_gen_1/src_in"
         ]
       },
       "reset_rtl_0_1": {
@@ -793,11 +959,29 @@
           "xdma_0/sys_rst_n"
         ]
       },
+      "src_clk_1": {
+        "ports": [
+          "sys_clk",
+          "xpm_cdc_gen_0/src_clk",
+          "xpm_cdc_gen_2/src_clk",
+          "xpm_cdc_gen_1/src_clk",
+          "xpm_cdc_gen_3/dest_clk",
+          "xpm_cdc_gen_4/dest_clk"
+        ]
+      },
       "usr_irq_req_1": {
         "ports": [
           "usr_irq_req",
           "xdma_0/usr_irq_req"
-        ]
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          },
+          "MARK_DEBUG": {
+            "value": "true"
+          }
+        }
       },
       "util_ds_buf_IBUF_OUT": {
         "ports": [
@@ -812,7 +996,12 @@
           "axi_smc/aclk",
           "axi_bram_ctrl_0/s_axi_aclk",
           "axi_aclk",
-          "AXI_CSR_0/control_status_reg_aclk"
+          "xpm_cdc_gen_0/dest_clk",
+          "xpm_cdc_gen_1/dest_clk",
+          "xpm_cdc_gen_2/dest_clk",
+          "AXI_CSR_0/control_status_reg_aclk",
+          "xpm_cdc_gen_3/src_clk",
+          "xpm_cdc_gen_4/src_clk"
         ]
       },
       "xdma_0_axi_aresetn": {
@@ -839,7 +1028,49 @@
       "xdma_0_usr_irq_ack": {
         "ports": [
           "xdma_0/usr_irq_ack",
-          "usr_irq_ack"
+          "usr_irq_ack",
+          "ilslice_0/Din",
+          "ilslice_1/Din"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          },
+          "MARK_DEBUG": {
+            "value": "true"
+          }
+        }
+      },
+      "xpm_cdc_gen_0_dest_out": {
+        "ports": [
+          "xpm_cdc_gen_0/dest_out",
+          "ilvector_logic_0/Op1",
+          "AXI_CSR_0/ready_A"
+        ]
+      },
+      "xpm_cdc_gen_1_dest_out": {
+        "ports": [
+          "xpm_cdc_gen_1/dest_out",
+          "ilvector_logic_0/Op2",
+          "AXI_CSR_0/ready_B"
+        ]
+      },
+      "xpm_cdc_gen_2_dest_out": {
+        "ports": [
+          "xpm_cdc_gen_2/dest_out",
+          "AXI_CSR_0/is_running"
+        ]
+      },
+      "xpm_cdc_gen_3_dest_pulse": {
+        "ports": [
+          "xpm_cdc_gen_3/dest_pulse",
+          "usr_irq_ack_B"
+        ]
+      },
+      "xpm_cdc_gen_4_dest_pulse": {
+        "ports": [
+          "xpm_cdc_gen_4/dest_pulse",
+          "usr_irq_ack_A"
         ]
       }
     },
@@ -850,8 +1081,8 @@
             "segments": {
               "SEG_AXI_CSR_0_reg0": {
                 "address_block": "/AXI_CSR_0/control_status_reg/reg0",
-                "offset": "0x0000000000000000",
-                "range": "4K"
+                "offset": "0x0000000044A00000",
+                "range": "128"
               },
               "SEG_axi_bram_ctrl_0_Mem0": {
                 "address_block": "/axi_bram_ctrl_0/S_AXI/Mem0",
@@ -864,8 +1095,8 @@
             "segments": {
               "SEG_AXI_CSR_0_reg0": {
                 "address_block": "/AXI_CSR_0/control_status_reg/reg0",
-                "offset": "0x0000000000000000",
-                "range": "4K"
+                "offset": "0x0000000044A00000",
+                "range": "128"
               },
               "SEG_axi_bram_ctrl_0_Mem0": {
                 "address_block": "/axi_bram_ctrl_0/S_AXI/Mem0",

@@ -1,4 +1,5 @@
 library ieee;
+
 use ieee.NUMERIC_STD.all;
 use ieee.STD_LOGIC_1164.all;
 
@@ -40,57 +41,64 @@ end component IBUFDS;
 
 attribute ASYNC_REG : string;             --K�nnte man auch im xdc setzen, aber hier ist es einfacher: set_property ASYNC_REG TRUE [get_cells {FF1_reg FF2_reg}]
 
-signal sys_clk               : std_logic;
-signal soft_rst_acq_ctrl_sig : std_logic := '1';
-signal tick_1Hz              : std_logic;
-signal count                 : std_logic_vector(3 downto 0) := (others => '0');  -- 4-bit counter
+signal sys_clk              : std_logic;
+signal soft_rst_pci_rst_sig : std_logic := '1';
+signal tick_1Hz             : std_logic;
+signal count                : std_logic_vector(3 downto 0) := (others => '0');  -- 4-bit counter
 
 --CSR
-signal enable_acquisition_sig                 : std_logic;
-signal irq_pending_sig                        : std_logic;
-signal irq_pending_sig_synced                 : std_logic;
-signal irq_pending_FF1                        : std_ulogic := '0';
-attribute ASYNC_REG of irq_pending_FF1        : signal is "TRUE";
-attribute ASYNC_REG of irq_pending_sig_synced : signal  is "TRUE";
+signal enable_acquisition_sig : std_logic;
 
-signal is_running_sig     : std_logic;
-signal buffer_full_sig    : std_logic;
-signal acq_ctrl_rst_n_sig : std_logic;
+signal irq_pending_A_sig                        : std_logic;
+signal irq_pending_A_sig_synced                 : std_logic;
+signal irq_pending_A_FF1                        : std_ulogic := '0';
+attribute ASYNC_REG of irq_pending_A_FF1        : signal is "TRUE";
+attribute ASYNC_REG of irq_pending_A_sig_synced : signal  is "TRUE";
+
+signal irq_pending_B_sig                        : std_logic;
+signal irq_pending_B_sig_synced                 : std_logic;
+signal irq_pending_B_FF1                        : std_ulogic := '0';
+attribute ASYNC_REG of irq_pending_B_FF1        : signal is "TRUE";
+attribute ASYNC_REG of irq_pending_B_sig_synced : signal  is "TRUE";
+
+signal is_running_sig  : std_logic;
+signal buffer_full_sig : std_logic;
 
 signal FF1_reg                                   : std_ulogic := '0';
-signal enable_acquisition_synced                 : std_ulogic := '0';  -- Synchronisiertes Signal für enable_acquisition (Hint CDC)
+signal enable_acquisition_synced                 : std_ulogic := '0';  -- Synchronisiertes Signal for enable_acquisition (Hint CDC)
 attribute ASYNC_REG of FF1_reg                   : signal is "TRUE";
 attribute ASYNC_REG of enable_acquisition_synced : signal is "TRUE";
 
+signal soft_reset_sig                        : std_logic;
+signal soft_reset_FF1                        : std_ulogic := '0';
+signal soft_reset_sig_synced                 : std_logic;
+attribute ASYNC_REG of soft_reset_FF1        : signal is "TRUE";
+attribute ASYNC_REG of soft_reset_sig_synced : signal  is "TRUE";
+
 -- BRAM
-signal bram_addr_counter_sig : std_logic_vector (12 downto 0) := (others => '0');  -- 13-bit counter for BRAM address
 signal BRAM_PORTB_0_addr_sig : std_logic_vector (31 downto 0) := (others => '0');
 signal BRAM_PORTB_0_we_sig   : std_logic_vector (3 downto 0) := (others => '0');
 signal BRAM_PORTB_0_rst_sig  : std_logic;                                          -- unfortnattly we need a reset signal for the BRAM, because its reset
 signal sample_valid_sig      : std_logic;                                          -- Signal to indicate when the sample is valid
 signal sawtooth_out_sig      : std_logic_vector (31 downto 0) := (others => '0');  -- 32-bit sawtooth output
-signal sample_idx_sig        : std_logic_vector(31 downto 0) := (others => '0');   -- 32-bit sample index
 
--- ATTRIBUTE mark_debug : STRING;
--- ATTRIBUTE mark_debug OF BRAM_PORTB_0_addr_sig : SIGNAL IS "TRUE";
--- ATTRIBUTE mark_debug OF sawtooth_out_sig : SIGNAL IS "TRUE";
--- ATTRIBUTE mark_debug OF sample_valid_sig : SIGNAL IS "TRUE";
--- ATTRIBUTE mark_debug OF sample_idx_sig : SIGNAL IS "TRUE"; 
--- ATTRIBUTE mark_debug OF BRAM_PORTB_0_we_sig : SIGNAL IS "TRUE";
-
-signal usr_irq_req_sig                        : std_logic_vector (0 downto 0);
-signal usr_irq_ack_sig                        : std_logic_vector (0 downto 0);
+--irq
+signal usr_irq_req_sig                        : std_logic_vector (1 downto 0);
+signal usr_irq_ack_sig                        : std_logic_vector (1 downto 0);
+signal usr_irq_req_A_sig, usr_irq_req_B_sig   : std_logic := '0';
 signal msi_enable_sig                         : std_logic;
 signal msi_vector_width_sig                   : std_logic_vector (2 downto 0);
 signal usr_irq_ack_FF1                        : std_ulogic := '0';
 signal usr_irq_ack_sig_sycend                 : std_logic_vector (0 downto 0);
 attribute ASYNC_REG of usr_irq_ack_FF1        : signal is "TRUE";
 attribute ASYNC_REG of usr_irq_ack_sig_sycend : signal is "TRUE";
+signal usr_irq_ack_A_sig                      : std_logic := '0';
+signal usr_irq_ack_B_sig                      : std_logic := '0';
 
-constant IDLE                         : std_logic_vector(2 downto 0) := "000";
-constant WAIT_FOR_HOST_ACK            : std_logic_vector(2 downto 0) := "010";
-constant WAIT_FOR_IRQ_PENDING_CLEARED : std_logic_vector(2 downto 0) := "100";
-signal  next_state_sig                : std_logic_vector(2 downto 0) := IDLE;
+constant IDLE                             : std_logic_vector(2 downto 0) := "000";
+constant WAIT_FOR_HOST_ACK                : std_logic_vector(2 downto 0) := "010";
+constant WAIT_FOR_IRQ_PENDING_CLEARED     : std_logic_vector(2 downto 0) := "100";
+signal next_state_A_sig, next_state_B_sig : std_logic_vector(2 downto 0) := IDLE;
 
 --ping_pong_ctrl
 signal write_enable_A_sig   : std_logic := '0';
@@ -98,6 +106,8 @@ signal write_enable_B_sig   : std_logic := '0';
 signal ready_A_sig          : std_logic := '0';
 signal ready_B_sig          : std_logic := '0';
 signal BRAM_PORTB_0_din_sig : std_logic_vector (31 downto 0) := (others => '0');
+signal mem_addr_out_sig     : std_logic_vector (12 downto 0) := (others => '0');
+signal ping_pong_we_sig     : std_logic;
 
 begin
 
@@ -114,7 +124,7 @@ generic map (
 	CLK_FREQ_HZ  => CLK_FREQ_Hz  -- 200 MHz
 )
 port map (
-	rst_n  => pcie_reset,
+	rst_n  => soft_rst_pci_rst_sig,
 	tick   => tick_1Hz,
 	sysclk => sys_clk
 );
@@ -126,13 +136,11 @@ generic map (
 )
 port map (
 	clk          => sys_clk,
-	rst_n        => soft_rst_acq_ctrl_sig,
+	rst_n        => soft_rst_pci_rst_sig,
 	acq_en       => enable_acquisition_synced,
 	is_running   => is_running_sig,
-	buffer_full  => buffer_full_sig,
 	sample_ready => sample_valid_sig,
-	sample_out   => sawtooth_out_sig,
-	sample_idx   => sample_idx_sig
+	sample_out   => sawtooth_out_sig
 );
 
 ping_pong_ctrl_inst : entity work.ping_pong_ctrl
@@ -143,15 +151,16 @@ generic map (
 )	
 port map (
 	clk            => sys_clk,
-	rst_n          => soft_rst_acq_ctrl_sig,
+	rst_n          => soft_rst_pci_rst_sig,
 	data_in        => sawtooth_out_sig,
 	data_valid     => sample_valid_sig,
 	write_enable_A => write_enable_A_sig,
 	write_enable_B => write_enable_B_sig,
 	ready_A        => ready_A_sig,
 	ready_B        => ready_B_sig,
-	mem_addr       => BRAM_PORTB_0_addr_sig(12 downto 0),  -- 13-bit address bus for 8192 bytes (2048 words) of BRAM
-	mem_data_out   => BRAM_PORTB_0_din_sig
+	mem_addr       => mem_addr_out_sig,      -- just a adress counter starting from 0 to mem_size -1
+	mem_data_out   => BRAM_PORTB_0_din_sig,
+	mem_we         => ping_pong_we_sig
 );
 
 --ToDo: Siehe PCIe Takt-Anforderung auf Low setzen, sollte nicht immer aktiv sein,
@@ -173,13 +182,16 @@ port map (
 
 	--Added by me:
 	--GPIOs:
-	ledn => open, --ledn,
-
+	ledn    => open,     --ledn,
+	sys_clk => sys_clk,
 	--CSR Control status Register:
 	enable_acquisition => enable_acquisition_sig,
 	is_running         => is_running_sig,
-	buffer_full        => buffer_full_sig,
-	irq_pending        => irq_pending_sig,
+	irq_pending_A      => irq_pending_A_sig,
+	irq_pending_B      => irq_pending_B_sig,
+	soft_reset         => soft_reset_sig,
+	ready_A            => ready_A_sig,
+	ready_B            => ready_B_sig,
 
 	--Bram Port B:
 	rsta_busy_0       => open,
@@ -193,56 +205,56 @@ port map (
 	BRAM_PORTB_0_we   => BRAM_PORTB_0_we_sig,
 
 	-- Interrupt
+	usr_irq_ack_A    => usr_irq_ack_A_sig,
+	usr_irq_ack_B    => usr_irq_ack_B_sig,
 	usr_irq_req      => usr_irq_req_sig,
 	usr_irq_ack      => usr_irq_ack_sig,
 	msi_enable       => msi_enable_sig,
 	msi_vector_width => msi_vector_width_sig
 );
 
-u_process_1 : process (sys_clk, pcie_reset)
+u_process_1 : process (sys_clk)
 begin
 
-	if pcie_reset = '0' then
-		ff1_reg <= '0';
-		enable_acquisition_synced <= '0';
-		bram_addr_counter_sig <= (others => '0');
-
-	elsif rising_edge(sys_clk) then
+	if rising_edge(sys_clk) then
 		FF1_reg <= enable_acquisition_sig;
 		enable_acquisition_synced <= FF1_reg;
-		-- Byte address: 11-bit word index shifted left by 2 (×4) for 4-byte words, giving 13-bit byte address (2^13 = 8192 bytes)
-		bram_addr_counter_sig <= sample_idx_sig(10 downto 0) & "00";
+
+		soft_reset_FF1 <= soft_reset_sig;
+		soft_reset_sig_synced <= soft_reset_FF1;
+
+		usr_irq_ack_FF1 <= usr_irq_ack_sig(0);
+		usr_irq_ack_sig_sycend <= (others => usr_irq_ack_FF1);
 	end if;
+
 end process u_process_1;
 
-irq_handler_A : process (sys_clk, pcie_reset)
+irq_handler_A : process (sys_clk, soft_rst_pci_rst_sig)
 begin
-	if pcie_reset = '0' then
-		next_state_sig <= IDLE;
-		acq_ctrl_rst_n_sig <= '1';
-		usr_irq_req_sig <= (others => '0');
+	if soft_rst_pci_rst_sig = '0' then
+		next_state_A_sig <= IDLE;
+		usr_irq_req_A_sig <= '0';
 
 	elsif rising_edge(sys_clk) then
-		acq_ctrl_rst_n_sig <= '1'; -- return acquisition controller reset to back after reset is released in WAIT_FOR_IRQ_PENDING_CLEARED state
-		usr_irq_ack_FF1 <= usr_irq_ack_sig(0) ;
-		usr_irq_ack_sig_sycend <= (others => usr_irq_ack_FF1);
-		irq_pending_FF1 <= irq_pending_sig;
-		irq_pending_sig_synced <= irq_pending_FF1;
-		case next_state_sig is
+
+		irq_pending_A_FF1 <= irq_pending_A_sig;
+		irq_pending_A_sig_synced <= irq_pending_A_FF1;
+		case next_state_A_sig is
 			when IDLE =>
-				if (buffer_full_sig = '1') then
-					usr_irq_req_sig <= "1";			
-					next_state_sig <= WAIT_FOR_HOST_ACK;
+				if (ready_A_sig  = '1') then
+					usr_irq_req_A_sig <= '1';			
+					next_state_A_sig <= WAIT_FOR_HOST_ACK;
 				end if;
 			when WAIT_FOR_HOST_ACK =>
-				if (usr_irq_ack_sig_sycend = "1") then 
-					next_state_sig <= WAIT_FOR_IRQ_PENDING_CLEARED;
+				if (usr_irq_ack_A_sig = '1') then 
+					usr_irq_req_A_sig <= '0';
+					next_state_A_sig <= WAIT_FOR_IRQ_PENDING_CLEARED;
 				end if;
 			when WAIT_FOR_IRQ_PENDING_CLEARED =>
-				if (irq_pending_sig_synced = '0') then
-					usr_irq_req_sig <= "0";
-					acq_ctrl_rst_n_sig <= '0';					
-					next_state_sig <= IDLE;
+				-- Ensure ready_A is deasserted within the current clock cycle to prevent a race condition and false IRQ re-trigger.
+				if (irq_pending_A_sig_synced = '0'and ready_A_sig = '0') then
+					usr_irq_req_A_sig <= '0';
+					next_state_A_sig <= IDLE;
 				end if;
 			when others =>
 				null;
@@ -251,10 +263,44 @@ begin
 	-- buffer = 1 -> usr_irq_req_sig <= '1' -> wait usr_irq_ack_sig = 1 -> wait irq_pending =1 -> irq_reg_sig = 0
 end process irq_handler_A;
 
--- heart beat process for LEDs, shows that every thing is working
-Heart_beat : process (sys_clk, pcie_reset)
+irq_handler_B : process (sys_clk, soft_rst_pci_rst_sig)
 begin
-	if pcie_reset = '0' then
+	if soft_rst_pci_rst_sig = '0' then
+		usr_irq_req_B_sig <= '0';
+		next_state_B_sig <= IDLE;
+
+	elsif rising_edge(sys_clk) then
+
+		irq_pending_B_FF1 <= irq_pending_B_sig;
+		irq_pending_B_sig_synced <= irq_pending_B_FF1;
+		case next_state_B_sig is
+			when IDLE =>
+				if (ready_B_sig  = '1') then
+					usr_irq_req_B_sig <= '1';			
+					next_state_B_sig <= WAIT_FOR_HOST_ACK;
+				end if;
+			when WAIT_FOR_HOST_ACK =>
+				if (usr_irq_ack_B_sig = '1') then 
+					usr_irq_req_B_sig <= '0';	
+					next_state_B_sig <= WAIT_FOR_IRQ_PENDING_CLEARED;
+				end if;
+			when WAIT_FOR_IRQ_PENDING_CLEARED =>
+				-- Ensure ready_B is deasserted within the current clock cycle to prevent a race condition and false IRQ re-trigger.
+				if (irq_pending_B_sig_synced = '0' and ready_B_sig = '0') then 
+					usr_irq_req_B_sig <= '0';
+					next_state_B_sig <= IDLE;
+				end if;
+			when others =>
+				null;
+		end case;		
+	end if;
+	-- buffer = 1 -> usr_irq_req_sig <= '1' -> wait usr_irq_ack_sig = 1 -> wait irq_pending =1 -> irq_reg_sig = 0
+end process irq_handler_B;
+
+-- heart beat process for LEDs, shows that every thing is working
+Heart_beat : process (sys_clk, soft_rst_pci_rst_sig)
+begin
+	if soft_rst_pci_rst_sig = '0' then
 		count <= (others => '0'); -- Reset: Alle LEDs an
 	elsif rising_edge(sys_clk) then
 		if tick_1Hz = '1' and enable_acquisition_synced = '1' then
@@ -265,10 +311,17 @@ begin
 	end if;
 end process Heart_beat;
 
-BRAM_PORTB_0_addr_sig <= (18 downto 0 => '0') & bram_addr_counter_sig;
-BRAM_PORTB_0_we_sig <= (3 downto 0 => sample_valid_sig);
-BRAM_PORTB_0_rst_sig <= not pcie_reset;
+write_enable_A_sig <= not irq_pending_A_sig_synced;
+write_enable_B_sig <= not irq_pending_B_sig_synced;
 
-soft_rst_acq_ctrl_sig <= pcie_reset and acq_ctrl_rst_n_sig;
+usr_irq_req_sig(0) <= usr_irq_req_A_sig; 
+usr_irq_req_sig(1) <= usr_irq_req_B_sig;
+
+BRAM_PORTB_0_rst_sig <= not soft_rst_pci_rst_sig; --bram reset is active high, soft_rst_pci_rst_sig is active low
+BRAM_PORTB_0_addr_sig <= (16 downto 0 => '0') & mem_addr_out_sig & "00";
+BRAM_PORTB_0_we_sig <= (3 downto 0 => ping_pong_we_sig);
+
+soft_rst_pci_rst_sig <= pcie_reset and not soft_reset_sig_synced; -- soft reset is active high, pcie_reset is active low, so we need to invert it
 ledn <= not count; -- LEDs zeigen den Zählerstand an
+buffer_full_sig <= ready_A_sig and ready_B_sig;
 end Behavioral;

@@ -73,7 +73,7 @@ begin
 			mem_data_out <= (others => '0');
 
 		elsif rising_edge(clk) then
-			
+
 			mem_we <= '0';
 
 			if write_enable_A = '1' and write_enable_A_prev = '0' then
@@ -100,6 +100,7 @@ begin
 					mem_we <= '1';
 					if unsigned(current_addr_sig) = max_addr then
 						ready_B <= '1';
+						current_addr_sig <= (others => '0'); -- wrap around to the beginning of the buffer
 					end if;
 				end if;
 			end if;

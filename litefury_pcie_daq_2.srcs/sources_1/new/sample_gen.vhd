@@ -66,9 +66,12 @@ begin
 					sample_valid <= '0'; -- Set sample_valid low
 					count <= count + 1;
 				end if;
+			else
+				sample_valid <= '0';
 			end if;
 		end if;
-	end process u_process_1;
-	sawtooth_out <= std_logic_vector(unsigned (sawtooth_value));
+
+end process u_process_1;
+sawtooth_out <= std_logic_vector(unsigned (sawtooth_value));
 
 end Behavioral;

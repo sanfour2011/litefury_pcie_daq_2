@@ -129,7 +129,8 @@ architecture arch_imp of AXI_CSR_slave_lite_v3_0_S00_AXI is
 	signal slv_reg1          : std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);               --Status register
 	signal slv_reg2          : std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);               --Reserved
 	signal slv_reg3          : std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);               --Reserved
-	 -- irq_pending_A_sig and irq_pending_B_sig: not really needed, we could use  slv_reg1(IRQ_PENDING_X_BIT) directly, but it is more clear to have a signal instead of using the register directly. 
+	signal ready_A_prev      : std_logic := '0';
+	signal ready_B_prev      : std_logic := '0';
 	signal irq_pending_A_sig : std_logic;
 	signal irq_pending_B_sig : std_logic;
 	signal soft_reset_sig    : std_logic;
@@ -238,6 +239,8 @@ begin
 				irq_pending_B <= '0';
 				irq_pending_A_sig <= '0';
 				irq_pending_B_sig <= '0';
+				ready_A_prev <= '0';
+				ready_B_prev <= '0';
 
 			else
 				if (S_AXI_WVALID = '1') then
@@ -315,18 +318,19 @@ begin
 
 							-- Set irq_pending_A and irq_pending_B when ready_A and ready_B are set. 
 							-- to tell the host that the buffer is ready to be read.
-							if (ready_A = '1') then
+							if (ready_A = '1' and ready_A_prev = '0') then
 								irq_pending_A <= '1';
 								irq_pending_A_sig <= '1';
 								slv_reg1(IRQ_PENDING_A_BIT) <= '1';
 							end if;
 
-							if (ready_B = '1') then
+							if (ready_B = '1' and ready_B_prev = '0') then
 								irq_pending_B <= '1';
 								irq_pending_B_sig <= '1';
-															slv_reg1(IRQ_PENDING_B_BIT) <= '1';
+								slv_reg1(IRQ_PENDING_B_BIT) <= '1';
 							end if;
-
+							ready_A_prev <= ready_A;
+							ready_B_prev <= ready_B;
 							-- slv_reg1(IRQ_PENDING_BIT) <= irq_pending_sig;
 							-- irq_pending <= irq_pending_sig;
 						end if;
@@ -387,6 +391,7 @@ begin
 				enable_acquisition <= slv_reg0(ENABLE_ACQUISITION_BIT);
 				soft_reset_sig <= slv_reg0(SOFT_RESET_BIT);
 				soft_reset <= slv_reg0(SOFT_RESET_BIT);
+
 				-- User logic ends
 
 			end arch_imp;
