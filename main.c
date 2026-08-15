@@ -10,6 +10,7 @@
 #include "FPGA/bram_data.h"
 #include "FPGA/pcie_device.h"
 #include "shell_exec.h"
+#include <semaphore.h>
 
 // https://invisible-island.net/ncurses/howto/NCURSES-Programming-HOWTO.html
 
@@ -76,6 +77,7 @@ int main(void)
     // Command menu Left side:
     mvwprintw(left, 0, 0, "1: Start Acq");
     mvwprintw(left, 1, 0, "2: Stop Acq");
+    mvwprintw(left, 1, 0, "a: Auto clear");
     mvwprintw(left, 2, 0, "c: Clear IRQ A");
     mvwprintw(left, 3, 0, "k: Clear IRQ B");
     mvwprintw(left, 4, 0, "r: Reset Board");
@@ -92,9 +94,16 @@ int main(void)
     uint32_t bram_data[BRAM_WORDS];
 
     bool FPGA_LOADED = true;
-    pthread_t irq_thread;
-    pthread_create(&irq_thread, NULL, irq_thread_func, NULL);
-    pthread_detach(irq_thread); // We dont need to wait for it runs, it never returns!
+    bool auto_clear = false;
+    // IRQ:
+    sem_init(&sem_pending_A, 0, 0);
+    sem_init(&sem_pending_B, 0, 0);
+
+    pthread_t irq_A_thread, irq_B_thread;
+    pthread_create(&irq_A_thread, NULL, irq_A_thread_func, NULL);
+    pthread_detach(irq_A_thread); // We dont need to wait for it runs, it never returns!
+    pthread_create(&irq_B_thread, NULL, irq_B_thread_func, NULL);
+    pthread_detach(irq_B_thread); // We dont need to wait for it runs, it never returns!
 
     int scroll_offset = 0;
     draw_pci_panel(pci);
@@ -113,10 +122,18 @@ int main(void)
                 csr_control_en_acq(1);
             if (ch == '2')
                 csr_control_en_acq(0);
-            if (ch == 'c')
+            if (ch == 'c' && !auto_clear)
+            {
                 csr_status_clear_irq_A();
-            if (ch == 'k')
+                sem_post(&sem_pending_A); // todo: its better to check the status of irq_pending_B bit in CSR then call sem_post
+            }
+            if (ch == 'k' && !auto_clear)
+            {
                 csr_status_clear_irq_B();
+                sem_post(&sem_pending_B); // todo: its better to check the status of irq_pending_B bit in CSR then call sem_post
+            }
+            if (ch == 'a')
+                auto_clear = !auto_clear;
             if (ch == 't')
             {
                 int iter = ask_iterations();
@@ -145,11 +162,27 @@ int main(void)
         uint32_t ctrl_reg = csr_control_read();
         uint32_t status_reg = csr_status_read();
         dump_bram_data(bram_data);
+        int irq_pending_bit_A = (status_reg & (1U << STATUS_IRQ_PENDING_A_BIT)) != 0;
+        int irq_pending_bit_B = (status_reg & (1U << STATUS_IRQ_PENDING_B_BIT)) != 0;
+
+        if (auto_clear && irq_pending_bit_A)
+        {
+            csr_status_clear_irq_A();
+            sem_post(&sem_pending_A);
+        }
+
+        if (auto_clear && irq_pending_bit_B)
+        {
+            csr_status_clear_irq_A();
+            sem_post(&sem_pending_A);
+        }
 
         draw_bram_panel(bram, bram_data, scroll_offset);
         draw_reg_panel(reg, ctrl_reg, status_reg);
 
-        mvwprintw(reg, 3, 30, "irq heartbeat: %d", event_count);
+        mvwprintw(reg, 3, 30, "Auto clear: %d", auto_clear? 1:0);
+        mvwprintw(reg, 4, 30, "irq heartbeat: %d", event_count);
+
         wrefresh(reg);
         napms(50);
     }

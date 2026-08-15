@@ -5,7 +5,9 @@
 #define PCI_RESOURCE2_PATH "/sys/bus/pci/devices/0000:01:00.0/resource2"
 // use only with mmap xdma0_bypass has no engine! pread, pwrite, ... needs an engine to run otherwise it returns (EINVAL)
 #define CSR_RESOURCE_FILE "/dev/xdma0_bypass"
-#define USR_IRQ_EVENT_FILE "/dev/xdma0_events_0"
+#define USR_IRQ_EVENT_A_FILE "/dev/xdma0_events_0"
+#define USR_IRQ_EVENT_B_FILE "/dev/xdma0_events_1"
+
 
 // When using DMA Engines:
 #define CSR_RESOURCE_FILE_DMA "/dev/xdma0_c2h_0"
