@@ -74,7 +74,7 @@ void csr_control_en_acq(int running)
     munmap((void *)map, 8);
 }
 
-void csr_status_clear_irq(void)
+void csr_status_clear_irq_A(void)
 {
     int fd = open(CSR_RESOURCE_FILE, O_RDWR | O_SYNC);
     if (fd < 0)
@@ -82,7 +82,21 @@ void csr_status_clear_irq(void)
 
     volatile uint32_t *map = mmap(NULL, 8, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     close(fd);
-    map[1] |= (1U << STATUS_BIT_IRQ_PENDING);
+    map[1] = (1U << STATUS_IRQ_PENDING_A_BIT);
+    (void)map[1];
+    munmap((void *)map, 8);
+}
 
+void csr_status_clear_irq_B(void)
+{
+    int fd = open(CSR_RESOURCE_FILE, O_RDWR | O_SYNC);
+    if (fd < 0)
+        return;
+
+    volatile uint32_t *map = mmap(NULL, 8, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    close(fd);
+
+    map[1] = (1U << STATUS_IRQ_PENDING_B_BIT);
+    (void)map[1];
     munmap((void *)map, 8);
 }

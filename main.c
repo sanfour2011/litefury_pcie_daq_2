@@ -76,15 +76,16 @@ int main(void)
     // Command menu Left side:
     mvwprintw(left, 0, 0, "1: Start Acq");
     mvwprintw(left, 1, 0, "2: Stop Acq");
-    mvwprintw(left, 2, 0, "c: Clear IRQ");
-    mvwprintw(left, 3, 0, "r: Reset Board");
-    mvwprintw(left, 4, 0, "l: Load Driver");
-    mvwprintw(left, 5, 0, "u: Unload Driver");
-    mvwprintw(left, 6, 0, "s: Rescan PCI");
-    mvwprintw(left, 7, 0, "i: PCI Info");
-    mvwprintw(left, 8, 0, "p: FPGA 2 Flash");
-    mvwprintw(left, 9, 0, "t: Throughput");
-    mvwprintw(left, 10, 0, "q: Quit");
+    mvwprintw(left, 2, 0, "c: Clear IRQ A");
+    mvwprintw(left, 3, 0, "k: Clear IRQ B");
+    mvwprintw(left, 4, 0, "r: Reset Board");
+    mvwprintw(left, 5, 0, "l: Load Driver");
+    mvwprintw(left, 6, 0, "u: Unload Driver");
+    mvwprintw(left, 7, 0, "s: Rescan PCI");
+    mvwprintw(left, 8, 0, "i: PCI Info");
+    mvwprintw(left, 9, 0, "p: FPGA 2 Flash");
+    mvwprintw(left, 10, 0, "t: Throughput");
+    mvwprintw(left, 11, 0, "q: Quit");
     wrefresh(left);
 
     int ch;
@@ -113,7 +114,9 @@ int main(void)
             if (ch == '2')
                 csr_control_en_acq(0);
             if (ch == 'c')
-                csr_status_clear_irq();
+                csr_status_clear_irq_A();
+            if (ch == 'k')
+                csr_status_clear_irq_B();
             if (ch == 't')
             {
                 int iter = ask_iterations();
@@ -146,7 +149,7 @@ int main(void)
         draw_bram_panel(bram, bram_data, scroll_offset);
         draw_reg_panel(reg, ctrl_reg, status_reg);
 
-        mvwprintw(reg, 4, 0, "irq heartbeat: %d", event_count);
+        mvwprintw(reg, 3, 30, "irq heartbeat: %d", event_count);
         wrefresh(reg);
         napms(50);
     }

@@ -1,7 +1,7 @@
 CC      = gcc
 CFLAGS  = -Wall -Wextra -std=gnu99 -I.
 LDLIBS  = -lncurses -lpthread
-TARGET  = litefury-tui
+TARGET  = litefury-tui2
 
 SOURCES = $(wildcard *.c FPGA/*.c ui/*.c)
 OBJECTS = $(SOURCES:.c=.o)

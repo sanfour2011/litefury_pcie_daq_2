@@ -15,6 +15,11 @@ void csr_control_en_acq(int running);
 
 // w1c: clears the irq_pending bit (bit 2). Same effect as
 // w1c_irq_pending.sh writing 0x04 to offset 0x4.
-void csr_status_clear_irq(void);
+void csr_status_clear_irq_A(void);
+
+// w1c: clears the irq_pending bit (bit 3). Same effect as
+// w1c_irq_pending.sh writing 0x08 to offset 0x4.
+void csr_status_clear_irq_B(void);
+
 
 #endif

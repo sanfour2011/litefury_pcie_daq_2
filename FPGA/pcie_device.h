@@ -14,10 +14,14 @@
 #define BRAM_BASE_DMA 0x44A02000
 /////////////////////////
 
-#define ENABLE_ACQ_BIT 0
-#define STATUS_BIT_RUNNING 0
-#define STATUS_BIT_BUFFER_FULL 1
-#define STATUS_BIT_IRQ_PENDING 2
+#define ENABLE_ACQ_BIT           0
+#define SOFT_RESET_BIT           1
+
+#define STATUS_RUNNING_BIT       0
+#define STATUS_BUFFER_FULL_BIT   1
+#define STATUS_IRQ_PENDING_A_BIT 2
+#define STATUS_IRQ_PENDING_B_BIT 3
+
 
 #define XDMA_PCIe_to_AXI_Translation_Offset 0x44A00000 
 #define SR_OFFSET 0x04
