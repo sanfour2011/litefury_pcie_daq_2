@@ -109,6 +109,22 @@ signal BRAM_PORTB_0_din_sig : std_logic_vector (31 downto 0) := (others => '0');
 signal mem_addr_out_sig     : std_logic_vector (12 downto 0) := (others => '0');
 signal ping_pong_we_sig     : std_logic;
 
+--degugging IRQ ToDo: delete when done:
+attribute MARK_DEBUG : string;
+attribute KEEP : string;
+signal irq_a_cnt_sig,irq_b_cnt_sig, ready_a_cnt_sig,ready_b_cnt_sig  : unsigned (15 downto 0) := (others => '0');
+
+attribute MARK_DEBUG of irq_a_cnt_sig : signal is "TRUE";
+attribute KEEP of irq_a_cnt_sig : signal is "TRUE";
+attribute MARK_DEBUG of irq_b_cnt_sig : signal is "TRUE";
+attribute KEEP of irq_b_cnt_sig : signal is "TRUE";
+attribute MARK_DEBUG of ready_a_cnt_sig : signal is "TRUE";
+attribute KEEP of ready_a_cnt_sig : signal is "TRUE";
+attribute MARK_DEBUG of ready_b_cnt_sig : signal is "TRUE";
+attribute KEEP of ready_b_cnt_sig : signal is "TRUE";
+
+
+
 begin
 
 efury_sys_clk : IBUFDS
@@ -247,7 +263,7 @@ begin
 				end if;
 			when WAIT_FOR_HOST_ACK =>
 				if (usr_irq_ack_A_sig = '1') then 
-					usr_irq_req_A_sig <= '0';
+					--usr_irq_req_A_sig <= '0';
 					next_state_A_sig <= WAIT_FOR_IRQ_PENDING_CLEARED;
 				end if;
 			when WAIT_FOR_IRQ_PENDING_CLEARED =>
@@ -281,7 +297,7 @@ begin
 				end if;
 			when WAIT_FOR_HOST_ACK =>
 				if (usr_irq_ack_B_sig = '1') then 
-					usr_irq_req_B_sig <= '0';	
+					--usr_irq_req_B_sig <= '0';	
 					next_state_B_sig <= WAIT_FOR_IRQ_PENDING_CLEARED;
 				end if;
 			when WAIT_FOR_IRQ_PENDING_CLEARED =>
@@ -310,6 +326,37 @@ begin
 		end if;
 	end if;
 end process Heart_beat;
+
+Debug_IRQ_CNT : process (sys_clk,soft_rst_pci_rst_sig)
+variable usr_irq_req_B_sig_prev, usr_irq_req_A_sig_prev : std_logic :='0';
+variable ready_A_sig_prev, ready_B_sig_prev : std_logic :='0';
+
+begin
+	if rising_edge(sys_clk) then 
+        
+		if usr_irq_req_A_sig_prev = '0' and usr_irq_req_A_sig = '1' then 
+            irq_a_cnt_sig <= irq_a_cnt_sig + 1;
+        end if;
+        
+        if usr_irq_req_B_sig_prev = '0' and usr_irq_req_B_sig = '1' then 
+            irq_b_cnt_sig <= irq_b_cnt_sig + 1;
+        end if;
+
+		if ready_A_sig_prev = '0' and ready_A_sig = '1' then
+			ready_a_cnt_sig <= ready_a_cnt_sig +1;
+		end if;
+
+		if ready_B_sig_prev = '0' and ready_B_sig = '1' then 
+			ready_b_cnt_sig <= ready_b_cnt_sig + 1;
+		end if;
+        
+        usr_irq_req_A_sig_prev := usr_irq_req_A_sig;
+        usr_irq_req_B_sig_prev := usr_irq_req_B_sig;
+		ready_A_sig_prev := ready_A_sig;
+		ready_B_sig_prev := ready_B_sig;
+
+    end if;
+end process Debug_IRQ_CNT;
 
 write_enable_A_sig <= not irq_pending_A_sig_synced;
 write_enable_B_sig <= not irq_pending_B_sig_synced;

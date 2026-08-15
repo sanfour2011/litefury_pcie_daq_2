@@ -176,6 +176,10 @@ connect_debug_port dbg_hub/clk [get_nets sys_clk_BUFG]
 
 
 
+connect_debug_port u_ila_0/probe5 [get_nets [list usr_irq_req_A_sig]]
+connect_debug_port u_ila_0/probe6 [get_nets [list usr_irq_req_B_sig]]
+
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
@@ -188,32 +192,40 @@ set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list sys_clk]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 2 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {usr_irq_req_sig[0]} {usr_irq_req_sig[1]}]]
+set_property port_width 11 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {irq_a_cnt_sig[0]} {irq_a_cnt_sig[1]} {irq_a_cnt_sig[2]} {irq_a_cnt_sig[3]} {irq_a_cnt_sig[4]} {irq_a_cnt_sig[5]} {irq_a_cnt_sig[6]} {irq_a_cnt_sig[7]} {irq_a_cnt_sig[8]} {irq_a_cnt_sig[9]} {irq_a_cnt_sig[10]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
 set_property port_width 3 [get_debug_ports u_ila_0/probe1]
 connect_debug_port u_ila_0/probe1 [get_nets [list {next_state_B_sig[0]} {next_state_B_sig[1]} {next_state_B_sig[2]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 3 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {next_state_A_sig[0]} {next_state_A_sig[1]} {next_state_A_sig[2]}]]
+set_property port_width 2 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {usr_irq_req_sig[0]} {usr_irq_req_sig[1]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 1 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list usr_irq_ack_A_sig]]
+set_property port_width 16 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {ready_a_cnt_sig[0]} {ready_a_cnt_sig[1]} {ready_a_cnt_sig[2]} {ready_a_cnt_sig[3]} {ready_a_cnt_sig[4]} {ready_a_cnt_sig[5]} {ready_a_cnt_sig[6]} {ready_a_cnt_sig[7]} {ready_a_cnt_sig[8]} {ready_a_cnt_sig[9]} {ready_a_cnt_sig[10]} {ready_a_cnt_sig[11]} {ready_a_cnt_sig[12]} {ready_a_cnt_sig[13]} {ready_a_cnt_sig[14]} {ready_a_cnt_sig[15]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 1 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list usr_irq_ack_B_sig]]
+set_property port_width 3 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {next_state_A_sig[0]} {next_state_A_sig[1]} {next_state_A_sig[2]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
-set_property port_width 1 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list usr_irq_req_A_sig]]
+set_property port_width 11 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list {irq_b_cnt_sig[0]} {irq_b_cnt_sig[1]} {irq_b_cnt_sig[2]} {irq_b_cnt_sig[3]} {irq_b_cnt_sig[4]} {irq_b_cnt_sig[5]} {irq_b_cnt_sig[6]} {irq_b_cnt_sig[7]} {irq_b_cnt_sig[8]} {irq_b_cnt_sig[9]} {irq_b_cnt_sig[10]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 1 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list usr_irq_req_B_sig]]
+set_property port_width 16 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list {ready_b_cnt_sig[0]} {ready_b_cnt_sig[1]} {ready_b_cnt_sig[2]} {ready_b_cnt_sig[3]} {ready_b_cnt_sig[4]} {ready_b_cnt_sig[5]} {ready_b_cnt_sig[6]} {ready_b_cnt_sig[7]} {ready_b_cnt_sig[8]} {ready_b_cnt_sig[9]} {ready_b_cnt_sig[10]} {ready_b_cnt_sig[11]} {ready_b_cnt_sig[12]} {ready_b_cnt_sig[13]} {ready_b_cnt_sig[14]} {ready_b_cnt_sig[15]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
+set_property port_width 1 [get_debug_ports u_ila_0/probe7]
+connect_debug_port u_ila_0/probe7 [get_nets [list usr_irq_ack_A_sig]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
+set_property port_width 1 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list usr_irq_ack_B_sig]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
