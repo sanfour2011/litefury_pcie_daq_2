@@ -80,17 +80,17 @@ int main(void)
     // Command menu Left side:
     mvwprintw(left, 0, 0, "1: Start Acq");
     mvwprintw(left, 1, 0, "2: Stop Acq");
-    mvwprintw(left, 1, 0, "a: Auto clear");
-    mvwprintw(left, 2, 0, "c: Clear IRQ A");
-    mvwprintw(left, 3, 0, "k: Clear IRQ B");
-    mvwprintw(left, 4, 0, "r: Reset Board");
-    mvwprintw(left, 5, 0, "l: Load Driver");
-    mvwprintw(left, 6, 0, "u: Unload Driver");
-    mvwprintw(left, 7, 0, "s: Rescan PCI");
-    mvwprintw(left, 8, 0, "i: PCI Info");
-    mvwprintw(left, 9, 0, "p: FPGA 2 Flash");
-    mvwprintw(left, 10, 0, "t: Throughput");
-    mvwprintw(left, 11, 0, "q: Quit");
+    mvwprintw(left, 2, 0, "a: Auto clear");
+    mvwprintw(left, 3, 0, "c: Clear IRQ A");
+    mvwprintw(left, 4, 0, "k: Clear IRQ B");
+    mvwprintw(left, 5, 0, "r: Reset Board");
+    mvwprintw(left, 6, 0, "l: Load Driver");
+    mvwprintw(left, 7, 0, "u: Unload Driver");
+    mvwprintw(left, 8, 0, "s: Rescan PCI");
+    mvwprintw(left, 9, 0, "i: PCI Info");
+    mvwprintw(left, 10, 0, "p: FPGA 2 Flash");
+    mvwprintw(left, 11, 0, "t: Throughput");
+    mvwprintw(left, 12, 0, "q: Quit");
     wrefresh(left);
 
     int ch;
