@@ -7,12 +7,15 @@
 #include "bram_data.h"
 #include "pcie_device.h"
 
-void dump_bram_data(uint32_t *bram_data)
+void dump_bram_data(BRAM_SECTION_A_B bram_section, uint32_t *bram_data)
 {
     int fd = open(BRAM_RESOURCE_FILE_DMA, O_RDONLY | O_SYNC);
     if (fd < 0)
         return;
-    pread(fd, bram_data, BRAM_WORDS * sizeof(uint32_t), BRAM_BASE_DMA);
+    if (bram_section == BRAM_HALF_A)
+        pread(fd, bram_data, (BRAM_WORDS / 2) * sizeof(uint32_t), BRAM_BASE_DMA );
+    else
+        pread(fd, bram_data, (BRAM_WORDS / 2) * sizeof(uint32_t), BRAM_BASE_DMA + (BRAM_WORDS / 2) * sizeof(uint32_t));
 
     close(fd);
 }

@@ -11,9 +11,10 @@
 #include "FPGA/pcie_device.h"
 #include "shell_exec.h"
 #include <semaphore.h>
-
+#include <string.h>
 // https://invisible-island.net/ncurses/howto/NCURSES-Programming-HOWTO.html
 
+#define HALF_WORDS BRAM_WORDS/2
 int main(void)
 {
 
@@ -34,6 +35,8 @@ int main(void)
     // declaring color pairs
     init_pair(1, COLOR_GREEN, -1);
     init_pair(2, COLOR_RED, -1);
+    init_pair(3, COLOR_YELLOW, -1);  // BRAM A
+    init_pair(4, COLOR_MAGENTA, -1); // BRAM B
 
     // Titel
     box(stdscr, 0, 0);
@@ -91,8 +94,15 @@ int main(void)
     wrefresh(left);
 
     int ch;
-    uint32_t bram_data[BRAM_WORDS];
+    uint32_t bram_data_A[BRAM_WORDS / 2];
+    uint32_t bram_data_B[BRAM_WORDS / 2];
 
+    uint32_t last_word_A = 0;
+    uint gap_cnt_A = 0;
+    uint gap_cnt_B = 0;
+    bool first_run_A = true;
+    bool first_run_B = true;
+    uint32_t last_word_B = 0;
     bool FPGA_LOADED = true;
     bool auto_clear = false;
     // IRQ:
@@ -161,26 +171,42 @@ int main(void)
 
         uint32_t ctrl_reg = csr_control_read();
         uint32_t status_reg = csr_status_read();
-        dump_bram_data(bram_data);
+        // dump_bram_data(bram_data);
         int irq_pending_bit_A = (status_reg & (1U << STATUS_IRQ_PENDING_A_BIT)) != 0;
         int irq_pending_bit_B = (status_reg & (1U << STATUS_IRQ_PENDING_B_BIT)) != 0;
 
         if (auto_clear && irq_pending_bit_A)
         {
+            dump_bram_data(BRAM_HALF_A, bram_data_A);
             csr_status_clear_irq_A();
             sem_post(&sem_pending_A);
+            if (last_word_B + 1 != bram_data_A[0] && !first_run_A)
+                gap_cnt_A++;
+            first_run_A = false;
+            last_word_A = bram_data_A[(BRAM_WORDS / 2) - 1];
         }
 
         if (auto_clear && irq_pending_bit_B)
         {
-            csr_status_clear_irq_A();
-            sem_post(&sem_pending_A);
+            dump_bram_data(BRAM_HALF_B, bram_data_B);
+            csr_status_clear_irq_B();
+            sem_post(&sem_pending_B);
+            if (last_word_A + 1 != bram_data_B[0] && !first_run_B)
+                gap_cnt_B++;
+            first_run_B = false;
+            last_word_B = bram_data_B[(BRAM_WORDS / 2) - 1];
         }
 
-        draw_bram_panel(bram, bram_data, scroll_offset);
         draw_reg_panel(reg, ctrl_reg, status_reg);
+        uint32_t bram_data[BRAM_WORDS];
 
-        mvwprintw(reg, 3, 30, "Auto clear: %d", auto_clear? 1:0);
+        memcpy(&bram_data[0], bram_data_A, HALF_WORDS * sizeof(uint32_t));
+        memcpy(&bram_data[HALF_WORDS], bram_data_B, HALF_WORDS * sizeof(uint32_t));
+        draw_bram_panel(bram, bram_data, scroll_offset);
+        // draw_bram_panel(bram, bram_data_A, scroll_offset);
+        // draw_bram_panel(bram, bram_data_B, scroll_offset);
+
+        mvwprintw(reg, 3, 30, "Auto clear: %d", auto_clear ? 1 : 0);
         mvwprintw(reg, 4, 30, "irq heartbeat: %d", event_count);
 
         wrefresh(reg);

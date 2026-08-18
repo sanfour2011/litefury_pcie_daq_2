@@ -47,15 +47,20 @@ void draw_bram_panel(WINDOW *win, const uint32_t *bram_data, int scroll_offset)
 
         uint32_t addr = BRAM_BASE_DMA + (uint32_t)line_start_idx * 4;
         int y = 1 + line; // Zeile 1 ist direkt unter dem Titel
-        mvwprintw(win, y, 2, "0x%08X: ", addr);
+
+        char section_tag = line_start_idx < (BRAM_WORDS / 2) ? 'A' : 'B';
+        mvwprintw(win, y, 2, "[%c]0x%08X: ", section_tag, addr);
 
         for (int w = 0; w < words_per_line; w++)
         {
             int idx = line_start_idx + w;
             if (idx >= BRAM_WORDS)
                 break;
-
+            // int color_pair = c='A'? 3:4;
+            int color_idx = idx < (BRAM_WORDS / 2)? 3:4;
+            wattron(win, COLOR_PAIR(color_idx));
             wprintw(win, "%08X ", bram_data[idx]);
+            wattroff(win, COLOR_PAIR(color_idx));
         }
     }
 
@@ -66,9 +71,9 @@ int ask_iterations(void)
 {
 
     int height = 6;
-    int width  = 50;
+    int width = 50;
     int starty = (LINES - height) / 2;
-    int startx = (COLS - width)  / 2;
+    int startx = (COLS - width) / 2;
 
     WINDOW *popup = newwin(height, width, starty, startx);
     box(popup, 0, 0);
@@ -82,12 +87,12 @@ int ask_iterations(void)
 
     echo();
     curs_set(1);
-    nodelay(stdscr, FALSE);// need to block or make a timeout
+    nodelay(stdscr, FALSE); // need to block or make a timeout
     timeout(-1);
 
     char input[16] = {0};
-  //  Move cursor in pop and in front of Number of Iterations:
-    wmove(popup, 3, 2 + 22); 
+    //  Move cursor in pop and in front of Number of Iterations:
+    wmove(popup, 3, 2 + 22);
     wrefresh(popup);
 
     wgetnstr(popup, input, 15);
