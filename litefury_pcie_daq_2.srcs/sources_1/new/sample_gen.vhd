@@ -32,8 +32,8 @@ use ieee.NUMERIC_STD.all;
 entity sample_gen is
 	generic (
 		SAMPLE_RATE_HZ : integer := 1;           -- Rate at which new sawtooth samples are generated
-		CLK_FREQ_HZ    : integer := 200_000_000  -- Input CLK_FREQ_HZ
-
+		CLK_FREQ_HZ    : integer := 200_000_000;  -- Input CLK_FREQ_HZ
+        SAWTOOTH_MAX   : integer := 512
 	);
 	port (
 		rst_n        : in  std_logic;
@@ -61,6 +61,9 @@ begin
 				if count = (CLK_FREQ_HZ / SAMPLE_RATE_HZ - 1) then
 					count <= (others => '0');
 					sawtooth_value <= sawtooth_value + 1; -- Increment sawtooth value and wrap around at 2^32
+					if sawtooth_value = SAWTOOTH_MAX then
+					   sawtooth_value <= (others => '0');
+					end if;
 					sample_valid <= '1'; -- Set sample_valid high for one clock cycle
 				else
 					sample_valid <= '0'; -- Set sample_valid low

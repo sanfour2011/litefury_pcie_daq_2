@@ -28,8 +28,10 @@ end top_level;
 
 architecture Behavioral of top_level is
 	constant BRAM_SIZE      : integer := 2048;         -- number of 32-bit samples (words) that the BRAM is holding and NOT bytes: 2048 words x 4 bytes = 8192 bytes total.
-	constant SAMPLE_RATE_Hz : integer := 30;           -- at 30 samples/s, filling 2048 samples takes ~1 min , convenient for manual hardware tests via RWEverything.
+	--constant SAMPLE_RATE_Hz : integer := 30;           -- at 30 samples/s, filling 2048 samples takes ~1 min , convenient for manual hardware tests via RWEverything.
+	constant SAMPLE_RATE_Hz : integer := 600;           
 	constant CLK_FREQ_Hz    : integer := 200_000_000;
+	constant WAVFORM_AMP    : integer := 512;
 
 	component IBUFDS is
 	port (
@@ -146,9 +148,10 @@ port map (
 );
 acquisition_ctrl_inst : entity work.acquisition_ctrl
 generic map (
-	buffer_size    => BRAM_SIZE,
 	sample_rate_hz => SAMPLE_RATE_Hz,
-	clk_freq_hz    => CLK_FREQ_Hz
+	clk_freq_hz    => CLK_FREQ_Hz,
+    max_wav_value => WAVFORM_AMP
+
 )
 port map (
 	clk          => sys_clk,

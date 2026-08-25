@@ -31,9 +31,9 @@ use ieee.NUMERIC_STD.all;
 
 entity acquisition_ctrl is
 	generic (
-		buffer_size    : integer := 2048;         -- Size of the buffer in samples
 		sample_rate_hz : integer := 100_000_000;  -- Rate at which new sawtooth samples are generated
-		clk_freq_hz    : integer := 200_000_000  -- Input CLK_FREQ_HZ
+		clk_freq_hz    : integer := 200_000_000;  -- Input CLK_FREQ_HZ
+		max_wav_value  : integer := 512           -- max waveform walue
 	);
 	port (
 		clk          : in  std_logic;
@@ -52,7 +52,8 @@ architecture Behavioral of acquisition_ctrl is
 	component sample_gen
 	generic (
 		SAMPLE_RATE_HZ : integer := 100_000_000;  -- Rate at which new sawtooth samples are generated
-		CLK_FREQ_HZ    : integer := 200_000_000   -- Input CLK_FREQ_HZ
+		CLK_FREQ_HZ    : integer := 200_000_000;   -- Input CLK_FREQ_HZ
+		MAX_SAWTOOTH   : integer := 512
 	);
 	port (
 		rst_n  : in std_logic;
@@ -68,7 +69,8 @@ begin
 sample_gen_inst : sample_gen
 generic map (
 	SAMPLE_RATE_HZ => sample_rate_hz,
-	CLK_FREQ_HZ    => clk_freq_hz      -- Input CLK_FREQ_HZ
+	CLK_FREQ_HZ    => clk_freq_hz, 
+	MAX_SAWTOOTH  => max_wav_value
 )
 port map (
 	rst_n        => rst_n,

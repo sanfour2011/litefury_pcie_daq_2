@@ -83,7 +83,7 @@ begin
 			if write_enable_B = '1' and write_enable_B_prev = '0' then
 				ready_B <= '0';
 			end if;
-
+           
 			if  write_enable_A = '1' and data_valid = '1' then
 				if (unsigned(current_addr_sig) <= half_mem_size) then
 					current_addr_sig <= std_logic_vector (unsigned(current_addr_sig) +1);
