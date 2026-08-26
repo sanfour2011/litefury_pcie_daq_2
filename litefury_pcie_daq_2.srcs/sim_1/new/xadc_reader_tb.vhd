@@ -35,16 +35,16 @@ entity xadc_reader_tb is
 end xadc_reader_tb;
 
 architecture Behavioral of xadc_reader_tb is
-	signal clk_sig             : std_logic;
+	signal clk_sig             : std_logic := '0';
 	signal rst_n_sig           : std_logic;
-	signal drdy_sig            : std_logic;
-	signal do_sig              : std_logic_vector (15 downto 0);
-	signal eoc_sig             : std_logic;
-	signal daddr_sig           : std_logic_vector (6 downto 0);
-	signal den_sig             : std_logic;
-	signal di_sig              : std_logic_vector (15 downto 0);
-	signal dwe_sig             : std_logic;
-	signal temperature_out_sig : std_logic_vector(31 downto 0);
+	signal drdy_sig            : std_logic := '0';
+	signal do_sig              : std_logic_vector (15 downto 0) := (others => '0');
+	signal eoc_sig             : std_logic := '0';
+	signal daddr_sig           : std_logic_vector (6 downto 0) := (others => '0');
+	signal den_sig             : std_logic := '0';
+	signal di_sig              : std_logic_vector (15 downto 0) := (others => '0');
+	signal dwe_sig             : std_logic := '0';
+	signal temperature_out_sig : std_logic_vector(31 downto 0) := (others => '0');
 	signal reset_test_done     : boolean := false;
 begin
 	UUT : entity work.xadc_reader
@@ -52,7 +52,7 @@ begin
 		clk             => clk_sig,
 		rst_n           => rst_n_sig,
 		drdy            => drdy_sig,
-		do              => do_sig,
+		data              => do_sig,
 		eoc             => eoc_sig,
 		daddr           => daddr_sig,
 		den             => den_sig,
@@ -116,7 +116,7 @@ begin
 			drdy_sig <= '0';
 			wait until rising_edge(clk_sig); --S_IDLE
 			wait for 1 ns;
-			assert temperature_out_sig = std_logic_vector'(31 downto 11 => '0') & output_15(15 downto 4)
+			assert temperature_out_sig = std_logic_vector'(31 downto 12 => '0') & output_15(15 downto 4)
 			report "FSM Error: temperature_out must be 0!" severity error;
 			wait;
 		end process FSM_seq;

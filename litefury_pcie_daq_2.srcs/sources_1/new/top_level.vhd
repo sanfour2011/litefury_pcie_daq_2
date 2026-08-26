@@ -229,7 +229,10 @@ port map (
 	usr_irq_req      => usr_irq_req_sig,
 	usr_irq_ack      => usr_irq_ack_sig,
 	msi_enable       => msi_enable_sig,
-	msi_vector_width => msi_vector_width_sig
+	msi_vector_width => msi_vector_width_sig,
+	
+	--xadc
+	xadc_rst_n => soft_rst_pci_rst_sig
 );
 
 u_process_1 : process (sys_clk)

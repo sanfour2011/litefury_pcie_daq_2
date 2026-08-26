@@ -35,7 +35,7 @@ entity xadc_reader is
 		clk             : in  std_logic;
 		rst_n           : in  std_logic;
 		drdy            : in  std_logic;
-		do              : in  std_logic_vector (15 downto 0);
+		data              : in  std_logic_vector (15 downto 0);
 		eoc             : in  std_logic;
 		daddr           : out std_logic_vector (6 downto 0);
 		den             : out std_logic;
@@ -74,7 +74,7 @@ begin
 				when S_WAIT_DRDY =>
 					if drdy = '1' then
 						next_read_state <= S_WAIT_DRDY_LOW;
-						temperature_out <= (31 downto 12 => '0') & do(15 downto 4);
+						temperature_out <= (31 downto 12 => '0') & data(15 downto 4);
 					end if;
 				when S_WAIT_DRDY_LOW =>
 					if drdy = '0' then

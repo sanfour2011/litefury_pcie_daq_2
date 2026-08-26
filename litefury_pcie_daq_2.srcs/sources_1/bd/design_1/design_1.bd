@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xE2CF5700CBCD36C",
+      "boundary_crc": "0x84519B9444516347",
       "device": "xc7a100tfgg484-2",
       "gen_directory": "../../../../litefury_pcie_daq_2.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -25,7 +25,10 @@
       "xpm_cdc_gen_3": "",
       "xpm_cdc_gen_4": "",
       "ilslice_0": "",
-      "ilslice_1": ""
+      "ilslice_1": "",
+      "xadc_reader_0": "",
+      "xadc_wiz_0": "",
+      "ilvector_logic_1": ""
     },
     "interface_ports": {
       "pcie_7x_mgt_rtl_0": {
@@ -327,6 +330,20 @@
       },
       "usr_irq_ack_B": {
         "direction": "O"
+      },
+      "xadc_rst_n": {
+        "type": "rst",
+        "direction": "I",
+        "parameters": {
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default"
+          }
+        }
       }
     },
     "components": {
@@ -816,6 +833,125 @@
             "value": "2"
           }
         }
+      },
+      "xadc_reader_0": {
+        "vlnv": "xilinx.com:module_ref:xadc_reader:1.0",
+        "ip_revision": "1",
+        "xci_name": "design_1_xadc_reader_0_0",
+        "xci_path": "ip\\design_1_xadc_reader_0_0\\design_1_xadc_reader_0_0.xci",
+        "inst_hier_path": "xadc_reader_0",
+        "has_run_ip_tcl": "true",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "xadc_reader",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "FREQ_HZ": {
+                "value": "200000000",
+                "value_src": "user_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_sys_clk",
+                "value_src": "user_prop"
+              }
+            }
+          },
+          "rst_n": {
+            "type": "rst",
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_LOW",
+                "value_src": "constant"
+              }
+            }
+          },
+          "drdy": {
+            "direction": "I"
+          },
+          "data": {
+            "direction": "I",
+            "left": "15",
+            "right": "0"
+          },
+          "eoc": {
+            "direction": "I"
+          },
+          "daddr": {
+            "direction": "O",
+            "left": "6",
+            "right": "0"
+          },
+          "den": {
+            "direction": "O"
+          },
+          "di": {
+            "direction": "O",
+            "left": "15",
+            "right": "0"
+          },
+          "dwe": {
+            "direction": "O"
+          },
+          "temperature_out": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          }
+        }
+      },
+      "xadc_wiz_0": {
+        "vlnv": "xilinx.com:ip:xadc_wiz:3.3",
+        "ip_revision": "13",
+        "xci_name": "design_1_xadc_wiz_0_0",
+        "xci_path": "ip\\design_1_xadc_wiz_0_0\\design_1_xadc_wiz_0_0.xci",
+        "inst_hier_path": "xadc_wiz_0",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "ADC_CONVERSION_RATE": {
+            "value": "1000"
+          },
+          "DCLK_FREQUENCY": {
+            "value": "200"
+          },
+          "ENABLE_RESET": {
+            "value": "true"
+          },
+          "INTERFACE_SELECTION": {
+            "value": "ENABLE_DRP"
+          },
+          "OT_ALARM": {
+            "value": "false"
+          },
+          "SENSOR_OFFSET_AND_GAIN_CALIBRATION": {
+            "value": "true"
+          },
+          "USER_TEMP_ALARM": {
+            "value": "false"
+          },
+          "VCCAUX_ALARM": {
+            "value": "false"
+          },
+          "VCCINT_ALARM": {
+            "value": "false"
+          }
+        }
+      },
+      "ilvector_logic_1": {
+        "vlnv": "xilinx.com:inline_hdl:ilvector_logic:1.0",
+        "parameters": {
+          "C_OPERATION": {
+            "value": "not"
+          },
+          "C_SIZE": {
+            "value": "1"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -935,6 +1071,12 @@
           "AXI_CSR_0/buffer_full"
         ]
       },
+      "ilvector_logic_1_Res": {
+        "ports": [
+          "ilvector_logic_1/Res",
+          "xadc_wiz_0/reset_in"
+        ]
+      },
       "is_running_1": {
         "ports": [
           "is_running",
@@ -966,7 +1108,9 @@
           "xpm_cdc_gen_2/src_clk",
           "xpm_cdc_gen_1/src_clk",
           "xpm_cdc_gen_3/dest_clk",
-          "xpm_cdc_gen_4/dest_clk"
+          "xpm_cdc_gen_4/dest_clk",
+          "xadc_wiz_0/dclk_in",
+          "xadc_reader_0/clk"
         ]
       },
       "usr_irq_req_1": {
@@ -987,6 +1131,54 @@
         "ports": [
           "util_ds_buf/IBUF_OUT",
           "xdma_0/sys_clk"
+        ]
+      },
+      "xadc_reader_0_daddr": {
+        "ports": [
+          "xadc_reader_0/daddr",
+          "xadc_wiz_0/daddr_in"
+        ]
+      },
+      "xadc_reader_0_den": {
+        "ports": [
+          "xadc_reader_0/den",
+          "xadc_wiz_0/den_in"
+        ]
+      },
+      "xadc_reader_0_di": {
+        "ports": [
+          "xadc_reader_0/di",
+          "xadc_wiz_0/di_in"
+        ]
+      },
+      "xadc_reader_0_dwe": {
+        "ports": [
+          "xadc_reader_0/dwe",
+          "xadc_wiz_0/dwe_in"
+        ]
+      },
+      "xadc_rst_n_1": {
+        "ports": [
+          "xadc_rst_n",
+          "ilvector_logic_1/Op1",
+          "xadc_reader_0/rst_n"
+        ]
+      },
+      "xadc_wiz_0_do_out": {
+        "ports": [
+          "xadc_wiz_0/do_out"
+        ]
+      },
+      "xadc_wiz_0_drdy_out": {
+        "ports": [
+          "xadc_wiz_0/drdy_out",
+          "xadc_reader_0/drdy"
+        ]
+      },
+      "xadc_wiz_0_eoc_out": {
+        "ports": [
+          "xadc_wiz_0/eoc_out",
+          "xadc_reader_0/eoc"
         ]
       },
       "xdma_0_axi_aclk": {
