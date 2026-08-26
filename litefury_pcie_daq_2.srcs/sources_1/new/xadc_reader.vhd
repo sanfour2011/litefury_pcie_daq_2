@@ -31,8 +31,9 @@ use ieee.STD_LOGIC_1164.all;
 --use UNISIM.VComponents.all;
 
 entity xadc_reader is
-	port (clk : in std_logic;
-		rst_n             : in  std_logic;
+	port (
+		clk             : in  std_logic;
+		rst_n           : in  std_logic;
 		drdy            : in  std_logic;
 		do              : in  std_logic_vector (15 downto 0);
 		eoc             : in  std_logic;
@@ -47,7 +48,7 @@ architecture Behavioral of xadc_reader is
 	type drp_read_fsm is (S_IDLE, S_PULSE_DEN, S_WAIT_DRDY, S_WAIT_DRDY_LOW);
 	signal  next_read_state : drp_read_fsm;
 
-    begin
+begin
 
 	u_process_1 : process (clk, rst_n)
 	begin
@@ -57,7 +58,8 @@ architecture Behavioral of xadc_reader is
 			dwe <= '0'; -- alway reading
 			daddr <= (others => '0'); -- reading temp add ist 0
 			den <= '0';
-            next_read_state <= S_IDLE;
+			next_read_state <= S_IDLE;
+			temperature_out <= (others => '0');
 
 		elsif rising_edge(clk) then
 			case next_read_state is
@@ -72,7 +74,7 @@ architecture Behavioral of xadc_reader is
 				when S_WAIT_DRDY =>
 					if drdy = '1' then
 						next_read_state <= S_WAIT_DRDY_LOW;
-                        temperature_out <= (31 downto 12 => '0') & do(15 downto 4);
+						temperature_out <= (31 downto 12 => '0') & do(15 downto 4);
 					end if;
 				when S_WAIT_DRDY_LOW =>
 					if drdy = '0' then

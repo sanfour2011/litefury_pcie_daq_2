@@ -41,3 +41,4 @@ dfx_runtime.txt
 vhdl-linter.yml
 vhdl_ls.toml
 new.code-workspace
+.vscode/settings.json
