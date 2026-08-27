@@ -32,17 +32,17 @@ use ieee.STD_LOGIC_1164.all;
 
 entity xadc_reader is
 	port (
-		clk             : in  std_logic;
-		rst_n           : in  std_logic;
-		drdy            : in  std_logic;
-		data            : in  std_logic_vector (15 downto 0);
-		eoc             : in  std_logic;
-		daddr           : out std_logic_vector (6 downto 0);
-		den             : out std_logic;
-		di              : out std_logic_vector (15 downto 0);
-		dwe             : out std_logic;
-		temperature_out : out std_logic_vector(31 downto 0);
-		data_rdy 		: out std_logic
+		clk              : in  std_logic;
+		rst_n            : in  std_logic;
+		src_drdy         : in  std_logic;
+		src_data         : in  std_logic_vector (15 downto 0);
+		src_eoc          : in  std_logic;
+		daddr            : out std_logic_vector (6 downto 0);
+		den              : out std_logic;
+		di               : out std_logic_vector (15 downto 0);
+		dwe              : out std_logic;
+		sample_out       : out std_logic_vector(31 downto 0);
+		sample_valid_out : out std_logic
 	);
 end xadc_reader;
 
@@ -61,28 +61,28 @@ begin
 			daddr <= (others => '0'); -- reading temp add ist 0
 			den <= '0';
 			next_read_state <= S_IDLE;
-			temperature_out <= (others => '0');
-			data_rdy <= '0';
+			sample_out <= (others => '0');
+			sample_valid_out <= '0';
 
 		elsif rising_edge(clk) then
 			case next_read_state is
 				when S_IDLE =>
-					if eoc = '1' then
+					if src_eoc = '1' then
 						next_read_state <= S_PULSE_DEN;
 						den <= '1';
-						data_rdy <= '0';
 					end if;
 				when S_PULSE_DEN =>
 					den <= '0';
 					next_read_state <= S_WAIT_DRDY;
 				when S_WAIT_DRDY =>
-					if drdy = '1' then
+					if src_drdy = '1' then
 						next_read_state <= S_WAIT_DRDY_LOW;
-						temperature_out <= (31 downto 12 => '0') & data(15 downto 4);
-						data_rdy <= '1';
+						sample_out <= (31 downto 12 => '0') & src_data(15 downto 4);
+						sample_valid_out <= '1';
 					end if;
 				when S_WAIT_DRDY_LOW =>
-					if drdy = '0' then
+					sample_valid_out <= '0'; -- ! should be a puls of 1 clk-cykle ! otherwise ping-pong wirtes same value every clk cycle
+					if src_drdy = '0' then
 						next_read_state <= S_IDLE;
 					end if;
 			end case;

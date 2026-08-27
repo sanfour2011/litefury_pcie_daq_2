@@ -879,15 +879,15 @@
               }
             }
           },
-          "drdy": {
+          "src_drdy": {
             "direction": "I"
           },
-          "data": {
+          "src_data": {
             "direction": "I",
             "left": "15",
             "right": "0"
           },
-          "eoc": {
+          "src_eoc": {
             "direction": "I"
           },
           "daddr": {
@@ -906,12 +906,12 @@
           "dwe": {
             "direction": "O"
           },
-          "temperature_out": {
+          "sample_out": {
             "direction": "O",
             "left": "31",
             "right": "0"
           },
-          "data_rdy": {
+          "sample_valid_out": {
             "direction": "O"
           }
         }
@@ -925,7 +925,10 @@
         "has_run_ip_tcl": "true",
         "parameters": {
           "ADC_CONVERSION_RATE": {
-            "value": "1000"
+            "value": "40"
+          },
+          "CHANNEL_AVERAGING": {
+            "value": "256"
           },
           "DCLK_FREQUENCY": {
             "value": "200"
@@ -941,6 +944,9 @@
           },
           "SENSOR_OFFSET_AND_GAIN_CALIBRATION": {
             "value": "true"
+          },
+          "SINGLE_CHANNEL_SELECTION": {
+            "value": "TEMPERATURE"
           },
           "USER_TEMP_ALARM": {
             "value": "false"
@@ -1128,15 +1134,7 @@
         "ports": [
           "usr_irq_req",
           "xdma_0/usr_irq_req"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          },
-          "MARK_DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "util_ds_buf_IBUF_OUT": {
         "ports": [
@@ -1152,7 +1150,7 @@
       },
       "xadc_reader_0_data_rdy": {
         "ports": [
-          "xadc_reader_0/data_rdy",
+          "xadc_reader_0/sample_valid_out",
           "data_rdy"
         ]
       },
@@ -1174,9 +1172,9 @@
           "xadc_wiz_0/dwe_in"
         ]
       },
-      "xadc_reader_0_temperature_out": {
+      "xadc_reader_0_sample_out": {
         "ports": [
-          "xadc_reader_0/temperature_out",
+          "xadc_reader_0/sample_out",
           "temperature_out"
         ]
       },
@@ -1189,19 +1187,20 @@
       },
       "xadc_wiz_0_do_out": {
         "ports": [
-          "xadc_wiz_0/do_out"
+          "xadc_wiz_0/do_out",
+          "xadc_reader_0/src_data"
         ]
       },
       "xadc_wiz_0_drdy_out": {
         "ports": [
           "xadc_wiz_0/drdy_out",
-          "xadc_reader_0/drdy"
+          "xadc_reader_0/src_drdy"
         ]
       },
       "xadc_wiz_0_eoc_out": {
         "ports": [
           "xadc_wiz_0/eoc_out",
-          "xadc_reader_0/eoc"
+          "xadc_reader_0/src_eoc"
         ]
       },
       "xdma_0_axi_aclk": {

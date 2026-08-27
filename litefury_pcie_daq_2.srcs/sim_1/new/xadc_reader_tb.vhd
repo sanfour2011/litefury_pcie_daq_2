@@ -49,16 +49,17 @@ architecture Behavioral of xadc_reader_tb is
 begin
 	UUT : entity work.xadc_reader
 	port map (
-		clk             => clk_sig,
-		rst_n           => rst_n_sig,
-		drdy            => drdy_sig,
-		data            => do_sig,
-		eoc             => eoc_sig,
-		daddr           => daddr_sig,
-		den             => den_sig,
-		di              => di_sig,
-		dwe             => dwe_sig,
-		temperature_out => temperature_out_sig
+		clk              => clk_sig,
+		rst_n            => rst_n_sig,
+		src_drdy         => drdy_sig,
+		src_data         => do_sig,
+		src_eoc          => eoc_sig,
+		daddr            => daddr_sig,
+		den              => den_sig,
+		di               => di_sig,
+		dwe              => dwe_sig,
+		sample_out       => temperature_out_sig;
+		sample_valid_out => open
 	);
 
 	clk_process : process
