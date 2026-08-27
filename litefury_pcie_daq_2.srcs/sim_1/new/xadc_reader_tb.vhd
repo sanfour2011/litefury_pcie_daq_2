@@ -52,7 +52,7 @@ begin
 		clk             => clk_sig,
 		rst_n           => rst_n_sig,
 		drdy            => drdy_sig,
-		data              => do_sig,
+		data            => do_sig,
 		eoc             => eoc_sig,
 		daddr           => daddr_sig,
 		den             => den_sig,

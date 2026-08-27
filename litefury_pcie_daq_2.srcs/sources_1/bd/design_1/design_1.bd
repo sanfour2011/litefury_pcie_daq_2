@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x84519B9444516347",
+      "boundary_crc": "0xFDA3550D52CCFB58",
       "device": "xc7a100tfgg484-2",
       "gen_directory": "../../../../litefury_pcie_daq_2.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -344,6 +344,14 @@
             "value_src": "default"
           }
         }
+      },
+      "temperature_out": {
+        "direction": "O",
+        "left": "31",
+        "right": "0"
+      },
+      "data_rdy": {
+        "direction": "O"
       }
     },
     "components": {
@@ -902,6 +910,9 @@
             "direction": "O",
             "left": "31",
             "right": "0"
+          },
+          "data_rdy": {
+            "direction": "O"
           }
         }
       },
@@ -1139,6 +1150,12 @@
           "xadc_wiz_0/daddr_in"
         ]
       },
+      "xadc_reader_0_data_rdy": {
+        "ports": [
+          "xadc_reader_0/data_rdy",
+          "data_rdy"
+        ]
+      },
       "xadc_reader_0_den": {
         "ports": [
           "xadc_reader_0/den",
@@ -1155,6 +1172,12 @@
         "ports": [
           "xadc_reader_0/dwe",
           "xadc_wiz_0/dwe_in"
+        ]
+      },
+      "xadc_reader_0_temperature_out": {
+        "ports": [
+          "xadc_reader_0/temperature_out",
+          "temperature_out"
         ]
       },
       "xadc_rst_n_1": {

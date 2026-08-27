@@ -35,13 +35,15 @@ entity xadc_reader is
 		clk             : in  std_logic;
 		rst_n           : in  std_logic;
 		drdy            : in  std_logic;
-		data              : in  std_logic_vector (15 downto 0);
+		data            : in  std_logic_vector (15 downto 0);
 		eoc             : in  std_logic;
 		daddr           : out std_logic_vector (6 downto 0);
 		den             : out std_logic;
 		di              : out std_logic_vector (15 downto 0);
 		dwe             : out std_logic;
-		temperature_out : out std_logic_vector(31 downto 0));
+		temperature_out : out std_logic_vector(31 downto 0);
+		data_rdy 		: out std_logic
+	);
 end xadc_reader;
 
 architecture Behavioral of xadc_reader is
@@ -60,6 +62,7 @@ begin
 			den <= '0';
 			next_read_state <= S_IDLE;
 			temperature_out <= (others => '0');
+			data_rdy <= '0';
 
 		elsif rising_edge(clk) then
 			case next_read_state is
@@ -67,6 +70,7 @@ begin
 					if eoc = '1' then
 						next_read_state <= S_PULSE_DEN;
 						den <= '1';
+						data_rdy <= '0';
 					end if;
 				when S_PULSE_DEN =>
 					den <= '0';
@@ -75,6 +79,7 @@ begin
 					if drdy = '1' then
 						next_read_state <= S_WAIT_DRDY_LOW;
 						temperature_out <= (31 downto 12 => '0') & data(15 downto 4);
+						data_rdy <= '1';
 					end if;
 				when S_WAIT_DRDY_LOW =>
 					if drdy = '0' then

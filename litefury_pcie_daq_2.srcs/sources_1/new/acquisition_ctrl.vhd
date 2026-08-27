@@ -39,9 +39,12 @@ entity acquisition_ctrl is
 		clk          : in  std_logic;
 		rst_n        : in  std_logic;
 		acq_en       : in  std_logic;                      -- Acquisition enable signal, to start/stop generating samples
+		samples_in   : in std_logic;
+		sample_valid : in std_logic;
 		is_running   : out std_logic;
 		sample_ready : out std_logic;                      -- Signal indicating that a new sample is ready
 		sample_out   : out std_logic_vector(31 downto 0)
+
 	);
 end acquisition_ctrl;
 

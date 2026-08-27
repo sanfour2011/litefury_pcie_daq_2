@@ -125,6 +125,10 @@ attribute KEEP of ready_a_cnt_sig : signal is "TRUE";
 attribute MARK_DEBUG of ready_b_cnt_sig : signal is "TRUE";
 attribute KEEP of ready_b_cnt_sig : signal is "TRUE";
 
+--xadc
+signal data_rdy_sig : std_logic := '0';
+signal temperature_out_sig 	 : std_logic_vector (31 downto 0) := (others => '0');
+
 
 
 begin
@@ -160,7 +164,8 @@ port map (
 	is_running   => is_running_sig,
 	sample_ready => sample_valid_sig,
 	sample_out   => sawtooth_out_sig
-);
+
+	);
 
 ping_pong_ctrl_inst : entity work.ping_pong_ctrl
 generic map (
@@ -232,7 +237,9 @@ port map (
 	msi_vector_width => msi_vector_width_sig,
 	
 	--xadc
-	xadc_rst_n => soft_rst_pci_rst_sig
+	xadc_rst_n => soft_rst_pci_rst_sig,
+	temperature_out => temperature_out_sig,
+	data_rdy =>  data_rdy_sig
 );
 
 u_process_1 : process (sys_clk)
