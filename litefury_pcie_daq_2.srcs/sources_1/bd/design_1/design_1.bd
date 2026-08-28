@@ -928,7 +928,7 @@
             "value": "40"
           },
           "CHANNEL_AVERAGING": {
-            "value": "256"
+            "value": "16"
           },
           "DCLK_FREQUENCY": {
             "value": "200"
@@ -1245,15 +1245,7 @@
           "usr_irq_ack",
           "ilslice_0/Din",
           "ilslice_1/Din"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          },
-          "MARK_DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "xpm_cdc_gen_0_dest_out": {
         "ports": [
