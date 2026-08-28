@@ -7,4 +7,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LiteFury.Acquisition.Core\LiteFury.Acquisition.Core.csproj" />
+    </ItemGroup>
+
 </Project>
