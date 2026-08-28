@@ -181,6 +181,7 @@ connect_debug_port u_ila_0/probe6 [get_nets [list usr_irq_req_B_sig]]
 
 
 
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
@@ -202,27 +203,31 @@ connect_debug_port u_ila_0/probe1 [get_nets [list {block_design_inst/design_1_i/
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
 set_property port_width 1 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list block_design_inst/design_1_i/xadc_reader_0/sample_valid_out]]
+connect_debug_port u_ila_0/probe2 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/den_in]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
 set_property port_width 1 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list block_design_inst/design_1_i/src_drdy]]
+connect_debug_port u_ila_0/probe3 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/drdy_out]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
 set_property port_width 1 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list block_design_inst/design_1_i/src_eoc]]
+connect_debug_port u_ila_0/probe4 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/dwe_in]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
 set_property port_width 1 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/den_in]]
+connect_debug_port u_ila_0/probe5 [get_nets [list block_design_inst/design_1_i/xadc_reader_0/sample_valid_out]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
 set_property port_width 1 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/drdy_out]]
+connect_debug_port u_ila_0/probe6 [get_nets [list block_design_inst/design_1_i/src_drdy]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
 set_property port_width 1 [get_debug_ports u_ila_0/probe7]
-connect_debug_port u_ila_0/probe7 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/dwe_in]]
+connect_debug_port u_ila_0/probe7 [get_nets [list block_design_inst/design_1_i/src_eoc]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
+set_property port_width 1 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list block_design_inst/design_1_i/xadc_wiz_0/reset_in]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]

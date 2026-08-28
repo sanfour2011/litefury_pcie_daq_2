@@ -112,14 +112,14 @@ attribute MARK_DEBUG                                                  : string;
 attribute KEEP                                                        : string;
 signal irq_a_cnt_sig, irq_b_cnt_sig, ready_a_cnt_sig, ready_b_cnt_sig : unsigned (15 downto 0) := (others => '0');
 
-attribute MARK_DEBUG of irq_a_cnt_sig   : signal is "TRUE";
-attribute KEEP of irq_a_cnt_sig         : signal is "TRUE";
-attribute MARK_DEBUG of irq_b_cnt_sig   : signal is "TRUE";
-attribute KEEP of irq_b_cnt_sig         : signal is "TRUE";
-attribute MARK_DEBUG of ready_a_cnt_sig : signal is "TRUE";
-attribute KEEP of ready_a_cnt_sig       : signal is "TRUE";
-attribute MARK_DEBUG of ready_b_cnt_sig : signal is "TRUE";
-attribute KEEP of ready_b_cnt_sig       : signal is "TRUE";
+-- attribute MARK_DEBUG of irq_a_cnt_sig   : signal is "TRUE";
+-- attribute KEEP of irq_a_cnt_sig         : signal is "TRUE";
+-- attribute MARK_DEBUG of irq_b_cnt_sig   : signal is "TRUE";
+-- attribute KEEP of irq_b_cnt_sig         : signal is "TRUE";
+-- attribute MARK_DEBUG of ready_a_cnt_sig : signal is "TRUE";
+-- attribute KEEP of ready_a_cnt_sig       : signal is "TRUE";
+-- attribute MARK_DEBUG of ready_b_cnt_sig : signal is "TRUE";
+-- attribute KEEP of ready_b_cnt_sig       : signal is "TRUE";
 
 --xadc
 signal data_rdy_sig        : std_logic := '0';
