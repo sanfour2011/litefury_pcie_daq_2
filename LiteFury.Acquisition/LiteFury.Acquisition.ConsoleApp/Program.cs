@@ -46,13 +46,6 @@ internal class Program
         var count = fs.Read(irq, 0, 4); // blockiert, bis IRQ kommt
         Console.WriteLine($"IRQ count: {BitConverter.ToUInt32(irq)}");
 
-        // using (var mmf = MemoryMappedFile.CreateFromFile(PcieDevice.CSR_RESOURCE_FILE, FileMode.Open, null,8 ))
-        // {
-        //     using (var accessor = mmf.CreateViewAccessor(PcieDevice.SR_OFFSET, 4))
-        //     {
-        //         uint statusReg  = accessor.ReadUInt32(0);
-        //         Console.WriteLine($"STATUS: {statusReg:X8}");
-        //     }
-        // }
+
     }
 }
