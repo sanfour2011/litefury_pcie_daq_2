@@ -11,7 +11,7 @@ public class Csr : IDisposable
 
     public Csr()
     {
-        _fd = Libc.open(PcieDevice.CSR_RESOURCE_FILE, Libc.O_RDONLY | Libc.O_SYNC);
+        _fd = Libc.open(PcieDevice.CSR_RESOURCE_FILE, Libc.O_RDWR | Libc.O_SYNC);
         if (_fd < 0)
         {
             int errno = Marshal.GetLastPInvokeError();
@@ -24,7 +24,7 @@ public class Csr : IDisposable
             };
         }
 
-        _map = Libc.mmap(IntPtr.Zero, MEM_2_MAP, Libc.PROT_READ, Libc.MAP_SHARED, _fd, 0);
+        _map = Libc.mmap(IntPtr.Zero, MEM_2_MAP, Libc.PROT_READ | Libc.PROT_WRITE, Libc.MAP_SHARED, _fd, 0);
         if (_map == Libc.MAP_FAILED)
         {
             int errno = Marshal.GetLastPInvokeError();// call before close! saves headache 
