@@ -28,7 +28,7 @@ public class BramData:IDisposable
     _fhandle.Dispose();
 }
 
-public uint[] ReadBramDatga(BramChannel channel)
+public uint[] ReadBramData(BramChannel channel)
 {
     // var buffer = new byte[PcieDevice.BRAM_WORDS * 4 / 2]; 
     var buffer = new uint[PcieDevice.BRAM_WORDS /  2]; 

@@ -33,8 +33,8 @@ internal class Program
         Console.WriteLine("Status: " + myCsr.ReadStatus());
         
         var myBram = new BramData();
-        var dataA = myBram.ReadBramDatga(BramChannel.A);
-        var dataB = myBram.ReadBramDatga(BramChannel.B);
+        var dataA = myBram.ReadBramData(BramChannel.A);
+        var dataB = myBram.ReadBramData(BramChannel.B);
         Console.WriteLine("======= DATA A =======");
         foreach (var value in dataA)
             Console.WriteLine($"{value:X8}");       
