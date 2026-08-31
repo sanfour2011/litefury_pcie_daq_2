@@ -8,8 +8,8 @@ public enum IrqChannel
 
 public class Irq : IDisposable
 {
-    public event Action<IrqChannel> IrqReceived;
-    public event Action<Exception> ErrorOccured;
+    public event Action<IrqChannel>? IrqReceived;
+    public event Action<Exception>? ErrorOccured;
     private Stream _fsA;
     private Stream _fsB;
 
@@ -37,7 +37,8 @@ public class Irq : IDisposable
         {
             while (true)
             {
-                _fsA.Read(buffer, 0, 4);
+                //_fsA.Read(buffer, 0, 4);
+                _fsA.ReadExactly(buffer);// to avoid CA2022 warning
                 IrqReceived?.Invoke(IrqChannel.A);
             }
         }
@@ -54,8 +55,8 @@ public class Irq : IDisposable
         {
             while (true)
             {
-                _fsB.Read(buffer, 0, 4);
-                IrqReceived?.Invoke(IrqChannel.B);
+                //_fsB.Read(buffer, 0, 4); 
+                IrqReceived?.Invoke(IrqChannel.B);// to avoid CA2022 warning
             }
         }
         catch (Exception e)
