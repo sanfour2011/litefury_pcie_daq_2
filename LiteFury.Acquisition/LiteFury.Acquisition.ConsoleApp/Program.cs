@@ -1,4 +1,5 @@
-﻿using System.IO.MemoryMappedFiles;
+﻿using System.Collections.Concurrent;
+using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 using LiteFury.Acquisition.Core;
 using LiteFury.Acquisition.Core.Interop;
@@ -11,40 +12,34 @@ internal class Program
     private static void Main(string[] args)
     {
         Console.WriteLine("Hello, World!");
+
+
+        var myAcqEng = new AcquisitionEngine();
+        myAcqEng.ErrorOccured += exception => Console.WriteLine($" {exception.Message}");
+        BlockingCollection<uint> A = new BlockingCollection<uint>(1024);
+        BlockingCollection<uint> B = new BlockingCollection<uint>(1024);
         
-        var myCsr = new Csr();
-        var myIrq = new Irq();
-        myIrq.ErrorOccured += exception => Console.WriteLine($"IRQ Exception: {exception.Message}");
-        myIrq.IrqReceived += channel =>
+        myAcqEng.SamplesReady += (data, channel) =>
         {
-            if (channel == IrqChannel.A)
-                Console.WriteLine("A da!");
-            else
-                Console.WriteLine("B da!");
+            Console.WriteLine($"======= DATA {channel.ToString()} =======");
+            foreach (var batch in data.Chunk(8))
+            {
+                if (channel == BramChannel.A)
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                else
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                foreach (var value in batch)
+                    Console.Write($"{value:X8}\t");
+                Console.WriteLine();
+            }
+
         };
-        
-        Console.WriteLine("Status: " + myCsr.ReadStatus());
-        myCsr.WriteControl(1);
-        Console.WriteLine("Status: " + myCsr.ReadStatus());
-        Console.WriteLine("Wait for irq");
-        Console.ReadLine();
-        
-        myCsr.WriteControl(0);
-        Console.WriteLine("Status: " + myCsr.ReadStatus());
-        
-        var myBram = new BramData();
-        var dataA = myBram.ReadBramData(BramChannel.A);
-        var dataB = myBram.ReadBramData(BramChannel.B);
-        Console.WriteLine("======= DATA A =======");
-        foreach (var value in dataA)
-            Console.WriteLine($"{value:X8}");       
-        
-        Console.WriteLine("======= DATA B =======");
-        foreach (var value in dataB)
-            Console.WriteLine($"{value:X8}");
-        
 
+        myAcqEng.Start();
 
-    
+        Console.ReadKey();
+
+        myAcqEng.Stop();
+        myAcqEng.Dispose();
     }
 }
