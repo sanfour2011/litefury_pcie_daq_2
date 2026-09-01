@@ -19,13 +19,12 @@ internal class Program
         myAcqEng.ErrorOccured += exception => Console.WriteLine($" {exception.Message}");
         ConcurrentQueue<uint> queueA = new ConcurrentQueue<uint>();
         ConcurrentQueue<uint> queueB = new ConcurrentQueue<uint>();
-        var irqCnt = 0;
+
         myAcqEng.SamplesReady += (data, channel) =>
         {
             var target = channel == BramChannel.A ? queueA : queueB;
             foreach (var value in data)
                 target.Enqueue(value);
-            irqCnt++;
         };
 
         myAcqEng.Start();
@@ -49,8 +48,8 @@ internal class Program
             {
                 Console.ForegroundColor = target == queueA ? ConsoleColor.DarkRed : ConsoleColor.Cyan;
                 Console.WriteLine($"======= DATA {(target == queueA ? "A" : "B")}({target.Count}) =======");
-                int toPrint = 128;
-                while (target.TryDequeue(out uint value) && (toPrint-- != 0))
+           
+                while (target.TryDequeue(out uint value))
                     Console.Write($"{value:X8}\t");
 
                 Console.WriteLine("\n");
