@@ -9,37 +9,62 @@ namespace LiteFury.Acquisition.ConsoleApp;
 
 internal class Program
 {
+    private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+
     private static void Main(string[] args)
     {
         Console.WriteLine("Hello, World!");
 
-
         var myAcqEng = new AcquisitionEngine();
         myAcqEng.ErrorOccured += exception => Console.WriteLine($" {exception.Message}");
-        BlockingCollection<uint> A = new BlockingCollection<uint>(1024);
-        BlockingCollection<uint> B = new BlockingCollection<uint>(1024);
-        
+        ConcurrentQueue<uint> queueA = new ConcurrentQueue<uint>();
+        ConcurrentQueue<uint> queueB = new ConcurrentQueue<uint>();
+        var irqCnt = 0;
         myAcqEng.SamplesReady += (data, channel) =>
         {
-            Console.WriteLine($"======= DATA {channel.ToString()} =======");
-            foreach (var batch in data.Chunk(8))
-            {
-                if (channel == BramChannel.A)
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                else
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                foreach (var value in batch)
-                    Console.Write($"{value:X8}\t");
-                Console.WriteLine();
-            }
-
+            var target = channel == BramChannel.A ? queueA : queueB;
+            foreach (var value in data)
+                target.Enqueue(value);
+            irqCnt++;
         };
 
         myAcqEng.Start();
 
+        while (!Console.KeyAvailable)
+        {
+            if (queueB.IsEmpty && queueA.IsEmpty)
+                myAcqEng.Start();
+            else
+                myAcqEng.Stop();
+            
+            ConcurrentQueue<uint> target;
+            if (!queueA.IsEmpty)
+                target = queueA;
+            else if (!queueB.IsEmpty)
+                target = queueB;
+            else
+                continue;
+
+            if (!target.IsEmpty)
+            {
+                Console.ForegroundColor = target == queueA ? ConsoleColor.DarkRed : ConsoleColor.Cyan;
+                Console.WriteLine($"======= DATA {(target == queueA ? "A" : "B")}({target.Count}) =======");
+                int toPrint = 128;
+                while (target.TryDequeue(out uint value) && (toPrint-- != 0))
+                    Console.Write($"{value:X8}\t");
+
+                Console.WriteLine("\n");
+                Console.ResetColor();
+            }
+
+
+            Thread.Sleep(22);
+        }
+
         Console.ReadKey();
 
         myAcqEng.Stop();
+
         myAcqEng.Dispose();
     }
 }

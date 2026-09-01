@@ -55,7 +55,7 @@ public class Irq : IDisposable
         {
             while (true)
             {
-                //_fsB.Read(buffer, 0, 4); 
+                _fsB.ReadExactly(buffer);// to avoid CA2022 warning
                 IrqReceived?.Invoke(IrqChannel.B);// to avoid CA2022 warning
             }
         }
