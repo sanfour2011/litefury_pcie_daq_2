@@ -2,7 +2,7 @@ namespace LiteFury.Acquisition.Core;
 
 public class SampleAverager
 {
-    public static float[] Average(float[] values, int avg)
+    public static float[] Average(uint[] values, int avg)
     {
         // using Moving Average Filter:
         //https://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
