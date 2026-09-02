@@ -2,9 +2,15 @@ namespace LiteFury.Acquisition.Core;
 
 public class SampleAverager
 {
-    public static float[] Average(uint[] values, int avg)
+    public static float[] Average(uint[] values, uint avg)
     {
-        // using Moving Average Filter:
+        if (values == null)
+            throw new ArgumentNullException(nameof(values));
+        if (avg == 0)
+            throw new ArgumentOutOfRangeException(nameof(avg));
+        if (avg > values.Length)
+            return Array.Empty<float>();
+                
         //https://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
         // y[i] = y[i-1] + x[i] - x[i - avg]
         // y[i-1] old value
@@ -20,7 +26,7 @@ public class SampleAverager
         // Step 3: y
         float invAvg = (float)(1.0 / avg);
         float y = 0;
-        float[] result = new float[values.Length - avg];
+        float[] result = new float[values.Length - avg+1];
         for (int i = 0; i < avg; i++)
             y += values[i];
 
