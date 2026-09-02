@@ -24,3 +24,17 @@ Should return `crw-rw-rw-` instead of `crw-------`
 
 [https://docs.oracle.com/en/operating-systems/oracle-linux/8/udev/udev-AboutudevRules.html
 ]((https://linux.die.net/man/8/udev))[https://linux.die.net/man/8/udev]((https://linux.die.net/man/8/udev))
+
+---------------------------------------------------------------------
+
+To run the GUI on the remote Linux target monitor via JetBrains Rider SSH, you need to configure the DISPLAY environment variable.
+
+Check your current display value in the remote Linux terminal:
+
+`echo $DISPLAY`
+
+(Usually returns :0 or :0.0)
+
+Set DISPLAY=:0.0 in your Rider Run/Debug Configuration:
+
+![Rider Run/Debug Configuration](docs/rider_remote_gui_display_config.png)
