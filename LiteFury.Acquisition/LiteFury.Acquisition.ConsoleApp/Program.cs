@@ -31,11 +31,6 @@ internal class Program
 
         while (!Console.KeyAvailable)
         {
-            if (queueB.IsEmpty && queueA.IsEmpty)
-                myAcqEng.Start();
-            else
-                myAcqEng.Stop();
-            
             ConcurrentQueue<uint> target;
             if (!queueA.IsEmpty)
                 target = queueA;
