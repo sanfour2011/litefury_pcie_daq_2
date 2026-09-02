@@ -15,8 +15,9 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <!-- <TextBox Text="{Binding StatusText}" -->
+    <!--          HorizontalAlignment="Center" -->
+    <!--          VerticalAlignment="Center" /> -->
 
+    <StackPanel></StackPanel>
 </Window>
