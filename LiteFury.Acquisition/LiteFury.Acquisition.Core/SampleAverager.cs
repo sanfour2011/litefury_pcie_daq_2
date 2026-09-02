@@ -18,19 +18,18 @@ public class SampleAverager
         // x[i] is the new value 40
         // x[i-avg] is left window outside 10
         // Step 3: y
-        float invAvg = 1 / avg;
-        var y = new float[values.Length];
+        float invAvg = (float)(1.0 / avg);
+        float y = 0;
         float[] result = new float[values.Length - avg];
         for (int i = 0; i < avg; i++)
-            y[0] += values[i];
+            y += values[i];
 
-        result[0] = y[0] * invAvg;
-        for (int i = 1; i < values.Length; i++)
+        result[0] = y * invAvg;
+        for (int i = 1; i < result.Length; i++)
         {
-            y[i] = y[i - 1] + values[i + avg - 1] - values[i - 1];
-            result[i] = y[i] * invAvg;
+            y += values[i + avg - 1] - values[i - 1];
+            result[i] = y * invAvg;
         }
-
         return result;
     }
 }
