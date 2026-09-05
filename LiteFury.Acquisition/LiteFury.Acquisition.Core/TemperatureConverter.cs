@@ -10,8 +10,8 @@ public static class TemperatureConverter
     
     private const float ScaleFactor = 0.12304077f; // precalculated: 503.975f / 4096.0f
     private const float KelvinOffset = 273.15f;
-    public static float ToDegreesCelsius(uint raw)
+    public static float ToDegreesCelsius<T>(T raw)
     {
-        return raw * ScaleFactor - KelvinOffset;
+        return Convert.ToSingle(raw) * ScaleFactor - KelvinOffset;
     }
 }

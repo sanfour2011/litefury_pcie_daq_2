@@ -20,7 +20,7 @@ public class SampleHistoryTest
   
         foreach (var value in testValues)
             history.Add(value);
-        CollectionAssert.AreEqual(new float[] { 42 }, history.GetLatest(1));
+        CollectionAssert.AreEqual(new float[] { testValues.Last() }, history.GetLatest(1));
 
     }
 
