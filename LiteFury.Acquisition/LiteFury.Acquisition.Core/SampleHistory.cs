@@ -15,13 +15,12 @@ public class SampleHistory
         Capacity = capacity;
         _buffer = new float[Capacity];
     }
-    
+
     public void Add(float value)
     {
-        
         if (_nextWriteIdx >= Capacity)
             _nextWriteIdx = _nextWriteIdx % Capacity;
-        
+
         _buffer[_nextWriteIdx++] = value;
     }
 
@@ -29,19 +28,19 @@ public class SampleHistory
     {
         if (count > Capacity)
             throw new ArgumentOutOfRangeException(nameof(count) + ">" + nameof(Capacity));
-        
+
         float[] result = new float[count];
 
         var readRange = (Start: _nextWriteIdx - count, End: _nextWriteIdx);
-        
+
         int idx = 0;
         while (readRange.Start < 0)
-            result[idx++] = _buffer[Capacity - readRange.Start ++];
+            result[idx++] = _buffer[Capacity + readRange.Start++];
 
         for (int i = readRange.Start; i < _nextWriteIdx; i++)
             result[idx++] = _buffer[i];
-        
-        
+
+
         return result;
     }
 }

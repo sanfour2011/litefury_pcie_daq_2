@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Loader;
 using JetBrains.Annotations;
@@ -10,38 +11,38 @@ namespace LiteFury.Acquisition.Core.Tests;
 [TestSubject(typeof(SampleHistory))]
 public class SampleHistoryTest
 {
-   
-   [TestMethod]
+    private readonly float[] testValues = new float[] { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+
+    [TestMethod]
     public void Add()
     {
         var history = new SampleHistory(5);
-        float[] values = new float[] { 10, 20, 30, 40, 50 };
-        foreach (var value in values)
+  
+        foreach (var value in testValues)
             history.Add(value);
-        
     }
 
-    public void GetLatest_NormalCase()
+    [TestMethod]
+    [DataRow(5, new float[]{60,70,80,90,100})]
+    [DataRow(1,new float[] { 100 })]
+    [DataRow(0,new float[] { })]
+    public void GetLatest_NormalCase(int count, float[] expected)
     {
         var history = new SampleHistory(5);
-        float[] values = new float[] { 10, 20, 30, 40, 50 };
-        foreach (var value in values)
+       
+        foreach (var value in testValues)
             history.Add(value);
 
-        CollectionAssert.AreEqual(values,history.GetLatest(5));
-        CollectionAssert.AreEqual(new float[]{values.Last()},history.GetLatest(1));
-        CollectionAssert.AreEqual(new float[]{},history.GetLatest(0));
-        
-    }
+        CollectionAssert.AreEqual(expected, history.GetLatest(count)); }
 
     [TestMethod]
     public void GetLatest_WrapAround()
     {
-        var history = new SampleHistory(4);
-        float[] values = new float[] { 10, 20, 30, 40, 50,60 };
-        foreach (var value in values)
+        var history = new SampleHistory(8);
+        foreach (var value in testValues)
             history.Add(value);
-        CollectionAssert.AreEqual(new float[]{60,50,40,30},history.GetLatest(3));
+        
+        CollectionAssert.AreEqual(new float[] { 70, 80,90, 100 }, history.GetLatest(4));
     }
 
     [TestMethod]
