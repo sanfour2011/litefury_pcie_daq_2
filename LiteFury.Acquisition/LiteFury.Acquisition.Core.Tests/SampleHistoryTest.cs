@@ -20,6 +20,8 @@ public class SampleHistoryTest
   
         foreach (var value in testValues)
             history.Add(value);
+        CollectionAssert.AreEqual(new float[] { 42 }, history.GetLatest(1));
+
     }
 
     [TestMethod]
@@ -35,14 +37,17 @@ public class SampleHistoryTest
 
         CollectionAssert.AreEqual(expected, history.GetLatest(count)); }
 
+    
     [TestMethod]
-    public void GetLatest_WrapAround()
+    [DataRow(8,new float[] { 70, 80,90, 100 }, 4)]
+    [DataRow(4,new float[] { 80,90, 100 }, 3)] // Multi wrap around
+    public void GetLatest_WrapAround(int capacity, float[] expected,int count)
     {
-        var history = new SampleHistory(8);
+        var history = new SampleHistory(capacity);
         foreach (var value in testValues)
             history.Add(value);
         
-        CollectionAssert.AreEqual(new float[] { 70, 80,90, 100 }, history.GetLatest(4));
+        CollectionAssert.AreEqual(expected, history.GetLatest(count));
     }
 
     [TestMethod]
