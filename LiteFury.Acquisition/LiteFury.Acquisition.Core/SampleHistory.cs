@@ -25,7 +25,7 @@ public class SampleHistory
         _buffer[_nextWriteIdx++] = value;
     }
 
-    public float[] GetLast(int count)
+    public float[] GetLatest(int count)
     {
         if (count > Capacity)
             throw new ArgumentOutOfRangeException(nameof(count) + ">" + nameof(Capacity));

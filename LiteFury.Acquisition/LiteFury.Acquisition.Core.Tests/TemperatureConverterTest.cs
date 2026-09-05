@@ -9,7 +9,6 @@ namespace LiteFury.Acquisition.Core.Tests;
 public class TemperatureConverterTest
 {
     [TestMethod]
-    [DataRow(0x977u, 25f)]
     [DataRow(0x000u, -273.15f)] // Min ADC Code 0 
     [DataRow(0x800u, -21.0f)]   // Negative Tempereture
     [DataRow(0x977u, 25.0f)]    // From UG480 example
