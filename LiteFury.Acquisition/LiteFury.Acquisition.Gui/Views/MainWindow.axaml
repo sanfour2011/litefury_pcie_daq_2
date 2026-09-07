@@ -126,9 +126,10 @@
             <Grid RowDefinitions="Auto,*" Background="AliceBlue">
                 <Grid ColumnDefinitions="*,*" Margin="5,0,5,0">
                     <TextBlock Text="Temperature (XADC)" FontWeight="Bold"></TextBlock>
-                    <TextBlock Grid.Column="1" Text="42.6 °C" TextAlignment="Right"></TextBlock>
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBlock Grid.Column="1" Text="{Binding LastChartValue}" TextAlignment="Right"></TextBlock>
+                    <!-- ReSharper restore Xaml.InvalidType -->
                 </Grid>
-
                 <!-- <scottplot:AvaPlot Grid.Row="1" Name="TempPlot" HorizontalAlignment="Stretch" -->
                 <!--                    VerticalAlignment="Stretch" /> -->
                 <ContentControl Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding PlotControl, Mode=OneTime}"/>
