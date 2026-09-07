@@ -40,7 +40,6 @@ public class SampleHistory
         for (int i = readRange.Start; i < _nextWriteIdx; i++)
             result[idx++] = _buffer[i];
 
-
         return result;
     }
 }

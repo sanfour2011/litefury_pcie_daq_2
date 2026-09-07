@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiteFury.Acquisition.Core;
 using Tmds.DBus.Protocol;
+using MsBox.Avalonia;
 
 
 namespace LiteFury.Acquisition.Gui.ViewModels;
@@ -36,7 +37,11 @@ public partial class MainViewModel : ViewModelBase
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                // Error Message box
+                var messageBox = MessageBoxManager.GetMessageBoxStandard(
+                    "Error",
+                    exception.Message,
+                    MsBox.Avalonia.Enums.ButtonEnum.Ok,
+                    MsBox.Avalonia.Enums.Icon.Error);
             });
         };
     }
@@ -51,17 +56,4 @@ public partial class MainViewModel : ViewModelBase
         IrqPendingA = (status & (1 << PcieDevice.STATUS_IRQ_PENDING_A_BIT)) != 0;
         IrqPendingB = (status & (1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT)) != 0;
     }
-
-    // private void UpdateChartValues()
-    // {
-    //     var converted = new float[_temp.Length];
-    //     for (int i = 0; i < _temp.Length; i++)
-    //         converted[i] = TemperatureConverter.ToDegreesCelsius(_temp[i]);
-    //
-    //     var averaged = SampleAverager.Average(converted, Convert.ToUInt32(AveragingFactor));
-    //     foreach (var value in averaged)
-    //         TemperatureHistory.Add(value);
-    //
-    //     OnPropertyChanged((nameof(ChartValues)));
-    // }
 }

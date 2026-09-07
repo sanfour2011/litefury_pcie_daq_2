@@ -10,9 +10,6 @@ public class AcquisitionEngine : IDisposable
 
     private readonly BramData _bramData;
 
-    //save the entire array instead of single elements in a loop to make it faster
-    //private readonly BlockingCollection<uint[]> _bramDataQueue = new BlockingCollection<uint[]>(boundedCapacity: 2);
-
     public event Action<uint[], BramChannel>? SamplesReady;
     public event Action<Exception>? ErrorOccured;
 

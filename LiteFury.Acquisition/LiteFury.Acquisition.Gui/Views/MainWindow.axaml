@@ -130,8 +130,7 @@
                     <TextBlock Grid.Column="1" Text="{Binding LastChartValue}" TextAlignment="Right"></TextBlock>
                     <!-- ReSharper restore Xaml.InvalidType -->
                 </Grid>
-                <!-- <scottplot:AvaPlot Grid.Row="1" Name="TempPlot" HorizontalAlignment="Stretch" -->
-                <!--                    VerticalAlignment="Stretch" /> -->
+               
                 <ContentControl Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding PlotControl, Mode=OneTime}"/>
             </Grid>
         </Border>

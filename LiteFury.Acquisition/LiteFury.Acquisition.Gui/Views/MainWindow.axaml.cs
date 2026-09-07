@@ -9,10 +9,6 @@ public partial class MainWindow : Window
         InitializeComponent();
         WindowState = WindowState.Maximized;
 
-            
-        
-            // https://scottplot.net/quickstart/wpf/
-            // <ContentControl Content="{Binding PlotControl, Mode=OneTime}"/>
     }
     
     
