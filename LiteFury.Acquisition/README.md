@@ -6,7 +6,7 @@ to run directly in rider with play button we need to make some udev rules
 `sudo nano /etc/udev/rules.d/99-xdma.rules`
 
 ### 2. 99-xdma.rules Content:**
-    
+
 `KERNEL=="xdma*", MODE="0666"`
 
 ### 3. Read new rule file and Reload new Rules:**
@@ -38,3 +38,13 @@ Check your current display value in the remote Linux terminal:
 Set DISPLAY=:0.0 in your Rider Run/Debug Configuration:
 
 ![Rider Run/Debug Configuration](docs/rider_remote_gui_display_config.png)
+
+---------------------------------------------------------------------
+## GUI Setup (Cross-Platform)
+
+To build a platform independent GUI similar to WPF:
+
+### 1. Install Avalonia Templates
+``` dotnet new install Avalonia.Templates ```
+### 2 Add ScottPlot for Avalonia
+``` dotnet add package ScottPlot.Avalonia ```

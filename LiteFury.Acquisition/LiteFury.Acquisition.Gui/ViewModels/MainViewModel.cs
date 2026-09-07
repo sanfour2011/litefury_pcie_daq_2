@@ -12,49 +12,10 @@ namespace LiteFury.Acquisition.Gui.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    public static readonly int capacity = 512;
-    private uint[] _temp = new uint[capacity]; // Temp buffer to minimize event handler execution time
-    public float[] ChartValues => TemperatureHistory.GetLatest(100);
-
-    [ObservableProperty] public partial SampleHistory TemperatureHistory { get; set; } = new SampleHistory(capacity);
-
+  
     private readonly AcquisitionEngine _acqEngine = new AcquisitionEngine();
     private readonly DispatcherTimer _pollTimer;
-    [ObservableProperty] public partial string StatusText { get; set; } = "0x000000";
-    [ObservableProperty] public partial string ControlText { get; set; } = "0x000000";
-    [ObservableProperty] public partial int AveragingFactor { get; set; } = 1;
-    [ObservableProperty] public partial bool IsBufferFull { get; set; } = false;
-    [ObservableProperty] public partial bool IsRunning { get; set; } = false;
-    [ObservableProperty] public partial bool IrqPendingA { get; set; } = false;
-    [ObservableProperty] public partial bool IrqPendingB { get; set; } = false;
-
-    [RelayCommand]
-    private void Start()
-    {
-        _acqEngine.Start();
-        UpdateStatus(this, EventArgs.Empty);
-    }
-
-    [RelayCommand]
-    private void Stop()
-    {
-        _acqEngine.Stop();
-        UpdateStatus(this, EventArgs.Empty);
-    }
-
-    [RelayCommand]
-    private void Reset()
-    {
-        _acqEngine.Stop();
-        UpdateStatus(this, EventArgs.Empty);
-    }
-
-    [RelayCommand]
-    private void SetAvg(int avg)
-    {
-        AveragingFactor = avg;
-    }
-
+   
 
     //[ObservableProperty] public partial string Greeting { get; set; } = "Welcome to Avalonia!";
 
