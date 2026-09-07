@@ -10,7 +10,6 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="LiteFury.Acquisition.Gui">
 
-
     <Window.Styles>
         <Style Selector="TextBox">
             <Setter Property="Background" Value="AliceBlue" />
@@ -130,8 +129,9 @@
                     <TextBlock Grid.Column="1" Text="42.6 °C" TextAlignment="Right"></TextBlock>
                 </Grid>
 
-                <scottplot:AvaPlot Grid.Row="1" Name="TempPlot" HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Stretch" />
+                <!-- <scottplot:AvaPlot Grid.Row="1" Name="TempPlot" HorizontalAlignment="Stretch" -->
+                <!--                    VerticalAlignment="Stretch" /> -->
+                <ContentControl Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding PlotControl, Mode=OneTime}"/>
             </Grid>
         </Border>
 

@@ -9,11 +9,11 @@ public partial class MainWindow : Window
         InitializeComponent();
         WindowState = WindowState.Maximized;
 
-        TempPlot.Plot.Add.Signal(ScottPlot.Generate.Sin());
-        TempPlot.Plot.DataBackground.Color = ScottPlot.Color.FromHex("#F0F8FF"); //   AliceBlue: #F0F8FF
-        TempPlot.Plot.FigureBackground.Color = ScottPlot.Color.FromHex("#F0F8FF");
-        TempPlot.Plot.XLabel("Samples");
-        TempPlot.Plot.YLabel("Temperature (°C)");
-        TempPlot.Plot.Axes.AutoScale();
+            
+        
+            // https://scottplot.net/quickstart/wpf/
+            // <ContentControl Content="{Binding PlotControl, Mode=OneTime}"/>
     }
+    
+    
 }

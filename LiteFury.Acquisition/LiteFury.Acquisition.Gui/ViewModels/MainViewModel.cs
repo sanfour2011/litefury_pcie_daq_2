@@ -21,6 +21,7 @@ public partial class MainViewModel : ViewModelBase
         _pollTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
         _pollTimer.Tick += UpdateStatus;
         _pollTimer.Start();
+        InitializeChart();
         _acqEngine.SamplesReady += (values, channel) =>
         {
             //Post is non Blocking: Fire and Forget: https://docs.avaloniaui.net/docs/app-development/threading#post-fire-and-forget
