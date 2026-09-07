@@ -5,7 +5,6 @@ namespace LiteFury.Acquisition.Gui.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    
     [RelayCommand]
     private void Start()
     {
@@ -28,9 +27,12 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SetAvg(int avg)
+    private void SetAvg(string avg)
     {
-        AveragingFactor = avg;
+        SetAvg( int.Parse(avg));
+        
     }
 
+    private void SetAvg(int avg) => AveragingFactor = avg;
+ 
 }

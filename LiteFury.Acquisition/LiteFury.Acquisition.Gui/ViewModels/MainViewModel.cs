@@ -16,9 +16,6 @@ public partial class MainViewModel : ViewModelBase
     private readonly AcquisitionEngine _acqEngine = new AcquisitionEngine();
     private readonly DispatcherTimer _pollTimer;
    
-
-    //[ObservableProperty] public partial string Greeting { get; set; } = "Welcome to Avalonia!";
-
     public MainViewModel()
     {
         _pollTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
@@ -29,11 +26,8 @@ public partial class MainViewModel : ViewModelBase
             //Post is non Blocking: Fire and Forget: https://docs.avaloniaui.net/docs/app-development/threading#post-fire-and-forget
             Dispatcher.UIThread.Post(() => 
             {
-                if (_temp.Length != values.Length)
-                    throw new ArgumentException($"_temp.Length({_temp.Length}) != values.Length({values.Length})");
-                Array.Copy(values, _temp, values.Length);
                 UpdateStatus(this, EventArgs.Empty);
-                UpdateChartValues();
+                UpdateChartValues(values);
             });
         };
 
@@ -57,16 +51,16 @@ public partial class MainViewModel : ViewModelBase
         IrqPendingB = (status & (1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT)) != 0;
     }
 
-    private void UpdateChartValues()
-    {
-        var converted = new float[_temp.Length];
-        for (int i = 0; i < _temp.Length; i++)
-            converted[i] = TemperatureConverter.ToDegreesCelsius(_temp[i]);
-
-        var averaged = SampleAverager.Average(converted, Convert.ToUInt32(AveragingFactor));
-        foreach (var value in averaged)
-            TemperatureHistory.Add(value);
-
-        OnPropertyChanged((nameof(ChartValues)));
-    }
+    // private void UpdateChartValues()
+    // {
+    //     var converted = new float[_temp.Length];
+    //     for (int i = 0; i < _temp.Length; i++)
+    //         converted[i] = TemperatureConverter.ToDegreesCelsius(_temp[i]);
+    //
+    //     var averaged = SampleAverager.Average(converted, Convert.ToUInt32(AveragingFactor));
+    //     foreach (var value in averaged)
+    //         TemperatureHistory.Add(value);
+    //
+    //     OnPropertyChanged((nameof(ChartValues)));
+    // }
 }
