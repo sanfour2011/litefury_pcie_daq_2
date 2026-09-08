@@ -1,0 +1,31 @@
+# Compiled binaries
+test-tui
+step1
+step2
+step3
+step4
+*.o
+*.out
+litefury-tui
+litefury-tui2
+
+# Build directories
+build/
+bin/
+
+# Editor / OS cruft
+*.swp
+*~
+.vscode/
+.DS_Store
+
+# Build directories
+build/
+bin/
+
+# Kernel module build artifacts
+*.ko
+*.mod
+*.mod.c
+*.symvers
+*.order
