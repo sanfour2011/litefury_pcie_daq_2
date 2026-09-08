@@ -29,3 +29,4 @@ bin/
 *.mod.c
 *.symvers
 *.order
+.idea/
