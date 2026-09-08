@@ -30,66 +30,34 @@ use ieee.NUMERIC_STD.all;
 --use UNISIM.VComponents.all;
 
 entity acquisition_ctrl is
-	generic (
-		sample_rate_hz : integer := 100_000_000;  -- Rate at which new sawtooth samples are generated
-		clk_freq_hz    : integer := 200_000_000;  -- Input CLK_FREQ_HZ
-		max_wav_value  : integer := 512           -- max waveform walue
-	);
+
 	port (
-		clk          : in  std_logic;
-		rst_n        : in  std_logic;
-		acq_en       : in  std_logic;                      -- Acquisition enable signal, to start/stop generating samples
-		is_running   : out std_logic;
-		sample_ready : out std_logic;                      -- Signal indicating that a new sample is ready
-		sample_out   : out std_logic_vector(31 downto 0)
+		clk              : in  std_logic;
+		rst_n            : in  std_logic;
+		acq_en           : in  std_logic;                      -- Acquisition enable signal, to start/stop generating samples
+		src_sample       : in  std_logic_vector(31 downto 0);
+		src_sample_valid : in  std_logic;
+		is_running       : out std_logic;
+		sample_ready_out : out std_logic;                      -- Signal indicating that a new sample is ready
+		sample_out       : out std_logic_vector(31 downto 0)
+
 	);
 end acquisition_ctrl;
 
 architecture Behavioral of acquisition_ctrl is
-	signal sample_valid_sig : std_logic := '0';
-	signal enable_sig       : std_logic;
-
-	component sample_gen
-	generic (
-		SAMPLE_RATE_HZ : integer := 100_000_000;  -- Rate at which new sawtooth samples are generated
-		CLK_FREQ_HZ    : integer := 200_000_000;   -- Input CLK_FREQ_HZ
-		MAX_SAWTOOTH   : integer := 512
-	);
-	port (
-		rst_n  : in std_logic;
-		clk    : in std_logic;
-		enable : in std_logic;
-
-		sawtooth_out : out std_logic_vector (31 downto 0);
-		sample_valid : out std_logic
-	);
-end component;
 
 begin
-sample_gen_inst : sample_gen
-generic map (
-	SAMPLE_RATE_HZ => sample_rate_hz,
-	CLK_FREQ_HZ    => clk_freq_hz, 
-	MAX_SAWTOOTH  => max_wav_value
-)
-port map (
-	rst_n        => rst_n,
-	clk          => clk,
-	enable       => enable_sig,       -- Enable sample generation only when acquisition is enabled and buffer is not full
-	sawtooth_out => sample_out,
-	sample_valid => sample_valid_sig
-);
 
-u_process_1 : process (clk, rst_n)
-begin
-    if rst_n = '0' then
-        is_running <= '0';
-    elsif rising_edge(clk) then
-        is_running <= acq_en;
-    end if;
-end process u_process_1;
+	u_process_1 : process (clk, rst_n)
+	begin
+		if rst_n = '0' then
+			is_running <= '0';
+		elsif rising_edge(clk) then
+			is_running <= acq_en;
+		end if;
+	end process u_process_1;
 
-sample_ready <= sample_valid_sig;
-enable_sig <= acq_en;  
+	sample_ready_out <= src_sample_valid when acq_en = '1' else '0';
+	sample_out <= src_sample;
 
 end Behavioral;

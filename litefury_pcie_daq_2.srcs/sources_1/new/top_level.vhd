@@ -27,11 +27,8 @@ entity top_level is
 end top_level;
 
 architecture Behavioral of top_level is
-	constant BRAM_SIZE      : integer := 2048;         -- number of 32-bit samples (words) that the BRAM is holding and NOT bytes: 2048 words x 4 bytes = 8192 bytes total.
-	--constant SAMPLE_RATE_Hz : integer := 30;           -- at 30 samples/s, filling 2048 samples takes ~1 min , convenient for manual hardware tests via RWEverything.
-	constant SAMPLE_RATE_Hz : integer := 600;           
-	constant CLK_FREQ_Hz    : integer := 200_000_000;
-	constant WAVFORM_AMP    : integer := 512;
+	constant BRAM_SIZE   : integer := 2048;         -- number of 32-bit samples (words) that the BRAM is holding and NOT bytes: 2048 words x 4 bytes = 8192 bytes total.
+	constant CLK_FREQ_Hz : integer := 200_000_000;
 
 	component IBUFDS is
 	port (
@@ -82,7 +79,6 @@ signal BRAM_PORTB_0_addr_sig : std_logic_vector (31 downto 0) := (others => '0')
 signal BRAM_PORTB_0_we_sig   : std_logic_vector (3 downto 0) := (others => '0');
 signal BRAM_PORTB_0_rst_sig  : std_logic;                                          -- unfortnattly we need a reset signal for the BRAM, because its reset
 signal sample_valid_sig      : std_logic;                                          -- Signal to indicate when the sample is valid
-signal sawtooth_out_sig      : std_logic_vector (31 downto 0) := (others => '0');  -- 32-bit sawtooth output
 
 --irq
 signal usr_irq_req_sig                        : std_logic_vector (1 downto 0);
@@ -112,20 +108,23 @@ signal mem_addr_out_sig     : std_logic_vector (12 downto 0) := (others => '0');
 signal ping_pong_we_sig     : std_logic;
 
 --degugging IRQ ToDo: delete when done:
-attribute MARK_DEBUG : string;
-attribute KEEP : string;
-signal irq_a_cnt_sig,irq_b_cnt_sig, ready_a_cnt_sig,ready_b_cnt_sig  : unsigned (15 downto 0) := (others => '0');
+attribute MARK_DEBUG                                                  : string;
+attribute KEEP                                                        : string;
+signal irq_a_cnt_sig, irq_b_cnt_sig, ready_a_cnt_sig, ready_b_cnt_sig : unsigned (15 downto 0) := (others => '0');
 
-attribute MARK_DEBUG of irq_a_cnt_sig : signal is "TRUE";
-attribute KEEP of irq_a_cnt_sig : signal is "TRUE";
-attribute MARK_DEBUG of irq_b_cnt_sig : signal is "TRUE";
-attribute KEEP of irq_b_cnt_sig : signal is "TRUE";
-attribute MARK_DEBUG of ready_a_cnt_sig : signal is "TRUE";
-attribute KEEP of ready_a_cnt_sig : signal is "TRUE";
-attribute MARK_DEBUG of ready_b_cnt_sig : signal is "TRUE";
-attribute KEEP of ready_b_cnt_sig : signal is "TRUE";
+-- attribute MARK_DEBUG of irq_a_cnt_sig   : signal is "TRUE";
+-- attribute KEEP of irq_a_cnt_sig         : signal is "TRUE";
+-- attribute MARK_DEBUG of irq_b_cnt_sig   : signal is "TRUE";
+-- attribute KEEP of irq_b_cnt_sig         : signal is "TRUE";
+-- attribute MARK_DEBUG of ready_a_cnt_sig : signal is "TRUE";
+-- attribute KEEP of ready_a_cnt_sig       : signal is "TRUE";
+-- attribute MARK_DEBUG of ready_b_cnt_sig : signal is "TRUE";
+-- attribute KEEP of ready_b_cnt_sig       : signal is "TRUE";
 
-
+--xadc
+signal data_rdy_sig        : std_logic := '0';
+signal temperature_out_sig : std_logic_vector (31 downto 0) := (others => '0');
+signal out_sig      : std_logic_vector (31 downto 0) := (others => '0');  -- 32-bit sawtooth output
 
 begin
 
@@ -147,19 +146,16 @@ port map (
 	sysclk => sys_clk
 );
 acquisition_ctrl_inst : entity work.acquisition_ctrl
-generic map (
-	sample_rate_hz => SAMPLE_RATE_Hz,
-	clk_freq_hz    => CLK_FREQ_Hz,
-    max_wav_value => WAVFORM_AMP
 
-)
 port map (
 	clk          => sys_clk,
 	rst_n        => soft_rst_pci_rst_sig,
 	acq_en       => enable_acquisition_synced,
+	src_sample 	=> temperature_out_sig,
+	src_sample_valid => data_rdy_sig,
 	is_running   => is_running_sig,
-	sample_ready => sample_valid_sig,
-	sample_out   => sawtooth_out_sig
+	sample_ready_out => sample_valid_sig,
+	sample_out   => out_sig
 );
 
 ping_pong_ctrl_inst : entity work.ping_pong_ctrl
@@ -171,7 +167,7 @@ generic map (
 port map (
 	clk            => sys_clk,
 	rst_n          => soft_rst_pci_rst_sig,
-	data_in        => sawtooth_out_sig,
+	data_in        => out_sig,
 	data_valid     => sample_valid_sig,
 	write_enable_A => write_enable_A_sig,
 	write_enable_B => write_enable_B_sig,
@@ -229,7 +225,12 @@ port map (
 	usr_irq_req      => usr_irq_req_sig,
 	usr_irq_ack      => usr_irq_ack_sig,
 	msi_enable       => msi_enable_sig,
-	msi_vector_width => msi_vector_width_sig
+	msi_vector_width => msi_vector_width_sig,
+
+	--xadc
+	xadc_rst_n      => soft_rst_pci_rst_sig,
+	temperature_out => temperature_out_sig,
+	data_rdy        => data_rdy_sig
 );
 
 u_process_1 : process (sys_clk)
@@ -330,20 +331,20 @@ begin
 	end if;
 end process Heart_beat;
 
-Debug_IRQ_CNT : process (sys_clk,soft_rst_pci_rst_sig)
-variable usr_irq_req_B_sig_prev, usr_irq_req_A_sig_prev : std_logic :='0';
-variable ready_A_sig_prev, ready_B_sig_prev : std_logic :='0';
+Debug_IRQ_CNT : process (sys_clk, soft_rst_pci_rst_sig)
+variable usr_irq_req_B_sig_prev, usr_irq_req_A_sig_prev : std_logic := '0';
+variable ready_A_sig_prev, ready_B_sig_prev             : std_logic := '0';
 
 begin
 	if rising_edge(sys_clk) then 
-        
+
 		if usr_irq_req_A_sig_prev = '0' and usr_irq_req_A_sig = '1' then 
-            irq_a_cnt_sig <= irq_a_cnt_sig + 1;
-        end if;
-        
-        if usr_irq_req_B_sig_prev = '0' and usr_irq_req_B_sig = '1' then 
-            irq_b_cnt_sig <= irq_b_cnt_sig + 1;
-        end if;
+			irq_a_cnt_sig <= irq_a_cnt_sig + 1;
+		end if;
+
+		if usr_irq_req_B_sig_prev = '0' and usr_irq_req_B_sig = '1' then 
+			irq_b_cnt_sig <= irq_b_cnt_sig + 1;
+		end if;
 
 		if ready_A_sig_prev = '0' and ready_A_sig = '1' then
 			ready_a_cnt_sig <= ready_a_cnt_sig +1;
@@ -352,13 +353,13 @@ begin
 		if ready_B_sig_prev = '0' and ready_B_sig = '1' then 
 			ready_b_cnt_sig <= ready_b_cnt_sig + 1;
 		end if;
-        
-        usr_irq_req_A_sig_prev := usr_irq_req_A_sig;
-        usr_irq_req_B_sig_prev := usr_irq_req_B_sig;
+
+		usr_irq_req_A_sig_prev := usr_irq_req_A_sig;
+		usr_irq_req_B_sig_prev := usr_irq_req_B_sig;
 		ready_A_sig_prev := ready_A_sig;
 		ready_B_sig_prev := ready_B_sig;
 
-    end if;
+	end if;
 end process Debug_IRQ_CNT;
 
 write_enable_A_sig <= not irq_pending_A_sig_synced;
