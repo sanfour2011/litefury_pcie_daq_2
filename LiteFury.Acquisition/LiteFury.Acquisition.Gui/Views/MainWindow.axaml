@@ -1,0 +1,196 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LiteFury.Acquisition.Gui.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:scottplot="using:ScottPlot.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="LiteFury.Acquisition.Gui.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="LiteFury.Acquisition.Gui">
+
+    <Window.Styles>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="AliceBlue" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+        <Style Selector="TextBox.active">
+            <Setter Property="Background" Value="LightGreen" />
+            <Setter Property="Text" Value="1"></Setter>
+        </Style>
+        <Style Selector="TextBox.warning">
+            <Setter Property="Background" Value="IndianRed" />
+        </Style>
+    </Window.Styles>
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="10,10,10,10" ColumnDefinitions="*" RowSpacing="2" Background="AntiqueWhite">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" /> <!-- Title -->
+            <RowDefinition Height="auto" /> <!-- Control -->
+            <RowDefinition Height="auto" /> <!-- Status/ctrl and Flags -->
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <!-- <RowDefinition Height="auto" /> -->
+            <!-- <RowDefinition Height="*" /> -->
+        </Grid.RowDefinitions>
+        <Grid Grid.Row='0' ColumnDefinitions="auto,*,auto" ColumnSpacing="0" Background="AliceBlue">
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="LiteFury Control" FontSize="18"
+                       FontWeight="SemiBold" TextAlignment="Left" VerticalAlignment="Center" />
+
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="01:00.0 Xilinx Corporation [10ee:7021]" TextAlignment="Right"
+                       VerticalAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="2">
+                <Border Grid.Column="1" Background="AliceBlue" CornerRadius="3" Padding="5" BorderBrush="DimGray"
+                        BorderThickness="1">
+
+                    <StackPanel Grid.Column="1" Background="AliceBlue">
+                        <TextBlock Text="XADC Averaging" FontWeight="Bold" Padding="0,0,0,4" />
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                <RadioButton GroupName="Averaging" Content="1x" IsChecked="True"
+                                             Command="{Binding SetAvgCommand}" CommandParameter="1" />
+                                <RadioButton GroupName="Averaging" Content="4x"
+                                             Command="{Binding SetAvgCommand}" CommandParameter="4" />
+                                <RadioButton GroupName="Averaging" Content="16x"
+                                             Command="{Binding SetAvgCommand}" CommandParameter="16" />
+                                <RadioButton GroupName="Averaging" Content="64x"
+                                             Command="{Binding SetAvgCommand}" CommandParameter="64" />
+                                <RadioButton GroupName="Averaging" Content="256x"
+                                             Command="{Binding SetAvgCommand}" CommandParameter="256" />
+                            </StackPanel>
+                        </StackPanel>
+                </Border>
+
+                <Border Grid.Column="0" Background="AliceBlue" CornerRadius="3" Padding="5" BorderBrush="DimGray"
+                        BorderThickness="1">
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
+                        <Button Content="Start" Command="{Binding StartCommand}" Width="80"
+                                HorizontalContentAlignment="Center"
+                                VerticalAlignment="Center" Background="AliceBlue" BorderThickness="2"
+                                BorderBrush="Gray">
+                        </Button>
+                        <Button Content="Stop" Command="{Binding StopCommand}" Width="80"
+                                HorizontalContentAlignment="Center"
+                                VerticalAlignment="Center" Background="AliceBlue" BorderThickness="2"
+                                BorderBrush="Gray">
+                        </Button>
+                        <Button Content="Reset" Command="{Binding ResetCommand}" Width="80"
+                                HorizontalContentAlignment="Center"
+                                VerticalAlignment="Center" Background="AliceBlue" BorderThickness="2"
+                                BorderBrush="Gray">
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="2">
+            <Border Grid.Column="0" Background="AliceBlue" CornerRadius="3" Padding="2"
+                    BorderBrush="DimGray" BorderThickness="1">
+                <StackPanel Margin="5,0,0,2">
+                    <TextBlock Text="CTRL/STATUS" FontWeight="Bold" />
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBlock Text="{Binding ControlText, StringFormat='CTRL: {0}'}" />
+                    <TextBlock Text="{Binding StatusText, StringFormat='STAUTS: {0}'}" />
+                    <!-- ReSharper restore Xaml.InvalidType -->
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Background="AliceBlue" CornerRadius="3" Padding="2" BorderBrush="DimGray"
+                    BorderThickness="1">
+                <Grid Grid.Row="0" Grid.Column="1" Grid.RowDefinitions="*,*" Grid.ColumnDefinitions="*,*,*"
+                      ColumnSpacing="2" Margin="5,0,5,2">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="FLAGS" FontWeight="Bold" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Text="RUNNING" Classes.active="{Binding IsRunning}"
+                             IsHitTestVisible="False" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="IRQ PENDING" Classes.warning="{Binding AnyIrqPending}"
+                             IsHitTestVisible="False" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Text="BUFFER FULL" Classes.warning="{Binding IsBufferFull}"
+                             IsHitTestVisible="False" />
+
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3" CornerRadius="3" Background="AliceBlue" Padding="2" BorderBrush="Gray" BorderThickness="1">
+            <Grid RowDefinitions="Auto,*" Background="AliceBlue">
+                <Grid ColumnDefinitions="*,*" Margin="5,0,5,0">
+                    <TextBlock Text="Temperature (XADC)" FontWeight="Bold"></TextBlock>
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBlock Grid.Column="1" Text="{Binding LastChartValue}" TextAlignment="Right"></TextBlock>
+                    <!-- ReSharper restore Xaml.InvalidType -->
+                </Grid>
+               
+                <ContentControl Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding PlotControl, Mode=OneTime}"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="4" RowDefinitions="auto,auto" ColumnDefinitions="*" IsHitTestVisible="false">
+            <Grid Grid.Row="0" RowDefinitions="*,*">
+                <TextBox Grid.Row="0" Grid.Column="0" Text="Register bits (STATUS)" Margin="0.5"></TextBox>
+                <Grid Grid.Row="1" RowDefinitions="auto,auto,auto" ColumnDefinitions="*,*,*,*,*,*,*,*">
+                    <TextBox Grid.Row="0" Grid.Column="0" Text="7" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="0" Text="0" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="0" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="6" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="0" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="2" Text="5" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="2" Text="0" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="3" Text="4" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="0" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
+
+                    <TextBox Grid.Row="0" Grid.Column="4" Text="3" Background="AliceBlue" Margin="2"></TextBox>
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBox Grid.Row="1" Grid.Column="4"
+                             Text="{Binding IrqPendingB, Converter={x:Static vm:Conv.Bit}}"
+                             Classes.warning="{Binding IrqPendingB}" Margin="2">
+                        <!-- ReSharper restore Xaml.InvalidType -->
+                    </TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="4" Text="IRQ B" Background="AliceBlue" Margin="2"></TextBox>
+
+                    <TextBox Grid.Row="0" Grid.Column="5" Text="2" Background="AliceBlue" Margin="2"></TextBox>
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBox Grid.Row="1" Grid.Column="5"
+                             Text="{Binding IrqPendingA, Converter={x:Static vm:Conv.Bit}}"
+                             Classes.warning="{Binding IrqPendingA}" Margin="2">
+                        <!-- ReSharper restore Xaml.InvalidType -->
+                    </TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="5" Text="IRQ A" Background="AliceBlue" Margin="2"></TextBox>
+
+                    <TextBox Grid.Row="0" Grid.Column="6" Text="1" Background="AliceBlue" Margin="2"></TextBox>
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBox Grid.Row="1" Grid.Column="6"
+                             Text="{Binding IsBufferFull, Converter={x:Static vm:Conv.Bit}}"
+                             Classes.warning="{Binding IsBufferFull}" Margin="2">
+                        <!-- ReSharper restore Xaml.InvalidType -->
+                    </TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="6" Text="Buffer Full" Background="AliceBlue" Margin="2"></TextBox>
+
+                    <TextBox Grid.Row="0" Grid.Column="7" Text="0" Background="AliceBlue" Margin="2"
+                             TextAlignment="Center">
+                    </TextBox>
+                    <!-- ReSharper disable Xaml.InvalidType -->
+                    <TextBox Grid.Row="1" Grid.Column="7"
+                             Text="{Binding IsRunning, Converter={x:Static vm:Conv.Bit}}"
+                             Classes.active="{Binding IsRunning}" Margin="2" TextAlignment="Center">
+                        <!-- ReSharper restore Xaml.InvalidType -->
+                    </TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="7" Text="Running" Background="AliceBlue" Margin="2"></TextBox>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
