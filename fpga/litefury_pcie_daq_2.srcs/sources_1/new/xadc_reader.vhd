@@ -37,7 +37,7 @@ entity xadc_reader is
 		src_drdy         : in  std_logic;
 		src_data         : in  std_logic_vector (15 downto 0);
 		src_eoc          : in  std_logic;
-		avg              : in  std_logic_vector (2 downto 0);
+		avg              : in  std_logic_vector (1 downto 0);
 		daddr            : out std_logic_vector (6 downto 0);
 		den              : out std_logic;
 		di               : out std_logic_vector (15 downto 0);
@@ -55,16 +55,16 @@ architecture Behavioral of xadc_reader is
 
 		-- Config xadc Read and Write states
 		S_CFG_RD_DEN, S_CFG_RD_WAIT_DRDY, S_CFG_RD_WAIT_DRDY_LOW,
-		S_CFG_WR_DEN, S_CFG_WR_WAIT_DRDY, S_CFG_WR_WAIT_DRDY_LOW,
+		S_CFG_WR_DEN, S_CFG_WR_WAIT_DRDY, S_CFG_WR_WAIT_DRDY_LOW
 
 	);
 	signal next_xadc_state : xadc_state_t;
 	signal xadc_Config_Reg_0 : std_logic_vector(15 downto 0) := (others => '0');
+	signal avg_prev : std_logic_vector(1 downto 0) := (others => '0');
 
 begin
 
 	u_process_1 : process (clk, rst_n)
-	variable avg_prev : std_logic_vector(2 downto 0) := (others => '0');
 	begin
 		if rst_n = '0' then
 			daddr <= (others => '0');
@@ -75,18 +75,21 @@ begin
 			next_xadc_state <= S_IDLE;
 			sample_out <= (others => '0');
 			sample_valid_out <= '0';
-			avg_prev := (others => '0');
+			avg_prev <= (others => '0');
 
 		elsif rising_edge(clk) then
 			case next_xadc_state is
 				when S_IDLE =>
 					if avg_prev /= avg then
-						avg_prev := avg;
-						daddr <= "01000000"; -- 0x40 average control register
+						avg_prev <= avg;
+						daddr <= "1000000"; -- 0x40 average control register
 						next_xadc_state <= S_CFG_RD_DEN;
+						dwe <= '0'; -- Read operation
+						den <= '1';
 					elsif src_eoc = '1' then
 						daddr <= "00000000"; -- temperature channel
 						next_xadc_state <= S_DEN;
+						dwe <= '0'; -- Read operation
 						den <= '1';
 					end if;
 				when S_DEN =>
@@ -112,10 +115,14 @@ begin
 					if src_drdy = '1' then
 						next_xadc_state <= S_CFG_RD_WAIT_DRDY_LOW;
 						xadc_Config_Reg_0 <=  src_data(15 downto 0);
+						xadc_Config_Reg_0 (13 downto 12) <= avg(1 downto 0);
 					end if;
 				when S_CFG_RD_WAIT_DRDY_LOW =>
 					if src_drdy = '0' then
-						next_xadc_state <= S_IDLE;
+						next_xadc_state <= S_CFG_WR_DEN;
+						dwe <= '1'; --Write operation to config register
+						di <= xadc_Config_Reg_0;
+						den <= '1';
 					end if;
 
 					--config write states:
@@ -125,7 +132,6 @@ begin
 				when S_CFG_WR_WAIT_DRDY =>
 					if src_drdy = '1' then
 						next_xadc_state <= S_CFG_WR_WAIT_DRDY_LOW;
-						di <= xadc_Config_Reg_0(15) & avg & xadc_Config_Reg_0(11 downto 0);
 					end if;
 				when S_CFG_WR_WAIT_DRDY_LOW =>
 					if src_drdy = '0' then
