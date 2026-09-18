@@ -28,7 +28,8 @@
       "ilslice_1": "",
       "xadc_reader_0": "",
       "xadc_wiz_0": "",
-      "ilvector_logic_1": ""
+      "ilvector_logic_1": "",
+      "xpm_cdc_gen_5": ""
     },
     "interface_ports": {
       "pcie_7x_mgt_rtl_0": {
@@ -712,8 +713,8 @@
         }
       },
       "AXI_CSR_0": {
-        "vlnv": "Nizar_Homebrew:user:AXI_CSR:3.0",
-        "ip_revision": "11",
+        "vlnv": "Nizar_Homebrew:user:AXI_CSR:4.0",
+        "ip_revision": "12",
         "xci_name": "design_1_AXI_CSR_0_0",
         "xci_path": "ip\\design_1_AXI_CSR_0_0\\design_1_AXI_CSR_0_0.xci",
         "inst_hier_path": "AXI_CSR_0",
@@ -974,6 +975,22 @@
             "value": "1"
           }
         }
+      },
+      "xpm_cdc_gen_5": {
+        "vlnv": "xilinx.com:ip:xpm_cdc_gen:1.0",
+        "ip_revision": "5",
+        "xci_name": "design_1_xpm_cdc_gen_5_0",
+        "xci_path": "ip\\design_1_xpm_cdc_gen_5_0\\design_1_xpm_cdc_gen_5_0.xci",
+        "inst_hier_path": "xpm_cdc_gen_5",
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "DEST_SYNC_FF": {
+            "value": "2"
+          },
+          "SIM_ASSERT_CHK": {
+            "value": "true"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -1049,6 +1066,12 @@
         "ports": [
           "AXI_CSR_0/soft_reset",
           "soft_reset"
+        ]
+      },
+      "AXI_CSR_0_xadc_avg": {
+        "ports": [
+          "AXI_CSR_0/xadc_avg",
+          "xpm_cdc_gen_5/src_in"
         ]
       },
       "axi_csr_0_enable_acquisition": {
@@ -1132,7 +1155,8 @@
           "xpm_cdc_gen_3/dest_clk",
           "xpm_cdc_gen_4/dest_clk",
           "xadc_wiz_0/dclk_in",
-          "xadc_reader_0/clk"
+          "xadc_reader_0/clk",
+          "xpm_cdc_gen_5/dest_clk"
         ]
       },
       "usr_irq_req_1": {
@@ -1218,9 +1242,10 @@
           "xpm_cdc_gen_0/dest_clk",
           "xpm_cdc_gen_1/dest_clk",
           "xpm_cdc_gen_2/dest_clk",
-          "AXI_CSR_0/control_status_reg_aclk",
           "xpm_cdc_gen_3/src_clk",
-          "xpm_cdc_gen_4/src_clk"
+          "xpm_cdc_gen_4/src_clk",
+          "AXI_CSR_0/control_status_reg_aclk",
+          "xpm_cdc_gen_5/src_clk"
         ]
       },
       "xdma_0_axi_aresetn": {
@@ -1282,6 +1307,12 @@
         "ports": [
           "xpm_cdc_gen_4/dest_pulse",
           "usr_irq_ack_A"
+        ]
+      },
+      "xpm_cdc_gen_5_dest_out": {
+        "ports": [
+          "xpm_cdc_gen_5/dest_out",
+          "xadc_reader_0/avg"
         ]
       }
     },

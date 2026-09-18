@@ -34,6 +34,7 @@ entity AXI_CSR_slave_lite_v3_0_S00_AXI is
 		irq_pending_A      : out std_logic;
 		irq_pending_B      : out std_logic;
 		soft_reset         : out std_logic;  -- makes possible to reset the whole system from the host side
+		xadc_avg           : out std_logic_vector (1 downto 0);
 
 		-- User ports ends
 		-- Do not modify the ports beyond this line
@@ -241,6 +242,7 @@ begin
 				irq_pending_B_sig <= '0';
 				ready_A_prev <= '0';
 				ready_B_prev <= '0';
+				xadc_avg <= (others=>'0');
 
 			else
 				if (S_AXI_WVALID = '1') then
@@ -391,6 +393,8 @@ begin
 				enable_acquisition <= slv_reg0(ENABLE_ACQUISITION_BIT);
 				soft_reset_sig <= slv_reg0(SOFT_RESET_BIT);
 				soft_reset <= slv_reg0(SOFT_RESET_BIT);
+				xadc_avg  <= slv_reg0(3 downto 2);
+
 
 				-- User logic ends
 

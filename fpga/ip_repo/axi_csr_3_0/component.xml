@@ -3,7 +3,7 @@
   <spirit:vendor>Nizar_Homebrew</spirit:vendor>
   <spirit:library>user</spirit:library>
   <spirit:name>AXI_CSR</spirit:name>
-  <spirit:version>3.0</spirit:version>
+  <spirit:version>4.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
       <spirit:name>control_status_reg_aresetn</spirit:name>
@@ -219,6 +219,22 @@
         </spirit:portMap>
       </spirit:portMaps>
     </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>soft_reset</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RST</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>soft_reset</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
   </spirit:busInterfaces>
   <spirit:memoryMaps>
     <spirit:memoryMap>
@@ -248,7 +264,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e0e1166d</spirit:value>
+            <spirit:value>9a1eb1e0</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -264,7 +280,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e0e1166d</spirit:value>
+            <spirit:value>9a1eb1e0</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -321,7 +337,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d955f5eb</spirit:value>
+            <spirit:value>abcf1e95</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -425,6 +441,23 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>xadc_avg</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
               <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -808,7 +841,7 @@
       <spirit:file>
         <spirit:name>hdl/AXI_CSR.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7731c93e</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_f44c1b28</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -857,7 +890,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/AXI_CSR_v3_0.tcl</spirit:name>
+        <spirit:name>xgui/AXI_CSR_v4_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_df259eb7</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
@@ -929,16 +962,16 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>AXI_CSR_v3.0</xilinx:displayName>
-      <xilinx:coreRevision>11</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-08-08T10:57:05Z</xilinx:coreCreationDateTime>
+      <xilinx:displayName>AXI_CSR_v4.0</xilinx:displayName>
+      <xilinx:coreRevision>12</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-09-18T09:29:15Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2025.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="c37477ca"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="7a14472a"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="c2ab1600"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="19ff84d3"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="f6554b5f"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="79ba16a4"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="d139ad89"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="317c23a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="249c1e20"/>
     </xilinx:packagingInfo>

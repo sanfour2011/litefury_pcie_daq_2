@@ -24,6 +24,8 @@ entity AXI_CSR is
 		irq_pending_A      : out std_logic;
 		irq_pending_B      : out std_logic;
 		soft_reset         : out std_logic;  -- makes possible to reset the whole system from the host side
+		xadc_avg           : out std_logic_vector (1 downto 0);
+
 
 		-- User ports ends
 		-- Do not modify the ports beyond this line
