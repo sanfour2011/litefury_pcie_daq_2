@@ -87,7 +87,7 @@ begin
 						dwe <= '0'; -- Read operation
 						den <= '1';
 					elsif src_eoc = '1' then
-						daddr <= "00000000"; -- temperature channel
+						daddr <= "0000000"; -- temperature channel
 						next_xadc_state <= S_DEN;
 						dwe <= '0'; -- Read operation
 						den <= '1';

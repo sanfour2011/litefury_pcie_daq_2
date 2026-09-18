@@ -890,6 +890,11 @@
           "src_eoc": {
             "direction": "I"
           },
+          "avg": {
+            "direction": "I",
+            "left": "1",
+            "right": "0"
+          },
           "daddr": {
             "direction": "O",
             "left": "6",
