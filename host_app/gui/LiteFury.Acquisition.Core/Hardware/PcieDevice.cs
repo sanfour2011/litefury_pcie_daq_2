@@ -37,4 +37,7 @@ public static class PcieDevice
     public const int SR_OFFSET = 0x04;
     public const int CR_OFFSET = 0x00;
     public const int BRAM_OFFSET = 0x2000;
+    
+    public const int XADC_AVG_SHIFT = 2;
+    public const int XADC_AVG_MASK  = 0x3 << XADC_AVG_SHIFT;
 }

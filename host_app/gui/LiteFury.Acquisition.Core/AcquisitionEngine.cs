@@ -16,8 +16,8 @@ public class AcquisitionEngine : IDisposable
 
     public uint ReadStatus => _csr.ReadStatus();
     public uint ReadControl => _csr.ReadControl();
-    public void Start() => _csr.WriteControl(1 << PcieDevice.ENABLE_ACQ_BIT);
-    public void Stop() => _csr.WriteControl(0);
+    public void Start() => _csr.SetAcquisitionEnabled(true);
+    public void Stop() => _csr.SetAcquisitionEnabled(false);
 
     public AcquisitionEngine()
     {
@@ -66,8 +66,7 @@ public class AcquisitionEngine : IDisposable
 
     public void Reset()
     {
-        uint controlReg = _csr.ReadControl();
-        _csr.WriteControl(controlReg | (1<<PcieDevice.SOFT_RESET_BIT));
+       _csr.TriggerSoftReset();
         Thread.Sleep(10);
     }
 

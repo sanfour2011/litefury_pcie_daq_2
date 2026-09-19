@@ -59,10 +59,8 @@
                                 <RadioButton GroupName="Averaging" Content="1x" IsChecked="True"
                                              Command="{Binding SetAvgCommand}" CommandParameter="1" />
                                 <RadioButton GroupName="Averaging" Content="4x"
-                                             Command="{Binding SetAvgCommand}" CommandParameter="4" />
-                                <RadioButton GroupName="Averaging" Content="16x"
                                              Command="{Binding SetAvgCommand}" CommandParameter="16" />
-                                <RadioButton GroupName="Averaging" Content="64x"
+                                <RadioButton GroupName="Averaging" Content="16x"
                                              Command="{Binding SetAvgCommand}" CommandParameter="64" />
                                 <RadioButton GroupName="Averaging" Content="256x"
                                              Command="{Binding SetAvgCommand}" CommandParameter="256" />

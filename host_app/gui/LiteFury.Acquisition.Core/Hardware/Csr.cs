@@ -90,19 +90,37 @@ public class Csr : IDisposable
     {
         WriteRegister(PcieDevice.SR_OFFSET, 1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT);
     }
-
-    public void ClearPendingBitA()
-    {
-        WriteRegister(PcieDevice.SR_OFFSET, 1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT);
-    }
-
-    public void ClearPendingBitB()
-    {
-        WriteRegister(PcieDevice.SR_OFFSET, 1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT);
-    }
-
+    
     public uint ReadControl()
     {
         return ReadRegister(PcieDevice.CR_OFFSET);
+    }
+
+    public void TriggerSoftReset()
+    {
+        uint ctrlReg = ReadControl();
+        WriteControl(ctrlReg | (1<<PcieDevice.SOFT_RESET_BIT));
+    }
+
+    public void SetAcquisitionEnabled(bool value)
+    {
+        var ctrlReg = ReadControl();
+        if (value)
+            WriteControl(ctrlReg | (1<<PcieDevice.ENABLE_ACQ_BIT));
+        else
+            WriteControl((uint)(ctrlReg & ~(1<<PcieDevice.ENABLE_ACQ_BIT)));
+    }
+    
+    
+    public void SetAvg(uint value)
+    {
+        if (value > ( PcieDevice.XADC_AVG_MASK >> PcieDevice.XADC_AVG_SHIFT) )
+            throw new ArgumentOutOfRangeException(nameof(value));
+        var ctrlReg = ReadControl();
+        uint updateCtrl = (uint)(ctrlReg & (~ PcieDevice.XADC_AVG_MASK));
+        //make sure to take no more than 2 bits 
+        var regAvgValue = ((value << PcieDevice.XADC_AVG_SHIFT) & (PcieDevice.XADC_AVG_MASK)); 
+        updateCtrl |= regAvgValue;
+        WriteControl(updateCtrl);
     }
 }

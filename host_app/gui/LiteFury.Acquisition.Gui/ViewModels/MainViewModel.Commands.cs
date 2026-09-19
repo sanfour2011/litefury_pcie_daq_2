@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 
 namespace LiteFury.Acquisition.Gui.ViewModels;
@@ -27,12 +28,20 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SetAvg(string avg)
+    private void SetAvg(string avgStr)
     {
-        SetAvg( int.Parse(avg));
-        
+        //int.Parse(avgStr);
+
+        var avg = avgStr switch
+        {
+            "1" => 0,
+            "16" => 1,
+            "64" => 2,
+            "256" => 3
+        };
+        SetAvg(avg);
     }
 
-    private void SetAvg(int avg) => AveragingFactor = avg;
+    private void SetAvg(int value) => AveragingFactor = value;
  
 }
