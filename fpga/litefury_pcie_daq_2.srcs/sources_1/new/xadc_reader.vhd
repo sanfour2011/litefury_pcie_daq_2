@@ -75,7 +75,7 @@ begin
 			next_xadc_state <= S_IDLE;
 			sample_out <= (others => '0');
 			sample_valid_out <= '0';
-			avg_prev <= (others => '0');
+			avg_prev <= "11";
 
 		elsif rising_edge(clk) then
 			case next_xadc_state is

@@ -73,6 +73,8 @@ architecture arch_imp of AXI_CSR is
 		irq_pending_A      : out std_logic;
 		irq_pending_B      : out std_logic;
 		soft_reset         : out std_logic;  -- makes possible to reset the whole system from the host side
+		xadc_avg           : out std_logic_vector (1 downto 0);
+
 
 		S_AXI_ACLK    : in  std_logic;
 		S_AXI_ARESETN : in  std_logic;
@@ -117,6 +119,7 @@ port map (
 	irq_pending_A      => irq_pending_A,
 	irq_pending_B      => irq_pending_B,
 	soft_reset         => soft_reset,
+	xadc_avg           => xadc_avg,
 
 	S_AXI_ACLK    => control_status_reg_aclk,
 	S_AXI_ARESETN => control_status_reg_aresetn,

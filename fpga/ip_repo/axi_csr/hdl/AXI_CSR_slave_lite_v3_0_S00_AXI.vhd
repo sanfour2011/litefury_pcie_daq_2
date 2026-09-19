@@ -232,7 +232,7 @@ begin
 	begin
 		if rising_edge(S_AXI_ACLK) then
 			if S_AXI_ARESETN = '0' or soft_reset_sig = '1' then
-				slv_reg0 <= (others => '0');
+				slv_reg0 <= (3 => '1', others => '0'); -- Bits 3:2 = XADC averaging, Default "10":64
 				slv_reg1 <= (others => '0');
 				slv_reg2 <= (others => '0');
 				slv_reg3 <= (others => '0');
@@ -242,8 +242,7 @@ begin
 				irq_pending_B_sig <= '0';
 				ready_A_prev <= '0';
 				ready_B_prev <= '0';
-				xadc_avg <= (others=>'0');
-
+			
 			else
 				if (S_AXI_WVALID = '1') then
 					case (mem_logic) is

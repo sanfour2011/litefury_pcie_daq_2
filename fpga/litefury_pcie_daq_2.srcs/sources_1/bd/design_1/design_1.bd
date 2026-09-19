@@ -713,8 +713,8 @@
         }
       },
       "AXI_CSR_0": {
-        "vlnv": "Nizar_Homebrew:user:AXI_CSR:4.0",
-        "ip_revision": "12",
+        "vlnv": "Nizar_Homebrew:user:AXI_CSR:4.1",
+        "ip_revision": "24",
         "xci_name": "design_1_AXI_CSR_0_0",
         "xci_path": "ip\\design_1_AXI_CSR_0_0\\design_1_AXI_CSR_0_0.xci",
         "inst_hier_path": "AXI_CSR_0",
@@ -1155,8 +1155,8 @@
           "xpm_cdc_gen_3/dest_clk",
           "xpm_cdc_gen_4/dest_clk",
           "xadc_wiz_0/dclk_in",
-          "xadc_reader_0/clk",
-          "xpm_cdc_gen_5/dest_clk"
+          "xpm_cdc_gen_5/dest_clk",
+          "xadc_reader_0/clk"
         ]
       },
       "usr_irq_req_1": {
@@ -1244,8 +1244,8 @@
           "xpm_cdc_gen_2/dest_clk",
           "xpm_cdc_gen_3/src_clk",
           "xpm_cdc_gen_4/src_clk",
-          "AXI_CSR_0/control_status_reg_aclk",
-          "xpm_cdc_gen_5/src_clk"
+          "xpm_cdc_gen_5/src_clk",
+          "AXI_CSR_0/control_status_reg_aclk"
         ]
       },
       "xdma_0_axi_aresetn": {
