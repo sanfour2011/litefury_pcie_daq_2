@@ -103,6 +103,6 @@ public class Csr : IDisposable
 
     public uint ReadControl()
     {
-        return ReadRegister(PcieDevice.SR_OFFSET);
+        return ReadRegister(PcieDevice.CR_OFFSET);
     }
 }

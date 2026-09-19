@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Data;
 using System.Diagnostics;
 
 namespace LiteFury.Acquisition.Core;
@@ -68,7 +69,6 @@ public class AcquisitionEngine : IDisposable
         uint controlReg = _csr.ReadControl();
         _csr.WriteControl(controlReg | (1<<PcieDevice.SOFT_RESET_BIT));
         Thread.Sleep(10);
-        _csr.WriteControl(controlReg); 
     }
 
     public void Dispose()

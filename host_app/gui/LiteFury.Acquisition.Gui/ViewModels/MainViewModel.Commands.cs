@@ -22,7 +22,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void Reset()
     {
-        _acqEngine.Stop();
+        _acqEngine.Reset();
         UpdateStatus(this, EventArgs.Empty);
     }
 
