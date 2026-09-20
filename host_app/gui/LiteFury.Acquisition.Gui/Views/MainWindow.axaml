@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LiteFury.Acquisition.Gui.ViewModels"
+        xmlns:core="using:LiteFury.Acquisition.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -68,10 +69,14 @@
                                 <RadioButton GroupName="Averaging" Content="256x"
                                              IsChecked="{Binding XadcAveragingFactor, 
                                 Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=3}" />
-                               </StackPanel>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Software Averaging" FontWeight="Bold" Margin="10,0,0,0" />
-                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SoftAveragingFactor}" Minimum="1" ShowButtonSpinner="false"
-                                           Increment="1" MaxWidth="70" HorizontalAlignment="Left" Background="AliceBlue" Margin="10,0,0,0"/>
+                            </StackPanel>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Software Averaging" FontWeight="Bold"
+                                       Margin="10,0,0,0" />
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SoftAveragingFactor}"
+                                           Minimum="1" Maximum="{x:Static core:PcieDevice.BRAM_HALF_WORDS}"
+                                           ShowButtonSpinner="False"
+                                           Increment="1" MaxWidth="70" HorizontalAlignment="Left"
+                                           Background="AliceBlue" Margin="10,0,0,0" />
                             <!-- ReSharper restore Xaml.InvalidType -->
                         </Grid>
                     </StackPanel>
