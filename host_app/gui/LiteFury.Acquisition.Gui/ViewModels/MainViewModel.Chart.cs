@@ -47,7 +47,7 @@ public partial class MainViewModel
         for (int i = 0; i < values.Length; i++)
             converted[i] = TemperatureConverter.ToDegreesCelsius(values[i]);
 
-        var averaged = SampleAverager.Average(converted, Convert.ToUInt32(XadcAveragingFactor));
+        var averaged = SampleAverager.Average(converted, Convert.ToUInt32(SoftAveragingFactor));
         foreach (var value in averaged)
             TemperatureHistory.Add(value);
 

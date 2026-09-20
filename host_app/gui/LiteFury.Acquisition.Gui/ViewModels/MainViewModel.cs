@@ -14,13 +14,11 @@ namespace LiteFury.Acquisition.Gui.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-  
     private readonly AcquisitionEngine _acqEngine = new AcquisitionEngine();
     private readonly DispatcherTimer _pollTimer;
    
     public MainViewModel()
     {
-      
         _pollTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
         _pollTimer.Tick += UpdateStatus;
         _pollTimer.Start();

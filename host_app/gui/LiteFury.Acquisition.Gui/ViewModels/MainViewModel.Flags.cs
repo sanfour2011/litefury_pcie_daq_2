@@ -9,6 +9,7 @@ public partial class MainViewModel
     [ObservableProperty] public partial bool IsBufferFull { get; set; } = true;
     [ObservableProperty] public partial bool IsRunning { get; set; } = false;
     [ObservableProperty] public partial int XadcAveragingFactor { get; set; }
+    [ObservableProperty] public partial int SoftAveragingFactor { get; set; } = 1;
     partial void OnXadcAveragingFactorChanged(int value) => _acqEngine.SetXadcAverage(value);
 
     [ObservableProperty] 

@@ -51,25 +51,29 @@
             <Grid ColumnDefinitions="*,*" ColumnSpacing="2">
                 <Border Grid.Column="1" Background="AliceBlue" CornerRadius="3" Padding="5" BorderBrush="DimGray"
                         BorderThickness="1">
-
                     <StackPanel Background="AliceBlue">
-                        <TextBlock Text="XADC Averaging" FontWeight="Bold" Padding="0,0,0,4" />
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <!-- ReSharper disable Xaml.InvalidType -->
-                            <RadioButton GroupName="Averaging" Content="1x"
-                                         IsChecked="{Binding  XadcAveragingFactor,
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*">
+                            <TextBlock Text="XADC Averaging" FontWeight="Bold" Padding="0,0,0,4" />
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5">
+                                <!-- ReSharper disable Xaml.InvalidType -->
+                                <RadioButton GroupName="Averaging" Content="1x"
+                                             IsChecked="{Binding  XadcAveragingFactor,
                                  Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=0}" />
-                            <RadioButton GroupName="Averaging" Content="16x"
-                                         IsChecked="{Binding XadcAveragingFactor,
+                                <RadioButton GroupName="Averaging" Content="16x"
+                                             IsChecked="{Binding XadcAveragingFactor,
                                 Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=1}" />
-                            <RadioButton GroupName="Averaging" Content="64x"
-                                         IsChecked="{Binding XadcAveragingFactor,
+                                <RadioButton GroupName="Averaging" Content="64x"
+                                             IsChecked="{Binding XadcAveragingFactor,
                                 Converter={x:Static vm:IsEqualConverter.Instance},ConverterParameter=2}" />
-                            <RadioButton GroupName="Averaging" Content="256x"
-                                         IsChecked="{Binding XadcAveragingFactor, 
+                                <RadioButton GroupName="Averaging" Content="256x"
+                                             IsChecked="{Binding XadcAveragingFactor, 
                                 Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=3}" />
+                               </StackPanel>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Software Averaging" FontWeight="Bold" Margin="10,0,0,0" />
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SoftAveragingFactor}" Minimum="1" ShowButtonSpinner="false"
+                                           Increment="1" MaxWidth="70" HorizontalAlignment="Left" Background="AliceBlue" Margin="10,0,0,0"/>
                             <!-- ReSharper restore Xaml.InvalidType -->
-                        </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Border>
 
