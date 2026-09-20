@@ -78,6 +78,6 @@ public class AcquisitionEngine : IDisposable
         _bramData.Dispose();
     }
 
-    public void SetAverage(int avg) => _csr.SetXadcAvg(avg);
+    public void SetXadcAverage(int avg) => _csr.SetXadcAvg(avg);
     
 }

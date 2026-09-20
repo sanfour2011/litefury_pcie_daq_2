@@ -8,8 +8,8 @@ public partial class MainViewModel
     [ObservableProperty] public partial string ControlText { get; set; } = "0x000000";
     [ObservableProperty] public partial bool IsBufferFull { get; set; } = true;
     [ObservableProperty] public partial bool IsRunning { get; set; } = false;
-    [ObservableProperty] public partial int AveragingFactor { get; set; }
-    partial void OnAveragingFactorChanged(int value) => _acqEngine.SetAverage(value);
+    [ObservableProperty] public partial int XadcAveragingFactor { get; set; }
+    partial void OnXadcAveragingFactorChanged(int value) => _acqEngine.SetXadcAverage(value);
 
     [ObservableProperty] 
     [NotifyPropertyChangedFor(nameof(AnyIrqPending))]

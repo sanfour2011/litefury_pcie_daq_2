@@ -57,16 +57,16 @@
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <!-- ReSharper disable Xaml.InvalidType -->
                             <RadioButton GroupName="Averaging" Content="1x"
-                                         IsChecked="{Binding  AveragingFactor,
+                                         IsChecked="{Binding  XadcAveragingFactor,
                                  Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=0}" />
                             <RadioButton GroupName="Averaging" Content="16x"
-                                         IsChecked="{Binding AveragingFactor,
+                                         IsChecked="{Binding XadcAveragingFactor,
                                 Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=1}" />
                             <RadioButton GroupName="Averaging" Content="64x"
-                                         IsChecked="{Binding AveragingFactor,
+                                         IsChecked="{Binding XadcAveragingFactor,
                                 Converter={x:Static vm:IsEqualConverter.Instance},ConverterParameter=2}" />
                             <RadioButton GroupName="Averaging" Content="256x"
-                                         IsChecked="{Binding AveragingFactor, 
+                                         IsChecked="{Binding XadcAveragingFactor, 
                                 Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=3}" />
                             <!-- ReSharper restore Xaml.InvalidType -->
                         </StackPanel>

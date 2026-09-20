@@ -52,7 +52,7 @@ public partial class MainViewModel : ViewModelBase
     {
         var statusReg = _acqEngine.ReadStatus;
         var ctrlReg = _acqEngine.ReadControl;
-        AveragingFactor = (int)((ctrlReg & PcieDevice.XADC_AVG_MASK) >> PcieDevice.XADC_AVG_SHIFT);
+        XadcAveragingFactor = (int)((ctrlReg & PcieDevice.XADC_AVG_MASK) >> PcieDevice.XADC_AVG_SHIFT);
         ControlText = $"0x{ctrlReg:X8}";
         StatusText = $"0x{statusReg:X8}";
         IsRunning = (statusReg & (1 << PcieDevice.STATUS_BIT_RUNNING)) != 0;
