@@ -112,7 +112,7 @@ public class Csr : IDisposable
     }
     
     
-    public void SetAvg(uint value)
+    public void SetXadcAvg(int value)
     {
         if (value > ( PcieDevice.XADC_AVG_MASK >> PcieDevice.XADC_AVG_SHIFT) )
             throw new ArgumentOutOfRangeException(nameof(value));
@@ -120,7 +120,7 @@ public class Csr : IDisposable
         uint updateCtrl = (uint)(ctrlReg & (~ PcieDevice.XADC_AVG_MASK));
         //make sure to take no more than 2 bits 
         var regAvgValue = ((value << PcieDevice.XADC_AVG_SHIFT) & (PcieDevice.XADC_AVG_MASK)); 
-        updateCtrl |= regAvgValue;
+        updateCtrl |= (uint)regAvgValue;
         WriteControl(updateCtrl);
     }
 }
