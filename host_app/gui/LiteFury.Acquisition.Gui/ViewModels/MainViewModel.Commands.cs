@@ -27,21 +27,6 @@ public partial class MainViewModel : ViewModelBase
         UpdateStatus(this, EventArgs.Empty);
     }
 
-    [RelayCommand]
-    private void SetAvg(string avgStr)
-    {
-        //int.Parse(avgStr);
-
-        var avg = avgStr switch
-        {
-            "1" => 0,
-            "16" => 1,
-            "64" => 2,
-            "256" => 3
-        };
-        SetAvg(avg);
-    }
-
-    private void SetAvg(int value) => AveragingFactor = value;
+   
  
 }

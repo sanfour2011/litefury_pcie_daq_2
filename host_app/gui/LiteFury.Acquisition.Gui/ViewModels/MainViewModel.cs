@@ -7,13 +7,13 @@ using CommunityToolkit.Mvvm.Input;
 using LiteFury.Acquisition.Core;
 using Tmds.DBus.Protocol;
 using MsBox.Avalonia;
+using ScottPlot.Plottables;
 
 
 namespace LiteFury.Acquisition.Gui.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-  
     private readonly AcquisitionEngine _acqEngine = new AcquisitionEngine();
     private readonly DispatcherTimer _pollTimer;
    
@@ -48,12 +48,14 @@ public partial class MainViewModel : ViewModelBase
 
     private void UpdateStatus(object? sender, EventArgs e)
     {
-        var status = _acqEngine.ReadStatus;
-        ControlText = $"0x{_acqEngine.ReadControl:X8}";
-        StatusText = $"0x{status:X8}";
-        IsRunning = (status & (1 << PcieDevice.STATUS_BIT_RUNNING)) != 0;
-        IsBufferFull = (status & (1 << PcieDevice.STATUS_BUFFER_FULL_BIT)) != 0;
-        IrqPendingA = (status & (1 << PcieDevice.STATUS_IRQ_PENDING_A_BIT)) != 0;
-        IrqPendingB = (status & (1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT)) != 0;
+        var statusReg = _acqEngine.ReadStatus;
+        var ctrlReg = _acqEngine.ReadControl;
+        XadcAveragingFactor = (int)((ctrlReg & PcieDevice.XADC_AVG_MASK) >> PcieDevice.XADC_AVG_SHIFT);
+        ControlText = $"0x{ctrlReg:X8}";
+        StatusText = $"0x{statusReg:X8}";
+        IsRunning = (statusReg & (1 << PcieDevice.STATUS_BIT_RUNNING)) != 0;
+        IsBufferFull = (statusReg & (1 << PcieDevice.STATUS_BUFFER_FULL_BIT)) != 0;
+        IrqPendingA = (statusReg & (1 << PcieDevice.STATUS_IRQ_PENDING_A_BIT)) != 0;
+        IrqPendingB = (statusReg & (1 << PcieDevice.STATUS_IRQ_PENDING_B_BIT)) != 0;
     }
 }

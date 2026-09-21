@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace LiteFury.Acquisition.Core;
 
 public class SampleAverager
@@ -9,7 +11,7 @@ public class SampleAverager
         if (avg == 0)
             throw new ArgumentOutOfRangeException(nameof(avg));
         if (avg > values.Length)
-            return Array.Empty<float>();
+            return Array.ConvertAll(values, input => Convert.ToSingle(input));
 
         //https://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
         // y[i] = y[i-1] + x[i] - x[i - avg]

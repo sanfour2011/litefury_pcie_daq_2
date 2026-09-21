@@ -12,23 +12,21 @@ public static class Conv
 
 public class IsEqualConverter : IValueConverter
 {
+    public static readonly IsEqualConverter Instance = new IsEqualConverter();
+    
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-
-        try
-        {
-            return Int32.Parse(value.ToString());
-        }
-        catch (Exception e)
-        {
-            new BindingNotification(e, BindingErrorType.DataValidationError);
-        }
-
-        return null;
+        if (value is int i && int.TryParse(parameter as string, out var result))
+            return i == result;
+        return false;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        if (value is bool b)
+            if (b && int.TryParse(parameter as string, out int result))
+                return result;
+        
+        return BindingOperations.DoNothing;
     }
 }

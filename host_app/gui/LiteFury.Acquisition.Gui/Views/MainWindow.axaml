@@ -1,9 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LiteFury.Acquisition.Gui.ViewModels"
+        xmlns:core="using:LiteFury.Acquisition.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:scottplot="using:ScottPlot.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="LiteFury.Acquisition.Gui.Views.MainWindow"
         x:DataType="vm:MainViewModel"
@@ -18,7 +18,7 @@
         </Style>
         <Style Selector="TextBox.active">
             <Setter Property="Background" Value="LightGreen" />
-            <Setter Property="Text" Value="1"></Setter>
+            <Setter Property="Text" Value="1" />
         </Style>
         <Style Selector="TextBox.warning">
             <Setter Property="Background" Value="IndianRed" />
@@ -52,41 +52,52 @@
             <Grid ColumnDefinitions="*,*" ColumnSpacing="2">
                 <Border Grid.Column="1" Background="AliceBlue" CornerRadius="3" Padding="5" BorderBrush="DimGray"
                         BorderThickness="1">
-
-                    <StackPanel Grid.Column="1" Background="AliceBlue">
-                        <TextBlock Text="XADC Averaging" FontWeight="Bold" Padding="0,0,0,4" />
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                <RadioButton GroupName="Averaging" Content="1x" IsChecked="True"
-                                             Command="{Binding SetAvgCommand}" CommandParameter="1" />
-                                <RadioButton GroupName="Averaging" Content="4x"
-                                             Command="{Binding SetAvgCommand}" CommandParameter="16" />
+                    <StackPanel Background="AliceBlue">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*">
+                            <TextBlock Text="XADC Averaging" FontWeight="Bold" Padding="0,0,0,4" />
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5">
+                                <!-- ReSharper disable Xaml.InvalidType -->
+                                <RadioButton GroupName="Averaging" Content="1x"
+                                             IsChecked="{Binding  XadcAveragingFactor,
+                                 Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=0}" />
                                 <RadioButton GroupName="Averaging" Content="16x"
-                                             Command="{Binding SetAvgCommand}" CommandParameter="64" />
+                                             IsChecked="{Binding XadcAveragingFactor,
+                                Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=1}" />
+                                <RadioButton GroupName="Averaging" Content="64x"
+                                             IsChecked="{Binding XadcAveragingFactor,
+                                Converter={x:Static vm:IsEqualConverter.Instance},ConverterParameter=2}" />
                                 <RadioButton GroupName="Averaging" Content="256x"
-                                             Command="{Binding SetAvgCommand}" CommandParameter="256" />
+                                             IsChecked="{Binding XadcAveragingFactor, 
+                                Converter={x:Static vm:IsEqualConverter.Instance}, ConverterParameter=3}" />
                             </StackPanel>
-                        </StackPanel>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Software Averaging" FontWeight="Bold"
+                                       Margin="10,0,0,0" />
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SoftAveragingFactor}"
+                                           Minimum="1" Maximum="{x:Static core:PcieDevice.BRAM_HALF_WORDS}"
+                                           ShowButtonSpinner="False"
+                                           Increment="1" MaxWidth="70" HorizontalAlignment="Left"
+                                           Background="AliceBlue" Margin="10,0,0,0" />
+                            <!-- ReSharper restore Xaml.InvalidType -->
+                        </Grid>
+                    </StackPanel>
                 </Border>
 
                 <Border Grid.Column="0" Background="AliceBlue" CornerRadius="3" Padding="5" BorderBrush="DimGray"
                         BorderThickness="1">
 
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
                         <Button Content="Start" Command="{Binding StartCommand}" Width="80"
                                 HorizontalContentAlignment="Center"
                                 VerticalAlignment="Center" Background="AliceBlue" BorderThickness="2"
-                                BorderBrush="Gray">
-                        </Button>
+                                BorderBrush="Gray" />
                         <Button Content="Stop" Command="{Binding StopCommand}" Width="80"
                                 HorizontalContentAlignment="Center"
                                 VerticalAlignment="Center" Background="AliceBlue" BorderThickness="2"
-                                BorderBrush="Gray">
-                        </Button>
+                                BorderBrush="Gray" />
                         <Button Content="Reset" Command="{Binding ResetCommand}" Width="80"
                                 HorizontalContentAlignment="Center"
                                 VerticalAlignment="Center" Background="AliceBlue" BorderThickness="2"
-                                BorderBrush="Gray">
-                        </Button>
+                                BorderBrush="Gray" />
                     </StackPanel>
                 </Border>
             </Grid>
@@ -106,7 +117,7 @@
 
             <Border Grid.Column="1" Background="AliceBlue" CornerRadius="3" Padding="2" BorderBrush="DimGray"
                     BorderThickness="1">
-                <Grid Grid.Row="0" Grid.Column="1" Grid.RowDefinitions="*,*" Grid.ColumnDefinitions="*,*,*"
+                <Grid Grid.RowDefinitions="*,*" Grid.ColumnDefinitions="*,*,*"
                       ColumnSpacing="2" Margin="5,0,5,2">
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="FLAGS" FontWeight="Bold" />
                     <TextBox Grid.Row="1" Grid.Column="0" Text="RUNNING" Classes.active="{Binding IsRunning}"
@@ -123,70 +134,70 @@
         <Border Grid.Row="3" CornerRadius="3" Background="AliceBlue" Padding="2" BorderBrush="Gray" BorderThickness="1">
             <Grid RowDefinitions="Auto,*" Background="AliceBlue">
                 <Grid ColumnDefinitions="*,*" Margin="5,0,5,0">
-                    <TextBlock Text="Temperature (XADC)" FontWeight="Bold"></TextBlock>
+                    <TextBlock Text="Temperature (XADC)" FontWeight="Bold" />
                     <!-- ReSharper disable Xaml.InvalidType -->
-                    <TextBlock Grid.Column="1" Text="{Binding LastChartValue}" TextAlignment="Right"></TextBlock>
+                    <TextBlock Grid.Column="1" Text="{Binding LastChartValue}" TextAlignment="Right" />
                     <!-- ReSharper restore Xaml.InvalidType -->
                 </Grid>
-               
-                <ContentControl Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding PlotControl, Mode=OneTime}"/>
+
+                <ContentControl Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Content="{Binding PlotControl, Mode=OneTime}" />
             </Grid>
         </Border>
 
         <Grid Grid.Row="4" RowDefinitions="auto,auto" ColumnDefinitions="*" IsHitTestVisible="false">
             <Grid Grid.Row="0" RowDefinitions="*,*">
-                <TextBox Grid.Row="0" Grid.Column="0" Text="Register bits (STATUS)" Margin="0.5"></TextBox>
+                <TextBox Grid.Row="0" Grid.Column="0" Text="Register bits (STATUS)" Margin="0.5" />
                 <Grid Grid.Row="1" RowDefinitions="auto,auto,auto" ColumnDefinitions="*,*,*,*,*,*,*,*">
-                    <TextBox Grid.Row="0" Grid.Column="0" Text="7" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="1" Grid.Column="0" Text="0" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="0" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="6" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="0" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="0" Grid.Column="2" Text="5" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="1" Grid.Column="2" Text="0" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="2" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="0" Grid.Column="3" Text="4" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="1" Grid.Column="3" Text="0" Margin="2" IsEnabled="false"></TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="3" Text="reserverd" Margin="2" IsEnabled="false"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="0" Text="7" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Text="0" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="2" Grid.Column="0" Text="reserverd" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="6" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="0" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="reserverd" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="0" Grid.Column="2" Text="5" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Text="0" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="reserverd" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="0" Grid.Column="3" Text="4" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="0" Margin="2" IsEnabled="false" />
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="reserverd" Margin="2" IsEnabled="false" />
 
-                    <TextBox Grid.Row="0" Grid.Column="4" Text="3" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="4" Text="3" Background="AliceBlue" Margin="2" />
                     <!-- ReSharper disable Xaml.InvalidType -->
                     <TextBox Grid.Row="1" Grid.Column="4"
                              Text="{Binding IrqPendingB, Converter={x:Static vm:Conv.Bit}}"
                              Classes.warning="{Binding IrqPendingB}" Margin="2">
                         <!-- ReSharper restore Xaml.InvalidType -->
                     </TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="4" Text="IRQ B" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="4" Text="IRQ B" Background="AliceBlue" Margin="2" />
 
-                    <TextBox Grid.Row="0" Grid.Column="5" Text="2" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="5" Text="2" Background="AliceBlue" Margin="2" />
                     <!-- ReSharper disable Xaml.InvalidType -->
                     <TextBox Grid.Row="1" Grid.Column="5"
                              Text="{Binding IrqPendingA, Converter={x:Static vm:Conv.Bit}}"
                              Classes.warning="{Binding IrqPendingA}" Margin="2">
                         <!-- ReSharper restore Xaml.InvalidType -->
                     </TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="5" Text="IRQ A" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="5" Text="IRQ A" Background="AliceBlue" Margin="2" />
 
-                    <TextBox Grid.Row="0" Grid.Column="6" Text="1" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="6" Text="1" Background="AliceBlue" Margin="2" />
                     <!-- ReSharper disable Xaml.InvalidType -->
                     <TextBox Grid.Row="1" Grid.Column="6"
                              Text="{Binding IsBufferFull, Converter={x:Static vm:Conv.Bit}}"
                              Classes.warning="{Binding IsBufferFull}" Margin="2">
                         <!-- ReSharper restore Xaml.InvalidType -->
                     </TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="6" Text="Buffer Full" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="6" Text="Buffer Full" Background="AliceBlue" Margin="2" />
 
                     <TextBox Grid.Row="0" Grid.Column="7" Text="0" Background="AliceBlue" Margin="2"
-                             TextAlignment="Center">
-                    </TextBox>
+                             TextAlignment="Center" />
                     <!-- ReSharper disable Xaml.InvalidType -->
                     <TextBox Grid.Row="1" Grid.Column="7"
                              Text="{Binding IsRunning, Converter={x:Static vm:Conv.Bit}}"
                              Classes.active="{Binding IsRunning}" Margin="2" TextAlignment="Center">
                         <!-- ReSharper restore Xaml.InvalidType -->
                     </TextBox>
-                    <TextBox Grid.Row="2" Grid.Column="7" Text="Running" Background="AliceBlue" Margin="2"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="7" Text="Running" Background="AliceBlue" Margin="2" />
                 </Grid>
             </Grid>
         </Grid>

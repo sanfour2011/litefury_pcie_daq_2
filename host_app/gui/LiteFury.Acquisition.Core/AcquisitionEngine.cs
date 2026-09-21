@@ -66,7 +66,7 @@ public class AcquisitionEngine : IDisposable
 
     public void Reset()
     {
-       _csr.TriggerSoftReset();
+        _csr.TriggerSoftReset();
         Thread.Sleep(10);
     }
 
@@ -77,4 +77,7 @@ public class AcquisitionEngine : IDisposable
         _irq.Dispose();
         _bramData.Dispose();
     }
+
+    public void SetXadcAverage(int avg) => _csr.SetXadcAvg(avg);
+    
 }

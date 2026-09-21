@@ -3,6 +3,7 @@ namespace LiteFury.Acquisition.Core;
 public static class PcieDevice
 {
     public const int BRAM_WORDS = 2048;
+    public const decimal BRAM_HALF_WORDS = BRAM_WORDS / 2; // used decimal so that it works in xaml
 
 //   Sysfs path to the PCIe BAR2 resource, memory-mapped for register/BRAM access.
     public const string PCI_RESOURCE2_PATH = "/sys/bus/pci/devices/0000:01:00.0/resource2";
