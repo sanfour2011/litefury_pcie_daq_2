@@ -42,15 +42,15 @@ runs the same four steps:
 
 There is a limit in this design and it is worth knowing about. `SamplesReady` is
 a plain event, so the call blocks until every subscriber is done. Your handler
-has to finish before the other half fills up. With 16x averaging on the XADC
-there is plenty of time. Turn the averaging down and that margin gets thin.
+has to finish before the other half fills up.
 
 The GUI subscribes to that event and pushes the work onto the UI thread with
 `Dispatcher.UIThread.Post`, which does not block the reader. Raw values go
 through `TemperatureConverter`, then through `SampleAverager`, then into a
 `SampleHistory` ring buffer and the ScottPlot streamer. The two register boxes
 do not work that way. A timer just reads CTRL and STATUS periodically, whether
-anything happened or not.
+anything happened or not. The XADC averaging is set with the radio buttons and goes straight to CTRL. 
+The software averaging next to it only changes the window of the moving average.
 
 Three small classes do the actual math:
 

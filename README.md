@@ -213,7 +213,8 @@ Base address: BAR-mapped, see `lspci`.
 | :---: | :--- | :---: | :---: | :--- |
 | **`0`** | `ENABLE_ACQUISITION` | `RW` | `0b0` | **`1`**: Start acquisition<br>**`0`**: Stop / idle |
 | **`1`** | `SOFT_RESET` | `RW` | `0b0` | **`1`**: Reset the acquisition side and the CSR |
-| **`31:2`** | *Reserved* | — | `0x0` | *Reserved for future use* |
+| **`3:2`** | `XADC_AVG` | `RW` | `0b10` | XADC averaging: **`00`** = 1, **`01`** = 16 **`10`** = 64, **`11`** = 256 |
+| **`31:4`** | *Reserved* | — | `0x0` | *Reserved for future use* |
 
 > `SOFT_RESET` clears itself. Writing the bit resets every register in the
 > CSR, and `CONTROL` is one of them, so the bit reads back as `0`. **Do not wait

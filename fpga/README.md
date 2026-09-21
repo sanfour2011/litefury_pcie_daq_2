@@ -71,15 +71,20 @@ the easiest way to feed the buffer path a known pattern without the XADC.
 
 ### `xadc_reader.vhd`
 
-Talks to the DRP (Dynamic Reconfiguration Port) side of the XADC Wizard.
-Stays small, the wizard handles the actual ADC, so this basically waits for
-`eoc`, pulses `den` for a cycle, waits for `drdy` and latches the top 12 bits
-of the DRP word into a 32-bit sample. `daddr` is only assigned in reset,
-which leaves it at 0, the temperature register.
+Talks through the DRP (Dynamic Reconfiguration Port) of the XADC Wizard-Block. 
+The entity reads samples and sets the averaging: 1, 16, 64 and 256. The entity is
+one FSM that reads samples and sets the averaging (1, 16, 64 or 256)
+For reading a sample it waits for `eoc`, pulses `den`, waits for `drdy` and takes the
+top 12 bits of the DRP word. `daddr` points at the temperature register.
+The averaging sits in configuration register 0 (`0x40`). When `avg` changes,
+the FSM reads that register, puts in the two new bits and writes it back. The
+other bits stay as they were. After a reset it does this once anyway, so the
+XADC and the CSR agree from the start.
+During a config write the FSM ignores `eoc`. One conversion is lost every
+time the averaging changes.
 
-The fourth state exists only to wait for `drdy` to fall again. Without it
-`sample_valid_out` stays high and `ping_pong_ctrl` writes the same value
-every clock cycle instead of once per conversion.
+All DRP transfers use the same handshake: `den`, wait for `drdy`, wait for
+`drdy` low again. The last wait keeps `sample_valid_out` one cycle long.
 
 ### `ping_pong_ctrl.vhd`
 
@@ -127,15 +132,15 @@ to 2.
 | IP instance | Role |
 |---|---|
 | `xdma_0` | Xilinx XDMA core. PCIe Gen2 x4 endpoint, handles the link and generates the MSI interrupts. `M_AXI` and `M_AXI_BYPASS` reach the CSR and the BRAM through `axi_smc`, `M_AXI_LITE` goes to `axi_gpio_0`. Now drives two `usr_irq_req` lines instead of one. |
-| **`AXI_CSR_0`** | **My own IP.** The custom AXI4-Lite slave from [litefury_pcie_daq](https://github.com/sanfour2011/litefury_pcie_daq), repackaged as v3.0. Gained `SOFT_RESET` in `CONTROL` and a second write-1-to-clear pending bit in `STATUS`. It also raises those pending bits itself, on the rising edge of `ready_A` / `ready_B`. See the register map in the top-level project README for the exact bit layout. |
+| **`AXI_CSR_0`** | **My own IP.** The custom AXI4-Lite slave from [litefury_pcie_daq](https://github.com/sanfour2011/litefury_pcie_daq),repackaged as v4.1. `CONTROL` now has `SOFT_RESET` and the XADC averaging bits, `STATUS` has a second write-1-to-clear pending bit. It raises those pending bits itself, on the rising edge of `ready_A` / `ready_B`. `CONTROL` has no write mask per bit, so the host should do a read-modify-write. See the register map in the top-level project README for the exact bit layout. |
 | **`xadc_reader_0`** | **My own RTL, but not packaged as IP.** `xadc_reader.vhd` is pulled into the block design as a module reference (**Add Module...** on the canvas), so it stays a plain source file instead of living in `ip_repo`. That is why it shows up as `module_ref` and carries the RTL badge in the diagram. |
-| `xadc_wiz_0` | Xilinx XADC Wizard. Single channel on the die temperature sensor, DRP interface, 40 kSPS with 16x averaging and offset/gain calibration enabled. |
+| `xadc_wiz_0` | Xilinx XADC Wizard. Single channel on the die temperature sensor, DRP interface, Default averaging set here to 64 at power-up, the host can change it through CSR. and offset/gain calibration enabled. |
 | `axi_bram_ctrl_0` | Bridges the host-facing AXI4 (byte-addressed) side of the buffer to Port A of the Block RAM. |
 | `blk_mem_gen_0` | The dual-clock Block RAM itself. Port A (byte-addressed) faces the host through the BRAM controller; Port B (word-addressed) is driven directly from `top_level.vhd` by `ping_pong_ctrl`. This dual-clock BRAM is the data-path clock domain crossing. |
 | `axi_smc` | AXI SmartConnect. Routes the XDMA masters to the right slave (`AXI_CSR_0`, `axi_bram_ctrl_0`) based on address. |
 | `axi_gpio_0` | Drives the 4 onboard LEDs, active-low, from the host side. Same as in [litefury_pcie_daq](https://github.com/sanfour2011/litefury_pcie_daq): superseded by the `sysclk` heartbeat in `top_level.vhd`, its output is left `open` and it stays as a working AXI-GPIO reference point. |
 | `util_ds_buf` | Differential clock buffer for the PCIe reference clock input. |
-| `xpm_cdc_gen_0` to `_4` | The block-design half of the CDC. Three single-bit macros carry `ready_A`, `ready_B` and `is_running` into `axi_aclk`, two pulse-transfer macros carry the IRQ acks the other way. |
+| `xpm_cdc_gen_0` to `_5` | The block-design half of the CDC. Three single-bit macros carry `ready_A`, `ready_B` and `is_running` into `axi_aclk`, two pulse-transfer macros carry the IRQ acks the other way. |
 | `ilslice_0`, `ilslice_1` | Split `usr_irq_ack[1:0]` into its A and B bits before they cross domains. |
 | `ilvector_logic_0` | AND gate feeding `buffer_full` on the CSR, from the already synchronized `ready_A` and `ready_B`. |
 | `ilvector_logic_1` | Inverter on the XADC reset, the wizard wants it active high. |
