@@ -203,11 +203,8 @@ int main(void)
         memcpy(&bram_data[0], bram_data_A, HALF_WORDS * sizeof(uint32_t));
         memcpy(&bram_data[HALF_WORDS], bram_data_B, HALF_WORDS * sizeof(uint32_t));
         draw_bram_panel(bram, bram_data, scroll_offset);
-        // draw_bram_panel(bram, bram_data_A, scroll_offset);
-        // draw_bram_panel(bram, bram_data_B, scroll_offset);
 
         mvwprintw(reg, 3, 30, "Auto clear: %d", auto_clear ? 1 : 0);
-        mvwprintw(reg, 4, 30, "irq heartbeat: %d", event_count);
 
         wrefresh(reg);
         napms(50);

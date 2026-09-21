@@ -4,7 +4,6 @@
 #include <semaphore.h>
 
 //it should runs in a thread since it runs in blocking mode and ui should still repsonsive.
-extern volatile int event_count;
 extern sem_t sem_pending_A;
 extern sem_t sem_pending_B;
 
