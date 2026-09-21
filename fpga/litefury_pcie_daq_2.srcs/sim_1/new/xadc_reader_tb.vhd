@@ -59,7 +59,8 @@ begin
 		di               => di_sig,
 		dwe              => dwe_sig,
 		sample_out       => temperature_out_sig,
-		sample_valid_out => open
+		sample_valid_out => open,
+		avg              => "10"
 	);
 
 	clk_process : process
