@@ -62,7 +62,7 @@ architecture Behavioral of xadc_reader_tb is
 	signal current_test : test_t := TEST_RESET;
 
 begin
-	
+
 	drdy_sig <= drdy_cfg when current_test = TEST_CONFIG_XADC else drdy_rd;
 	do_sig <= do_cfg     when current_test = TEST_CONFIG_XADC else do_rd;
 
@@ -128,10 +128,10 @@ begin
 			wait until rising_edge(clk_sig) and den_sig = '1';
 			assert daddr_sig = ADDR_CFG0 report "Config Error: first transfer must address 0x40!" severity error;
 			assert dwe_sig = '0' report "Config Error: first transfer must be a read (dwe = '0')!" severity error;
-			do_sig <= CFG0_INIT; -- answer the read
-			drdy_sig <= '1';
+			do_cfg <= CFG0_INIT; -- answer the read
+			drdy_cfg <= '1';
 			wait until rising_edge(clk_sig);
-			drdy_sig <= '0';
+			drdy_cfg <= '0';
 
 			-- 2nd transfer: write back with the new averaging bits
 			wait until rising_edge(clk_sig) and den_sig = '1';
@@ -139,15 +139,14 @@ begin
 			assert dwe_sig = '1' report "Config Error: second transfer must be a write (dwe = '1')!" severity error;
 			assert di_sig(13 downto 12) = AVG_VALUE report "Config Error: bits 13:12 must be avg!" severity error;
 			assert di_sig = CFG0_EXPECTED report "Config Error: all other bits must stay as read!" severity error;
-			drdy_sig <= '1'; -- acknowledge the write
+			drdy_cfg <= '1'; -- acknowledge the write
 			wait until rising_edge(clk_sig);
-			drdy_sig <= '0';
+			drdy_cfg <= '0';
 
 			-- FSM back to S_IDLE, hand drdy and do over to the next test
 			wait until rising_edge(clk_sig);
 			wait until rising_edge(clk_sig);
-			drdy_sig <= 'Z';
-			do_sig <= (others => 'Z');
+
 			config_test_done <= true;
 			wait;
 		end process config_xadc_test_process;
@@ -174,10 +173,10 @@ begin
 			wait until rising_edge(clk_sig);--S_WAIT_DRDY
 			wait for 1 ns;
 			output_15 := std_logic_vector(to_unsigned(16#ABC#, 12)) & "0000";
-			do_sig <= output_15;
-			drdy_sig <= '1';
+			do_rd  <= output_15;
+			drdy_rd <= '1';
 			wait until rising_edge(clk_sig);--S_WAIT_DRDY_LOW
-			drdy_sig <= '0';
+			drdy_rd <= '0';
 			wait until rising_edge(clk_sig); --S_IDLE
 			wait for 1 ns;
 			assert temperature_out_sig = std_logic_vector'(31 downto 12 => '0') & output_15(15 downto 4)
