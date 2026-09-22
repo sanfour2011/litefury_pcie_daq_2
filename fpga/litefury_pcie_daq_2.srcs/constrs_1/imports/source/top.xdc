@@ -234,3 +234,9 @@ set_property PACKAGE_PIN D7 [get_ports {pcie_mgt_txp[3]}]
 #connect_debug_port dbg_hub/clk [get_nets sys_clk]
 
 
+
+set_false_path -from [get_pins {block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/slv_reg0_reg[1]/C}] -to [get_pins soft_reset_FF1_reg/D]
+set_false_path -from [get_pins {block_design_inst/design_1_i/xdma_0/inst/udma_wrapper/dma_top/base/IRQ_INST/usr_ack_reg[0]/C}] -to [get_pins usr_irq_ack_FF1_reg/D]
+set_false_path -from [get_pins {block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/slv_reg0_reg[0]/C}] -to [get_pins FF1_reg_reg/D]
+set_false_path -from [get_pins block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/irq_pending_A_reg/C] -to [get_pins irq_pending_A_FF1_reg/D]
+set_false_path -from [get_pins block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/irq_pending_B_reg/C] -to [get_pins irq_pending_B_FF1_reg/D]
