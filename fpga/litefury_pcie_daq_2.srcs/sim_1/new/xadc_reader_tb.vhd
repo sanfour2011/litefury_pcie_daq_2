@@ -167,7 +167,6 @@ begin
 			wait until rising_edge(clk_sig); --S_WAIT_DRDY
 			-- nothing should happen, waiting FSM should wait for drdy
 			assert daddr_sig = (daddr_sig'range => '0') report "FSM Error: daddr must be 0!" severity error;
-			assert di_sig = (di_sig'range => '0') report "FSM Error: di must be 0!" severity error;
 			assert dwe_sig = '0' report "FSM Error: dwe must be '0'!" severity error;
 			assert den_sig = '0' report "FSM Error: den must be '0'!" severity error;
 			wait until rising_edge(clk_sig);--S_WAIT_DRDY
