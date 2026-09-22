@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <stdio.h>
 
-volatile int event_count = 0;
 sem_t sem_pending_A;
 sem_t sem_pending_B;
 
