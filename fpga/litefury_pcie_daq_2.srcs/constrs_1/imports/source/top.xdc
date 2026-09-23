@@ -240,3 +240,5 @@ set_false_path -from [get_pins {block_design_inst/design_1_i/xdma_0/inst/udma_wr
 set_false_path -from [get_pins {block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/slv_reg0_reg[0]/C}] -to [get_pins FF1_reg_reg/D]
 set_false_path -from [get_pins block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/irq_pending_A_reg/C] -to [get_pins irq_pending_A_FF1_reg/D]
 set_false_path -from [get_pins block_design_inst/design_1_i/AXI_CSR_0/U0/AXI_CSR_slave_lite_v3_0_S00_AXI_inst/irq_pending_B_reg/C] -to [get_pins irq_pending_B_FF1_reg/D]
+
+set_false_path -from [get_pins {count_reg[*]/C}] -to [get_ports {ledn[*]}]
