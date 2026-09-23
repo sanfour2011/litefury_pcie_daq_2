@@ -3,7 +3,7 @@
   <spirit:vendor>Nizar_Homebrew</spirit:vendor>
   <spirit:library>user</spirit:library>
   <spirit:name>AXI_CSR</spirit:name>
-  <spirit:version>4.1</spirit:version>
+  <spirit:version>4.2</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
       <spirit:name>control_status_reg_aresetn</spirit:name>
@@ -48,12 +48,12 @@
           <spirit:value spirit:id="BUSIFPARAM_VALUE.CONTROL_STATUS_REG_ACLK.ASSOCIATED_RESET">control_status_reg_aresetn</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
-          <spirit:name>FREQ_HZ</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.CONTROL_STATUS_REG_ACLK.FREQ_HZ">250000000</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
           <spirit:value spirit:id="BUSIFPARAM_VALUE.CONTROL_STATUS_REG_ACLK.ASSOCIATED_BUSIF">control_status_reg</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>FREQ_HZ</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.CONTROL_STATUS_REG_ACLK.FREQ_HZ"/>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -890,7 +890,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/AXI_CSR_v4_1.tcl</spirit:name>
+        <spirit:name>xgui/AXI_CSR_v4_2.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_df259eb7</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
@@ -909,7 +909,7 @@
         <spirit:name>hdl/CSR_V3_0_tb.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
-        <spirit:userFileType>USED_IN_synthesis</spirit:userFileType>
+        <spirit:userFileType>USED_IN_testbench</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
@@ -962,13 +962,16 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>AXI_CSR_v4.1</xilinx:displayName>
-      <xilinx:coreRevision>24</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-09-18T17:28:57Z</xilinx:coreCreationDateTime>
+      <xilinx:displayName>AXI_CSR_v4.2</xilinx:displayName>
+      <xilinx:coreRevision>1</xilinx:coreRevision>
+      <xilinx:upgrades>
+        <xilinx:canUpgradeFrom>Nizar_Homebrew:user:AXI_CSR:4.1</xilinx:canUpgradeFrom>
+      </xilinx:upgrades>
+      <xilinx:coreCreationDateTime>2026-09-23T08:18:01Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2025.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="7a14472a"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="10f62253"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="c2ab1600"/>
       <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="ede5f60c"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="d139ad89"/>
